@@ -1,0 +1,6 @@
+{
+  "name": "DealFinder Nepal",
+  "description": "Handpicked budget tech and lifestyle deals on Daraz Nepal with real-time cloud database sync, user authentication, wishlists, and affiliate deal management.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}

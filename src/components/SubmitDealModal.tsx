@@ -1,0 +1,201 @@
+import { useState, type FormEvent } from 'react';
+import { X, Send, Sparkles, CheckCircle2 } from 'lucide-react';
+import { addProductToFirestore } from '../lib/firebase';
+import { ProductDeal, UserAccount } from '../types';
+
+interface SubmitDealModalProps {
+  isOpen: boolean;
+  onClose: () => void;
+  user: UserAccount | null;
+  onOpenAuth: () => void;
+}
+
+export function SubmitDealModal({
+  isOpen,
+  onClose,
+  user,
+  onOpenAuth
+}: SubmitDealModalProps) {
+  const [title, setTitle] = useState('');
+  const [category, setCategory] = useState('Audio');
+  const [price, setPrice] = useState('');
+  const [image, setImage] = useState('');
+  const [affiliateUrl, setAffiliateUrl] = useState('');
+  const [description, setDescription] = useState('');
+  const [submitting, setSubmitting] = useState(false);
+  const [success, setSuccess] = useState(false);
+
+  if (!isOpen) return null;
+
+  const handleSubmit = async (e: FormEvent) => {
+    e.preventDefault();
+    if (!user) {
+      onOpenAuth();
+      return;
+    }
+
+    setSubmitting(true);
+    try {
+      const deal: Omit<ProductDeal, 'id'> = {
+        title: title.trim(),
+        category: category.trim(),
+        price: Number(price),
+        image: image.trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80',
+        affiliateUrl: affiliateUrl.trim(),
+        description: description.trim(),
+        badge: 'Community Submitted',
+        rating: 4.5,
+        reviewsCount: 1,
+        upvotes: 1,
+        upvotedBy: [user.uid],
+        inStock: true,
+        seller: user.displayName || 'Community Member'
+      };
+
+      await addProductToFirestore(deal);
+      setSuccess(true);
+      setTimeout(() => {
+        setSuccess(false);
+        onClose();
+        setTitle('');
+        setPrice('');
+        setImage('');
+        setAffiliateUrl('');
+        setDescription('');
+      }, 2000);
+    } catch (err: any) {
+      alert('Error submitting deal: ' + err.message);
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  return (
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
+      <div className="bg-white rounded-3xl max-w-lg w-full shadow-2xl border border-slate-100 p-5 sm:p-6">
+        
+        <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4">
+          <div className="flex items-center gap-2">
+            <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
+              <Sparkles className="w-4 h-4" />
+            </div>
+            <div>
+              <h3 className="font-extrabold text-slate-900 text-base leading-none">
+                Recommend a Daraz Deal
+              </h3>
+              <p className="text-[11px] text-slate-400 mt-0.5">Share budget tech with the Nepal community</p>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
+
+        {success ? (
+          <div className="py-8 text-center space-y-2">
+            <CheckCircle2 className="w-12 h-12 text-emerald-500 mx-auto" />
+            <h4 className="font-bold text-slate-900 text-base">Deal Submitted Successfully!</h4>
+            <p className="text-xs text-slate-500">Your deal has been sent to the live cloud database.</p>
+          </div>
+        ) : (
+          <form onSubmit={handleSubmit} className="space-y-3">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Product Title *</label>
+              <input
+                type="text"
+                required
+                value={title}
+                onChange={(e) => setTitle(e.target.value)}
+                placeholder="e.g. Fantech Captain 7.1 Gaming Headset"
+                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            <div className="grid grid-cols-2 gap-3">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Category</label>
+                <select
+                  value={category}
+                  onChange={(e) => setCategory(e.target.value)}
+                  className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500 bg-white"
+                >
+                  <option value="Audio">Audio</option>
+                  <option value="Keyboards & Mice">Keyboards & Mice</option>
+                  <option value="Wearables">Wearables</option>
+                  <option value="Mobile Accessories">Mobile Accessories</option>
+                  <option value="Gaming">Gaming</option>
+                  <option value="Lifestyle">Lifestyle</option>
+                </select>
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-700 mb-1">Price (NPR) *</label>
+                <input
+                  type="number"
+                  required
+                  value={price}
+                  onChange={(e) => setPrice(e.target.value)}
+                  placeholder="2499"
+                  className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Product Image URL</label>
+              <input
+                type="url"
+                value={image}
+                onChange={(e) => setImage(e.target.value)}
+                placeholder="https://sg-test-11.slatic.net/p/..."
+                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Daraz Product Link *</label>
+              <input
+                type="url"
+                required
+                value={affiliateUrl}
+                onChange={(e) => setAffiliateUrl(e.target.value)}
+                placeholder="https://s.daraz.com.np/s/..."
+                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
+              />
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1">Why is this a great deal?</label>
+              <textarea
+                rows={2}
+                value={description}
+                onChange={(e) => setDescription(e.target.value)}
+                placeholder="Huge discount, lowest price in 6 months, verified seller..."
+                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500 resize-none"
+              />
+            </div>
+
+            {!user && (
+              <p className="text-[11px] text-amber-700 bg-amber-50 p-2 rounded-lg">
+                * You need to sign in to submit a deal.
+              </p>
+            )}
+
+            <button
+              type="submit"
+              disabled={submitting}
+              className="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2 mt-2 disabled:opacity-50"
+            >
+              <Send className="w-3.5 h-3.5" />
+              <span>{submitting ? 'Submitting...' : 'Submit Deal to Catalog'}</span>
+            </button>
+          </form>
+        )}
+
+      </div>
+    </div>
+  );
+}

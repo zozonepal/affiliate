@@ -1,0 +1,102 @@
+{
+  "entities": {
+    "Product": {
+      "title": "Product Deal",
+      "description": "An affiliate product deal recommended from Daraz Nepal",
+      "type": "object",
+      "properties": {
+        "title": {
+          "type": "string",
+          "description": "Title of the product",
+          "minLength": 3,
+          "maxLength": 200
+        },
+        "category": {
+          "type": "string",
+          "description": "Category name",
+          "minLength": 2,
+          "maxLength": 50
+        },
+        "price": {
+          "type": "number",
+          "description": "Price in Nepalese Rupees (NPR)"
+        },
+        "originalPrice": {
+          "type": "number",
+          "description": "Original retail price in NPR"
+        },
+        "badge": {
+          "type": "string",
+          "description": "Optional badge tag",
+          "maxLength": 50
+        },
+        "image": {
+          "type": "string",
+          "description": "Direct image URL",
+          "maxLength": 1000
+        },
+        "affiliateUrl": {
+          "type": "string",
+          "description": "Daraz affiliate link URL",
+          "maxLength": 1000
+        },
+        "description": {
+          "type": "string",
+          "description": "Brief deal notes and specs",
+          "maxLength": 1000
+        },
+        "upvotes": {
+          "type": "number",
+          "description": "Community upvote tally"
+        },
+        "createdAt": {
+          "type": "string",
+          "description": "Server timestamp of creation"
+        },
+        "updatedAt": {
+          "type": "string",
+          "description": "Server timestamp of last update"
+        }
+      },
+      "required": ["title", "category", "price", "image", "affiliateUrl"]
+    },
+    "UserProfile": {
+      "title": "User Profile",
+      "description": "User profile with saved wishlist deals",
+      "type": "object",
+      "properties": {
+        "uid": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "email": {
+          "type": "string",
+          "maxLength": 128
+        },
+        "role": {
+          "type": "string",
+          "enum": ["admin", "user"]
+        },
+        "wishlist": {
+          "type": "array",
+          "description": "List of saved product deal IDs"
+        }
+      },
+      "required": ["uid", "role"]
+    }
+  },
+  "firestore": {
+    "/products/{productId}": {
+      "schema": {
+        "$ref": "#/entities/Product"
+      },
+      "description": "Collection of active Daraz Nepal affiliate deals"
+    },
+    "/users/{userId}": {
+      "schema": {
+        "$ref": "#/entities/UserProfile"
+      },
+      "description": "Private user account and wishlist data"
+    }
+  }
+}
