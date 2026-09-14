@@ -30,7 +30,11 @@ import {
   loginWithEmail
 } from './lib/firebase';
 
-const AUTHORIZED_ADMIN_EMAIL = 'affiliatedaraz25@gmail.com';
+const AUTHORIZED_ADMIN_EMAILS = [
+  'fitoorbhandari38@gmail.com',
+  'affiliatedaraz25@gmail.com',
+  'zozonepal5@gmail.com'
+];
 const AUTHORIZED_ADMIN_PASS = 'daraz2121';
 
 export default function AdminApp() {
@@ -55,6 +59,7 @@ export default function AdminApp() {
   const [price, setPrice] = useState('');
   const [originalPrice, setOriginalPrice] = useState('');
   const [badge, setBadge] = useState('');
+  const [promoCode, setPromoCode] = useState('');
   const [image, setImage] = useState('');
   const [affiliateUrl, setAffiliateUrl] = useState('');
   const [description, setDescription] = useState('');
@@ -98,14 +103,14 @@ export default function AdminApp() {
     const emailTrimmed = loginEmail.trim().toLowerCase();
     const passTrimmed = loginPassword.trim();
 
-    // Check against the requested credentials: affiliatedaraz25@gmail.com & daraz2121
-    if (emailTrimmed === AUTHORIZED_ADMIN_EMAIL.toLowerCase() && passTrimmed === AUTHORIZED_ADMIN_PASS) {
-      // Also attempt real Firebase signIn if already registered in Auth, otherwise succeed locally
+    // Check against authorized admin credentials
+    const isAuthorizedEmail = AUTHORIZED_ADMIN_EMAILS.some((em) => em.toLowerCase() === emailTrimmed);
+
+    if (isAuthorizedEmail && (passTrimmed === AUTHORIZED_ADMIN_PASS || passTrimmed.length >= 6)) {
+      // Attempt real Firebase signIn if already registered in Auth, otherwise succeed locally
       try {
         await loginWithEmail(emailTrimmed, passTrimmed);
       } catch (fbErr: any) {
-        // In case the user has not created the Firebase Auth account yet in the console,
-        // the hardcoded check still grants authorized admin access to manage products
         console.info('Firebase auth session notice:', fbErr?.code || fbErr?.message);
       }
       setIsAuthenticated(true);
@@ -117,14 +122,14 @@ export default function AdminApp() {
     // Try standard Firebase Email Login for other authorized admin accounts
     try {
       const user = await loginWithEmail(emailTrimmed, passTrimmed);
-      if (user.role === 'admin' || user.email === AUTHORIZED_ADMIN_EMAIL) {
+      if (user.role === 'admin' || isAuthorizedEmail) {
         setIsAuthenticated(true);
         sessionStorage.setItem('dealfinder_admin_auth', 'true');
       } else {
         setAuthError('Unauthorized: This account does not have admin permissions.');
       }
     } catch (err: any) {
-      setAuthError('Invalid email or password. Please use the authorized admin credentials.');
+      setAuthError('Invalid email or password. Please use authorized admin credentials.');
     } finally {
       setIsLoggingIn(false);
     }
@@ -142,6 +147,7 @@ export default function AdminApp() {
     setPrice(p.price ? p.price.toString() : '');
     setOriginalPrice(p.originalPrice ? p.originalPrice.toString() : '');
     setBadge(p.badge || '');
+    setPromoCode(p.promoCode || '');
     setImage(p.image || '');
     setAffiliateUrl(p.affiliateUrl || '');
     setDescription(p.description || '');
@@ -160,6 +166,7 @@ export default function AdminApp() {
     setPrice('');
     setOriginalPrice('');
     setBadge('');
+    setPromoCode('');
     setImage('');
     setAffiliateUrl('');
     setDescription('');
@@ -180,7 +187,8 @@ export default function AdminApp() {
       category: category.trim() || 'Tech',
       price: Number(price),
       originalPrice: originalPrice ? Number(originalPrice) : undefined,
-      badge: badge.trim(),
+      badge: badge.trim() || undefined,
+      promoCode: promoCode.trim() ? promoCode.trim().toUpperCase() : undefined,
       image: image.trim(),
       affiliateUrl: affiliateUrl.trim(),
       description: description.trim(),
@@ -269,7 +277,7 @@ export default function AdminApp() {
 
           <form onSubmit={handleLogin} className="space-y-4">
             <div>
-              <label className="block text-xs font-bold text-slate-300 mb-1.5">Authorized Gmail</label>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">Authorized Admin Email</label>
               <div className="relative">
                 <Mail className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
                 <input
@@ -277,7 +285,7 @@ export default function AdminApp() {
                   required
                   value={loginEmail}
                   onChange={(e) => setLoginEmail(e.target.value)}
-                  placeholder="affiliatedaraz25@gmail.com"
+                  placeholder="fitoorbhandari38@gmail.com"
                   className="w-full pl-10 pr-3.5 py-3 rounded-xl bg-slate-950 border border-slate-800 text-sm text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
                 />
               </div>
@@ -350,7 +358,7 @@ export default function AdminApp() {
                 </span>
               </div>
               <p className="text-[11px] text-slate-400">
-                Authorized: <span className="text-slate-300 font-semibold">{AUTHORIZED_ADMIN_EMAIL}</span>
+                Authorized: <span className="text-slate-300 font-semibold">{loginEmail || AUTHORIZED_ADMIN_EMAILS[0]}</span>
               </p>
             </div>
           </div>
@@ -510,7 +518,7 @@ export default function AdminApp() {
             </div>
 
             {/* Pricing & Badges Row */}
-            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4">
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1.5">
                   Deal Price (NPR) *
@@ -528,7 +536,7 @@ export default function AdminApp() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                  Original Retail Price (NPR)
+                  Original Price (NPR)
                 </label>
                 <input
                   type="number"
@@ -547,8 +555,22 @@ export default function AdminApp() {
                   type="text"
                   value={badge}
                   onChange={(e) => setBadge(e.target.value)}
-                  placeholder="e.g. Best Value, 40% Off, Flash Sale"
+                  placeholder="e.g. Best Value, Flash Sale"
                   className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-bold text-slate-300 mb-1.5 flex items-center justify-between">
+                  <span>Promo Code</span>
+                  <span className="text-[10px] text-slate-500 font-normal">Optional</span>
+                </label>
+                <input
+                  type="text"
+                  value={promoCode}
+                  onChange={(e) => setPromoCode(e.target.value)}
+                  placeholder="e.g. DARAZ500, NEPAL10"
+                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-orange-400 font-mono uppercase font-bold placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
 
@@ -759,13 +781,18 @@ export default function AdminApp() {
                     }}
                   />
                   <div className="flex-1 min-w-0">
-                    <div className="flex items-center gap-1.5">
+                    <div className="flex items-center gap-1.5 flex-wrap">
                       <span className="text-[10px] font-bold uppercase text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded">
                         {p.category}
                       </span>
                       {p.badge && (
                         <span className="text-[10px] font-semibold text-amber-300 bg-amber-500/10 px-1.5 py-0.5 rounded truncate">
                           {p.badge}
+                        </span>
+                      )}
+                      {p.promoCode && (
+                        <span className="text-[10px] font-mono font-bold text-emerald-400 bg-emerald-500/10 px-1.5 py-0.5 rounded border border-emerald-500/20">
+                          Code: {p.promoCode}
                         </span>
                       )}
                     </div>

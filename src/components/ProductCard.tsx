@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { ExternalLink, Heart, ThumbsUp, Star, Eye, Pencil, Trash2, CheckCircle } from 'lucide-react';
+import { ExternalLink, Heart, ThumbsUp, Star, Eye, Pencil, Trash2, CheckCircle, Ticket } from 'lucide-react';
 import { ProductDeal, UserAccount } from '../types';
 
 interface ProductCardProps {
@@ -161,6 +161,38 @@ export function ProductCard({
             <span>{product.upvotes || 0}</span>
           </button>
         </div>
+
+        {/* Promo Code Box if available */}
+        {product.promoCode && (
+          <div className="mb-2.5 flex items-center justify-between bg-orange-50/80 border border-dashed border-orange-300 rounded-xl px-2.5 py-1.5 text-xs">
+            <div className="flex items-center gap-1.5 text-orange-950 min-w-0">
+              <Ticket className="w-3.5 h-3.5 text-orange-600 shrink-0" />
+              <span className="text-[11px] text-slate-500 shrink-0">Code:</span>
+              <span className="font-mono font-black text-orange-700 tracking-wider truncate">
+                {product.promoCode}
+              </span>
+            </div>
+            <button
+              onClick={(e) => {
+                e.stopPropagation();
+                navigator.clipboard.writeText(product.promoCode || '');
+                setIsCopied(true);
+                setTimeout(() => setIsCopied(false), 2000);
+              }}
+              className="text-[10px] font-bold text-orange-700 hover:text-orange-900 bg-white px-2 py-0.5 rounded-md shadow-2xs border border-orange-200 transition shrink-0 ml-1 cursor-pointer flex items-center gap-1"
+              title="Copy promo code"
+            >
+              {isCopied ? (
+                <>
+                  <CheckCircle className="w-3 h-3 text-emerald-600" />
+                  <span className="text-emerald-700">Copied</span>
+                </>
+              ) : (
+                <span>Copy</span>
+              )}
+            </button>
+          </div>
+        )}
 
         {/* Affiliate Purchase Button */}
         <div className="space-y-2">

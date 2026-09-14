@@ -5,6 +5,7 @@ export interface ProductDeal {
   price: number;
   originalPrice?: number;
   badge?: string;
+  promoCode?: string;
   image: string;
   affiliateUrl: string;
   description?: string;

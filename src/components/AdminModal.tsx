@@ -13,7 +13,9 @@ import {
   AlertCircle, 
   Sparkles,
   ExternalLink,
-  Search
+  Search,
+  Tag,
+  Ticket
 } from 'lucide-react';
 import { ProductDeal, CloudSyncStatus } from '../types';
 import { 
@@ -45,6 +47,7 @@ export function AdminModal({
   const [price, setPrice] = useState('');
   const [originalPrice, setOriginalPrice] = useState('');
   const [badge, setBadge] = useState('');
+  const [promoCode, setPromoCode] = useState('');
   const [image, setImage] = useState('');
   const [affiliateUrl, setAffiliateUrl] = useState('');
   const [description, setDescription] = useState('');
@@ -70,6 +73,7 @@ export function AdminModal({
     setPrice(p.price?.toString() || '');
     setOriginalPrice(p.originalPrice?.toString() || '');
     setBadge(p.badge || '');
+    setPromoCode(p.promoCode || '');
     setImage(p.image || '');
     setAffiliateUrl(p.affiliateUrl || '');
     setDescription(p.description || '');
@@ -83,6 +87,7 @@ export function AdminModal({
     setPrice('');
     setOriginalPrice('');
     setBadge('');
+    setPromoCode('');
     setImage('');
     setAffiliateUrl('');
     setDescription('');
@@ -99,7 +104,8 @@ export function AdminModal({
       category: category.trim() || 'Tech',
       price: Number(price),
       originalPrice: originalPrice ? Number(originalPrice) : undefined,
-      badge: badge.trim(),
+      badge: badge.trim() || undefined,
+      promoCode: promoCode.trim() ? promoCode.trim().toUpperCase() : undefined,
       image: image.trim(),
       affiliateUrl: affiliateUrl.trim(),
       description: description.trim(),
@@ -328,6 +334,23 @@ export function AdminModal({
             </div>
 
             <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <Ticket className="w-3.5 h-3.5 text-orange-600" />
+                  <span>Promo / Voucher Code (Optional)</span>
+                </span>
+                <span className="text-[10px] text-slate-400 font-normal">e.g. DARAZ500</span>
+              </label>
+              <input
+                type="text"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+                placeholder="e.g. DARAZ500, NEPAL10"
+                className="w-full px-3 py-2 border rounded-xl text-xs bg-white focus:ring-2 focus:ring-orange-500 outline-none uppercase font-mono font-bold text-orange-700 placeholder-slate-400"
+              />
+            </div>
+
+            <div className="md:col-span-2">
               <label className="block text-xs font-bold text-slate-700 mb-1">Product Image URL *</label>
               <input
                 type="url"
@@ -443,8 +466,20 @@ export function AdminModal({
                     />
                     <div className="truncate">
                       <p className="font-bold text-slate-900 truncate">{p.title}</p>
-                      <p className="text-[11px] text-slate-500">
-                        Rs. {Number(p.price).toLocaleString('ne-NP')} • <span className="font-medium text-orange-600">{p.category}</span> • Upvotes: {p.upvotes || 0}
+                      <p className="text-[11px] text-slate-500 flex items-center gap-1.5 flex-wrap">
+                        <span>Rs. {Number(p.price).toLocaleString('ne-NP')}</span>
+                        <span>•</span>
+                        <span className="font-medium text-orange-600">{p.category}</span>
+                        {p.promoCode && (
+                          <>
+                            <span>•</span>
+                            <span className="bg-orange-100 text-orange-800 font-mono text-[10px] font-bold px-1.5 py-0.2 rounded border border-orange-200">
+                              Code: {p.promoCode}
+                            </span>
+                          </>
+                        )}
+                        <span>•</span>
+                        <span>Upvotes: {p.upvotes || 0}</span>
                       </p>
                     </div>
                   </div>

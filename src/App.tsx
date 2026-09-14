@@ -48,7 +48,8 @@ export default function App() {
   useEffect(() => {
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        const isAdmin = ADMIN_EMAILS.includes(firebaseUser.email || '');
+        const userEmail = (firebaseUser.email || '').toLowerCase().trim();
+        const isAdmin = ADMIN_EMAILS.some((e) => e.toLowerCase() === userEmail) || userEmail === 'fitoorbhandari38@gmail.com';
         const currentAccount: UserAccount = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
@@ -58,6 +59,12 @@ export default function App() {
           wishlist: []
         };
         setUser(currentAccount);
+
+        // Automatically open the admin panel when signed in from fitoorbhandari38@gmail.com
+        if (userEmail === 'fitoorbhandari38@gmail.com') {
+          setIsAdminOpen(true);
+        }
+
         const savedWishlist = await loadUserWishlist(firebaseUser.uid);
         setWishlist(savedWishlist);
       } else {

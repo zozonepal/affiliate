@@ -1,5 +1,5 @@
 import { useState } from 'react';
-import { X, ExternalLink, Heart, ThumbsUp, Star, ShieldCheck, Truck, Check, Share2 } from 'lucide-react';
+import { X, ExternalLink, Heart, ThumbsUp, Star, ShieldCheck, Truck, Check, Share2, Ticket, CheckCircle } from 'lucide-react';
 import { ProductDeal, UserAccount } from '../types';
 
 interface ProductDetailModalProps {
@@ -20,6 +20,7 @@ export function ProductDetailModal({
   onClose
 }: ProductDetailModalProps) {
   const [copied, setCopied] = useState(false);
+  const [promoCopied, setPromoCopied] = useState(false);
 
   if (!product) return null;
 
@@ -117,6 +118,35 @@ export function ProductDetailModal({
                   <p className="text-xs text-slate-500 mt-2 font-medium">
                     Sold by: <span className="font-bold text-slate-700">{product.seller}</span>
                   </p>
+                )}
+
+                {product.promoCode && (
+                  <div className="mt-3 pt-3 border-t border-slate-200/80 flex items-center justify-between bg-orange-50/70 -mx-4 -mb-4 p-3 rounded-b-xl">
+                    <div className="flex items-center gap-2">
+                      <Ticket className="w-4 h-4 text-orange-600" />
+                      <div>
+                        <span className="text-[10px] text-slate-500 block uppercase font-bold tracking-wider">Daraz Promo Code</span>
+                        <span className="font-mono font-black text-orange-700 text-sm tracking-wider">{product.promoCode}</span>
+                      </div>
+                    </div>
+                    <button
+                      onClick={() => {
+                        navigator.clipboard.writeText(product.promoCode || '');
+                        setPromoCopied(true);
+                        setTimeout(() => setPromoCopied(false), 2000);
+                      }}
+                      className="text-xs font-bold bg-white text-orange-700 hover:text-orange-900 border border-orange-200 px-3 py-1.5 rounded-lg shadow-2xs flex items-center gap-1.5 transition"
+                    >
+                      {promoCopied ? (
+                        <>
+                          <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
+                          <span className="text-emerald-700">Code Copied!</span>
+                        </>
+                      ) : (
+                        <span>Copy Code</span>
+                      )}
+                    </button>
+                  </div>
                 )}
               </div>
 

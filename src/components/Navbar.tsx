@@ -99,6 +99,19 @@ export function Navbar({
           {/* User Account / Auth Section */}
           {user ? (
             <div className="flex items-center gap-2">
+              {/* Show Admin Panel button if signed in as fitoorbhandari38@gmail.com or admin */}
+              {(user.role === 'admin' || user.email?.toLowerCase() === 'fitoorbhandari38@gmail.com') && (
+                <button
+                  id="nav-admin-panel-btn"
+                  onClick={onOpenAdmin}
+                  className="flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 px-3 py-1.5 rounded-lg shadow-sm transition cursor-pointer"
+                  title="Open Admin Panel"
+                >
+                  <ShieldCheck className="w-3.5 h-3.5" />
+                  <span>Admin Panel</span>
+                </button>
+              )}
+
               <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
                 <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 font-bold flex items-center justify-center text-xs border border-orange-200 overflow-hidden">
                   {user.photoURL ? (
@@ -112,7 +125,7 @@ export function Navbar({
                     <p className="text-xs font-bold text-slate-800 leading-tight max-w-[100px] truncate">
                       {user.displayName}
                     </p>
-                    {user.role === 'admin' && (
+                    {(user.role === 'admin' || user.email?.toLowerCase() === 'fitoorbhandari38@gmail.com') && (
                       <span className="text-[9px] bg-red-100 text-red-700 font-extrabold px-1.5 py-0.2 rounded uppercase">
                         Admin
                       </span>
@@ -143,15 +156,6 @@ export function Navbar({
               >
                 <UserIcon className="w-3.5 h-3.5" />
                 <span>Sign In</span>
-              </button>
-
-              <button
-                id="nav-quick-admin-btn"
-                onClick={onOpenAdmin}
-                className="flex items-center gap-1.5 text-xs font-semibold text-slate-600 hover:text-orange-600 p-1.5 rounded-lg hover:bg-slate-100 transition"
-                title="Admin Access"
-              >
-                <ShieldCheck className="w-4 h-4" />
               </button>
             </div>
           )}

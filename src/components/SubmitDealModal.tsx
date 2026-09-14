@@ -19,6 +19,7 @@ export function SubmitDealModal({
   const [title, setTitle] = useState('');
   const [category, setCategory] = useState('Audio');
   const [price, setPrice] = useState('');
+  const [promoCode, setPromoCode] = useState('');
   const [image, setImage] = useState('');
   const [affiliateUrl, setAffiliateUrl] = useState('');
   const [description, setDescription] = useState('');
@@ -40,6 +41,7 @@ export function SubmitDealModal({
         title: title.trim(),
         category: category.trim(),
         price: Number(price),
+        promoCode: promoCode.trim() ? promoCode.trim().toUpperCase() : undefined,
         image: image.trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80',
         affiliateUrl: affiliateUrl.trim(),
         description: description.trim(),
@@ -59,6 +61,7 @@ export function SubmitDealModal({
         onClose();
         setTitle('');
         setPrice('');
+        setPromoCode('');
         setImage('');
         setAffiliateUrl('');
         setDescription('');
@@ -142,6 +145,20 @@ export function SubmitDealModal({
                   className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
                 />
               </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span>Promo / Coupon Code</span>
+                <span className="text-[10px] text-slate-400 font-normal">Optional</span>
+              </label>
+              <input
+                type="text"
+                value={promoCode}
+                onChange={(e) => setPromoCode(e.target.value)}
+                placeholder="e.g. DARAZ500, NEPAL10"
+                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500 uppercase font-mono font-semibold text-orange-600 placeholder-slate-400"
+              />
             </div>
 
             <div>

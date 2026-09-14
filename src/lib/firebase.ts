@@ -49,6 +49,7 @@ export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
 
 export const ADMIN_EMAILS = [
+  'fitoorbhandari38@gmail.com',
   'affiliatedaraz25@gmail.com',
   'zozonepal5@gmail.com',
   'admin@dealfinder.np'
@@ -83,6 +84,7 @@ export function subscribeToProducts(
             price: Number(data.price) || 0,
             originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
             badge: data.badge || '',
+            promoCode: data.promoCode || undefined,
             image: data.image || '',
             affiliateUrl: data.affiliateUrl || 'https://www.daraz.com.np',
             description: data.description || '',
