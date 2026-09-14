@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react';
 import { 
   X, 
   PlusCircle, 
@@ -15,7 +15,9 @@ import {
   ExternalLink,
   Search,
   Tag,
-  Ticket
+  Ticket,
+  Upload,
+  Image as ImageIcon
 } from 'lucide-react';
 import { ProductDeal, CloudSyncStatus } from '../types';
 import { 
@@ -36,6 +38,17 @@ interface AdminModalProps {
   onLogoutAdmin: () => void;
 }
 
+const PRODUCT_IMAGE_PRESETS = [
+  { name: 'Earbuds', url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Headphones', url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Smartwatch', url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Keyboard', url: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Mouse', url: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Powerbank', url: 'https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Backpack', url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Speaker', url: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80' },
+];
+
 export function AdminModal({
   isOpen,
   onClose,
@@ -51,6 +64,24 @@ export function AdminModal({
   const [badge, setBadge] = useState('');
   const [promoCode, setPromoCode] = useState('');
   const [image, setImage] = useState('');
+
+  const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setMessage({ type: 'error', text: 'Please select an image file smaller than 5MB.' });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result;
+      if (typeof dataUrl === 'string') {
+        setImage(dataUrl);
+        setMessage({ type: 'success', text: 'Image file loaded directly!' });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
   const [affiliateUrl, setAffiliateUrl] = useState('');
   const [description, setDescription] = useState('');
   const [editingId, setEditingId] = useState<string | null>(null);
@@ -98,6 +129,10 @@ export function AdminModal({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!image) {
+      setMessage({ type: 'error', text: 'Please upload an image file or select a sample image below.' });
+      return;
+    }
     setIsSubmitting(true);
     setMessage(null);
 
@@ -109,7 +144,7 @@ export function AdminModal({
       badge: badge.trim() || undefined,
       promoCode: promoCode.trim() ? promoCode.trim().toUpperCase() : undefined,
       image: image.trim(),
-      affiliateUrl: affiliateUrl.trim(),
+      affiliateUrl: affiliateUrl.trim() || 'https://www.daraz.com.np',
       description: description.trim(),
       rating: 4.8,
       reviewsCount: 25,
@@ -372,16 +407,99 @@ export function AdminModal({
               />
             </div>
 
-            <div className="md:col-span-2">
-              <label className="block text-xs font-bold text-slate-700 mb-1">Product Image URL *</label>
-              <input
-                type="url"
-                required
-                value={image}
-                onChange={(e) => setImage(e.target.value)}
-                placeholder="https://..."
-                className="w-full px-3 py-2 border rounded-xl text-xs bg-white focus:ring-2 focus:ring-orange-500 outline-none"
-              />
+            <div className="md:col-span-2 space-y-2">
+              <label className="block text-xs font-bold text-slate-700">
+                Product Image (Upload File or Select Preset) *
+              </label>
+              
+              {/* Selected Image Preview or Direct Upload Box */}
+              {image ? (
+                <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl">
+                  <img
+                    src={image}
+                    alt="Product preview"
+                    className="w-16 h-16 object-contain rounded-xl bg-white border border-slate-200 p-1 shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100&auto=format&fit=crop&q=80';
+                    }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-slate-800 truncate">
+                      {image.startsWith('data:') ? 'Custom Uploaded Image File' : 'Selected Preset Image'}
+                    </p>
+                    <p className="text-[11px] text-slate-500 truncate">
+                      Ready to attach to product deal
+                    </p>
+                    <div className="flex items-center gap-2 mt-1.5">
+                      <label className="text-[11px] font-bold text-orange-600 hover:text-orange-700 cursor-pointer flex items-center gap-1 bg-orange-50 hover:bg-orange-100 px-2.5 py-1 rounded-lg transition border border-orange-200/60">
+                        <Upload className="w-3 h-3" />
+                        <span>Change Image</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setImage('')}
+                        className="text-[11px] font-semibold text-slate-500 hover:text-red-600 transition"
+                      >
+                        Remove Image
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-2.5">
+                  {/* Direct File Drag & Upload Box */}
+                  <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-orange-300 hover:border-orange-500 bg-orange-50/40 hover:bg-orange-50 rounded-2xl cursor-pointer transition text-center group">
+                    <div className="w-9 h-9 rounded-full bg-orange-100 group-hover:bg-orange-200 text-orange-600 flex items-center justify-center mb-1 transition">
+                      <Upload className="w-4 h-4" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-800 group-hover:text-orange-600">
+                      Insert Image Directly from Device
+                    </span>
+                    <span className="text-[10px] text-slate-500 mt-0.5">
+                      Click to choose image file (PNG, JPG, WEBP)
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      className="hidden"
+                    />
+                  </label>
+
+                  {/* Quick Select Presets */}
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1.5">
+                      Or Select Sample Product Photo:
+                    </span>
+                    <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
+                      {PRODUCT_IMAGE_PRESETS.map((preset) => (
+                        <button
+                          key={preset.name}
+                          type="button"
+                          onClick={() => setImage(preset.url)}
+                          className="flex flex-col items-center p-1 rounded-xl border border-slate-200 hover:border-orange-400 bg-white hover:bg-orange-50/50 transition group"
+                          title={preset.name}
+                        >
+                          <img
+                            src={preset.url}
+                            alt={preset.name}
+                            className="w-8 h-8 object-cover rounded-lg mb-1 group-hover:scale-105 transition-transform"
+                          />
+                          <span className="text-[9px] text-slate-600 font-medium truncate w-full text-center">
+                            {preset.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
             </div>
           </div>
 

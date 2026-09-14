@@ -234,7 +234,6 @@ export default function App() {
           }
         }}
         onOpenWishlist={() => setIsWishlistOpen(true)}
-        onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
         onLogout={handleLogout}
       />
 
@@ -347,7 +346,6 @@ export default function App() {
         user={user}
         wishlistCount={wishlist.length}
         onOpenWishlist={() => setIsWishlistOpen(true)}
-        onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenAdmin={() => {
           if (user?.role === 'admin' || user?.email?.toLowerCase() === 'fitoorbhandari38@gmail.com') {

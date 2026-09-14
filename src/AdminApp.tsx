@@ -1,4 +1,4 @@
-import { useState, useEffect, type FormEvent } from 'react';
+import { useState, useEffect, type FormEvent, type ChangeEvent } from 'react';
 import { 
   Lock, 
   ShieldCheck, 
@@ -18,8 +18,20 @@ import {
   ArrowLeft,
   Package,
   Eye,
-  ShoppingBag
+  ShoppingBag,
+  Upload
 } from 'lucide-react';
+
+const PRODUCT_IMAGE_PRESETS = [
+  { name: 'Earbuds', url: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Headphones', url: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Smartwatch', url: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Keyboard', url: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Mouse', url: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Powerbank', url: 'https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Backpack', url: 'https://images.unsplash.com/photo-1553062407-98eeb64c6a62?w=600&auto=format&fit=crop&q=80' },
+  { name: 'Speaker', url: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80' },
+];
 import { ProductDeal, CloudSyncStatus } from './types';
 import { 
   addProductToFirestore, 
@@ -179,8 +191,30 @@ export default function AdminApp() {
     setStatusMessage(null);
   };
 
+  const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    if (file.size > 5 * 1024 * 1024) {
+      setStatusMessage({ type: 'error', text: 'Please choose an image file smaller than 5MB.' });
+      return;
+    }
+    const reader = new FileReader();
+    reader.onload = (event) => {
+      const dataUrl = event.target?.result;
+      if (typeof dataUrl === 'string') {
+        setImage(dataUrl);
+        setStatusMessage({ type: 'success', text: 'Image file loaded directly!' });
+      }
+    };
+    reader.readAsDataURL(file);
+  };
+
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
+    if (!image) {
+      setStatusMessage({ type: 'error', text: 'Please upload an image file or select a sample image below.' });
+      return;
+    }
     setIsSubmitting(true);
     setStatusMessage(null);
 
@@ -192,7 +226,7 @@ export default function AdminApp() {
       badge: badge.trim() || undefined,
       promoCode: promoCode.trim() ? promoCode.trim().toUpperCase() : undefined,
       image: image.trim(),
-      affiliateUrl: affiliateUrl.trim(),
+      affiliateUrl: affiliateUrl.trim() || 'https://www.daraz.com.np',
       description: description.trim(),
       seller: seller.trim() || 'Daraz Nepal Verified Seller',
       rating: rating ? Number(rating) : 4.8,
@@ -609,35 +643,115 @@ export default function AdminApp() {
               </div>
             </div>
 
-            {/* Links and Images Row */}
-            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                  Product Image URL *
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={image}
-                  onChange={(e) => setImage(e.target.value)}
-                  placeholder="https://sg-test-11.slatic.net/p/..."
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-              </div>
+            {/* Direct Image Insertion Row */}
+            <div className="space-y-2">
+              <label className="block text-xs font-bold text-slate-300">
+                Product Image (Upload File Directly or Select Preset) *
+              </label>
+              
+              {/* Selected Image Preview or Upload Box */}
+              {image ? (
+                <div className="flex items-center gap-3 p-3.5 bg-slate-950 border border-slate-800 rounded-2xl">
+                  <img
+                    src={image}
+                    alt="Product preview"
+                    className="w-16 h-16 object-contain rounded-xl bg-slate-900 border border-slate-800 p-1 shrink-0"
+                    onError={(e) => {
+                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100&auto=format&fit=crop&q=80';
+                    }}
+                  />
+                  <div className="flex-1 min-w-0">
+                    <p className="text-xs font-bold text-slate-200 truncate">
+                      {image.startsWith('data:') ? 'Custom Uploaded Image File' : 'Selected Preset Image'}
+                    </p>
+                    <p className="text-[11px] text-slate-400 truncate">
+                      Ready to attach to product entry
+                    </p>
+                    <div className="flex items-center gap-3 mt-1.5">
+                      <label className="text-[11px] font-bold text-orange-400 hover:text-orange-300 cursor-pointer flex items-center gap-1 bg-slate-900 hover:bg-slate-800 border border-slate-700 px-2.5 py-1 rounded-lg transition">
+                        <Upload className="w-3 h-3" />
+                        <span>Change Image</span>
+                        <input
+                          type="file"
+                          accept="image/*"
+                          onChange={handleImageFileChange}
+                          className="hidden"
+                        />
+                      </label>
+                      <button
+                        type="button"
+                        onClick={() => setImage('')}
+                        className="text-[11px] font-semibold text-slate-500 hover:text-red-400 transition"
+                      >
+                        Remove Image
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              ) : (
+                <div className="space-y-3">
+                  {/* Direct File Drag & Upload Box */}
+                  <label className="flex flex-col items-center justify-center p-5 border-2 border-dashed border-slate-700 hover:border-orange-500 bg-slate-950/60 hover:bg-slate-950 rounded-2xl cursor-pointer transition text-center group">
+                    <div className="w-10 h-10 rounded-full bg-slate-800 group-hover:bg-orange-950 text-slate-400 group-hover:text-orange-400 flex items-center justify-center mb-1.5 transition">
+                      <Upload className="w-5 h-5" />
+                    </div>
+                    <span className="text-xs font-bold text-slate-200 group-hover:text-orange-400">
+                      Insert Image Directly from Device
+                    </span>
+                    <span className="text-[10px] text-slate-500 mt-0.5">
+                      Click to choose image file (PNG, JPG, WEBP)
+                    </span>
+                    <input
+                      type="file"
+                      accept="image/*"
+                      onChange={handleImageFileChange}
+                      className="hidden"
+                    />
+                  </label>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-300 mb-1.5">
-                  Daraz Affiliate Deep Link URL *
-                </label>
-                <input
-                  type="url"
-                  required
-                  value={affiliateUrl}
-                  onChange={(e) => setAffiliateUrl(e.target.value)}
-                  placeholder="https://s.daraz.com.np/s/... or full Daraz product link"
-                  className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
-                />
-              </div>
+                  {/* Quick Select Presets */}
+                  <div>
+                    <span className="text-[10px] uppercase font-bold text-slate-500 block mb-1.5">
+                      Or Select Sample Product Photo:
+                    </span>
+                    <div className="grid grid-cols-4 sm:grid-cols-8 gap-2">
+                      {PRODUCT_IMAGE_PRESETS.map((preset) => (
+                        <button
+                          key={preset.name}
+                          type="button"
+                          onClick={() => setImage(preset.url)}
+                          className="flex flex-col items-center p-1.5 rounded-xl border border-slate-800 hover:border-orange-500/60 bg-slate-950 hover:bg-slate-900 transition group"
+                          title={preset.name}
+                        >
+                          <img
+                            src={preset.url}
+                            alt={preset.name}
+                            className="w-9 h-9 object-cover rounded-lg mb-1 group-hover:scale-105 transition-transform"
+                          />
+                          <span className="text-[9px] text-slate-400 font-medium truncate w-full text-center">
+                            {preset.name}
+                          </span>
+                        </button>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            {/* Links Row */}
+            <div>
+              <label className="block text-xs font-bold text-slate-300 mb-1.5">
+                Daraz Affiliate Deep Link URL *
+              </label>
+              <input
+                type="url"
+                required
+                value={affiliateUrl}
+                onChange={(e) => setAffiliateUrl(e.target.value)}
+                placeholder="https://s.daraz.com.np/s/... or full Daraz product link"
+                className="w-full px-3.5 py-2.5 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-600 focus:outline-none focus:ring-2 focus:ring-orange-500"
+              />
             </div>
 
             {/* Seller & Rating Specs */}

@@ -5,7 +5,6 @@ interface MobileBottomNavProps {
   user: UserAccount | null;
   wishlistCount: number;
   onOpenWishlist: () => void;
-  onOpenSubmitDeal: () => void;
   onOpenAuth: () => void;
   onOpenAdmin: () => void;
 }
@@ -14,7 +13,6 @@ export function MobileBottomNav({
   user,
   wishlistCount,
   onOpenWishlist,
-  onOpenSubmitDeal,
   onOpenAuth,
   onOpenAdmin
 }: MobileBottomNavProps) {
@@ -55,18 +53,6 @@ export function MobileBottomNav({
             )}
           </div>
           <span className="text-[10px] font-bold mt-0.5">Saved</span>
-        </button>
-
-        {/* Submit Deal (Highlighted) */}
-        <button
-          onClick={onOpenSubmitDeal}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-orange-600 hover:text-orange-700 active:scale-95 transition"
-          aria-label="Suggest Deal"
-        >
-          <div className="w-7 h-7 rounded-full bg-orange-100 flex items-center justify-center">
-            <PlusCircle className="w-5 h-5 text-orange-600" />
-          </div>
-          <span className="text-[10px] font-extrabold mt-0.5 text-orange-700">Suggest</span>
         </button>
 
         {/* Admin or Profile */}

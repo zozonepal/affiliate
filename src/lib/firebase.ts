@@ -218,19 +218,69 @@ export function subscribeToProducts(
  * Add a new product deal to Firestore
  */
 export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
-  // When an admin adds a new product, clear pre-products flag so pre-products don't conflict
-  clearAllPreProducts();
   const productsRef = collection(db, 'products');
-  const payload = {
-    ...deal,
-    price: Number(deal.price),
+  
+  const payload: Record<string, any> = {
+    title: deal.title || 'Untitled Deal',
+    category: deal.category || 'Tech',
+    price: Number(deal.price) || 0,
     originalPrice: deal.originalPrice ? Number(deal.originalPrice) : null,
-    upvotes: deal.upvotes || 0,
-    upvotedBy: deal.upvotedBy || [],
+    badge: deal.badge || '',
+    promoCode: deal.promoCode || '',
+    image: deal.image || '',
+    affiliateUrl: deal.affiliateUrl || 'https://www.daraz.com.np',
+    description: deal.description || '',
+    seller: deal.seller || 'Daraz Nepal Verified Seller',
+    rating: deal.rating ? Number(deal.rating) : 4.8,
+    reviewsCount: deal.reviewsCount ? Number(deal.reviewsCount) : 25,
+    inStock: deal.inStock !== false,
+    upvotes: Number(deal.upvotes) || 0,
+    upvotedBy: Array.isArray(deal.upvotedBy) ? deal.upvotedBy : [],
     createdAt: serverTimestamp(),
     updatedAt: serverTimestamp()
   };
-  return await addDoc(productsRef, payload);
+
+  // Remove any remaining undefined values so Firestore never rejects the call
+  Object.keys(payload).forEach((key) => {
+    if (payload[key] === undefined) {
+      delete payload[key];
+    }
+  });
+
+  try {
+    const docRef = await addDoc(productsRef, payload);
+    // Add locally to immediate cache for instantaneous UI update
+    const newDeal: ProductDeal = {
+      id: docRef.id,
+      title: payload.title,
+      category: payload.category,
+      price: payload.price,
+      originalPrice: payload.originalPrice || undefined,
+      badge: payload.badge || undefined,
+      promoCode: payload.promoCode || undefined,
+      image: payload.image,
+      affiliateUrl: payload.affiliateUrl,
+      description: payload.description,
+      seller: payload.seller,
+      rating: payload.rating,
+      reviewsCount: payload.reviewsCount,
+      inStock: payload.inStock,
+      upvotes: payload.upvotes,
+      upvotedBy: payload.upvotedBy,
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString()
+    };
+    
+    // Prevent duplicate entries if snapshot also fires
+    if (!latestFirestoreItems.some(item => item.id === docRef.id)) {
+      latestFirestoreItems = [newDeal, ...latestFirestoreItems];
+      broadcastProducts();
+    }
+    return docRef;
+  } catch (err) {
+    console.error('Error adding product to Firestore:', err);
+    throw err;
+  }
 }
 
 /**
@@ -250,12 +300,34 @@ export async function updateProductInFirestore(id: string, updates: Partial<Prod
 
   const docRef = doc(db, 'products', id);
   const payload: Record<string, any> = {
-    ...updates,
     updatedAt: serverTimestamp()
   };
+
+  if (updates.title !== undefined) payload.title = updates.title;
+  if (updates.category !== undefined) payload.category = updates.category;
   if (updates.price !== undefined) payload.price = Number(updates.price);
-  if (updates.originalPrice !== undefined) payload.originalPrice = Number(updates.originalPrice);
-  return await updateDoc(docRef, payload);
+  if (updates.originalPrice !== undefined) payload.originalPrice = updates.originalPrice ? Number(updates.originalPrice) : null;
+  if (updates.badge !== undefined) payload.badge = updates.badge || '';
+  if (updates.promoCode !== undefined) payload.promoCode = updates.promoCode || '';
+  if (updates.image !== undefined) payload.image = updates.image || '';
+  if (updates.affiliateUrl !== undefined) payload.affiliateUrl = updates.affiliateUrl || '';
+  if (updates.description !== undefined) payload.description = updates.description || '';
+  if (updates.seller !== undefined) payload.seller = updates.seller || 'Daraz Nepal Store';
+  if (updates.rating !== undefined) payload.rating = Number(updates.rating);
+  if (updates.reviewsCount !== undefined) payload.reviewsCount = Number(updates.reviewsCount);
+  if (updates.inStock !== undefined) payload.inStock = Boolean(updates.inStock);
+
+  Object.keys(payload).forEach((key) => {
+    if (payload[key] === undefined) {
+      delete payload[key];
+    }
+  });
+
+  await updateDoc(docRef, payload);
+
+  // Optimistically update local cache
+  latestFirestoreItems = latestFirestoreItems.map(item => item.id === id ? { ...item, ...updates } : item);
+  broadcastProducts();
 }
 
 /**
