@@ -1,0 +1,491 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Nepal Tech & Lifestyle Deals - Best Daraz Recommendations</title>
+  <!-- Tailwind CSS CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Lucide Icons CDN -->
+  <script src="https://unpkg.com/lucide@latest"></script>
+</head>
+<body class="bg-slate-50 text-slate-800 font-sans min-h-screen flex flex-col">
+
+  <!-- TOP NAVBAR -->
+  <header class="bg-white border-b border-slate-200 sticky top-0 z-30 shadow-sm">
+    <div class="max-w-6xl mx-auto px-4 py-3 flex items-center justify-between">
+      <a href="#" class="flex items-center gap-2 font-black text-xl text-orange-600">
+        <i data-lucide="shopping-bag" class="w-6 h-6"></i>
+        <span>DealFinder<span class="text-slate-900">NP</span></span>
+      </a>
+
+      <div class="flex items-center gap-3">
+        <button onclick="toggleAdminModal(true)" class="flex items-center gap-1.5 text-xs font-semibold bg-slate-100 hover:bg-slate-200 text-slate-700 px-3 py-1.5 rounded-lg transition">
+          <i data-lucide="lock" class="w-3.5 h-3.5"></i>
+          <span>Admin Panel</span>
+        </button>
+      </div>
+    </div>
+  </header>
+
+  <!-- HERO SECTION -->
+  <section class="bg-gradient-to-r from-orange-500 to-amber-500 text-white py-10 px-4">
+    <div class="max-w-4xl mx-auto text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight mb-3">
+        Best Budget Deals in Nepal
+      </h1>
+      <p class="text-orange-100 text-sm md:text-base max-w-xl mx-auto mb-6">
+        Handpicked top-rated tech, gadgets, and lifestyle items verified on Daraz Nepal.
+      </p>
+
+      <!-- SEARCH BAR -->
+      <div class="relative max-w-lg mx-auto">
+        <i data-lucide="search" class="absolute left-3.5 top-3.5 w-5 h-5 text-slate-400"></i>
+        <input 
+          type="text" 
+          id="searchInput" 
+          oninput="renderProducts()" 
+          placeholder="Search products (e.g. Earbuds, Keyboard)..." 
+          class="w-full pl-11 pr-4 py-3 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-orange-300 shadow-md text-sm"
+        />
+      </div>
+    </div>
+  </section>
+
+  <!-- MAIN CONTENT AREA -->
+  <main class="max-w-6xl mx-auto px-4 py-8 flex-1 w-full">
+    
+    <!-- CATEGORY FILTER BUTTONS -->
+    <div class="flex items-center justify-between flex-wrap gap-2 mb-6">
+      <div class="flex items-center gap-2 overflow-x-auto pb-2 scrollbar-none" id="categoryFilters">
+        <!-- Dynamic Category Buttons -->
+      </div>
+      <span id="productCount" class="text-xs font-medium text-slate-500">Loading catalog...</span>
+    </div>
+
+    <!-- PRODUCT GRID -->
+    <div id="productGrid" class="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+      <!-- Loading Skeleton -->
+      <div class="col-span-full py-12 text-center text-slate-400">
+        <i data-lucide="loader-2" class="w-8 h-8 animate-spin mx-auto mb-2 text-orange-500"></i>
+        <p class="text-xs font-semibold">Connecting to live cloud database...</p>
+      </div>
+    </div>
+
+    <!-- EMPTY STATE -->
+    <div id="emptyState" class="hidden text-center py-16">
+      <i data-lucide="package-open" class="w-16 h-16 mx-auto text-slate-300 mb-3"></i>
+      <h3 class="text-lg font-bold text-slate-700">No deals found</h3>
+      <p class="text-sm text-slate-500">Try searching for something else or add new products from the Admin panel.</p>
+    </div>
+
+  </main>
+
+  <!-- FOOTER -->
+  <footer class="bg-white border-t border-slate-200 py-6 text-center text-xs text-slate-500">
+    <p>© 2026 DealFinder NP. Affiliate links earn a small commission at zero cost to buyers.</p>
+  </footer>
+
+  <!-- ENHANCED ADMIN MODAL -->
+  <div id="adminModal" class="fixed inset-0 bg-slate-900/60 backdrop-blur-sm z-50 hidden flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl max-w-3xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 p-6">
+      
+      <!-- AUTHENTICATION VIEW -->
+      <div id="adminAuthView">
+        <div class="flex justify-between items-center mb-4">
+          <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+            <i data-lucide="shield-check" class="text-orange-600"></i> Admin Access
+          </h2>
+          <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-slate-600">
+            <i data-lucide="x"></i>
+          </button>
+        </div>
+        <p class="text-xs text-slate-500 mb-4">Enter your password to access the Cloud Admin Panel. (Default: <code class="bg-slate-100 px-1.5 py-0.5 rounded text-orange-600 font-bold">admin</code>)</p>
+        
+        <form onsubmit="handleAdminLogin(event)" class="space-y-4">
+          <div>
+            <label class="block text-xs font-bold text-slate-700 mb-1">Password</label>
+            <input type="password" id="adminPassword" required class="w-full px-3 py-2 border rounded-lg text-sm focus:ring-2 focus:ring-orange-500 outline-none">
+          </div>
+          <button type="submit" class="w-full bg-orange-600 hover:bg-orange-700 text-white font-bold py-2 rounded-lg text-sm transition">
+            Unlock Admin Panel
+          </button>
+        </form>
+      </div>
+
+      <!-- DASHBOARD VIEW -->
+      <div id="adminDashboardView" class="hidden">
+        <div class="flex justify-between items-center mb-6 pb-3 border-b">
+          <div>
+            <h2 class="text-xl font-bold text-slate-800 flex items-center gap-2">
+              <i data-lucide="layout-dashboard" class="text-orange-600"></i> Firebase Live Dashboard
+            </h2>
+            <p class="text-xs text-slate-500">Real-time cloud database management</p>
+          </div>
+          <div class="flex items-center gap-3">
+            <button onclick="logoutAdmin()" class="text-xs text-red-600 font-semibold hover:underline">Logout</button>
+            <button onclick="toggleAdminModal(false)" class="text-slate-400 hover:text-slate-600">
+              <i data-lucide="x"></i>
+            </button>
+          </div>
+        </div>
+
+        <!-- METRICS BAR -->
+        <div class="grid grid-cols-3 gap-3 mb-6">
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+            <span class="text-[10px] uppercase font-bold text-slate-400">Total Deals</span>
+            <p id="statTotal" class="text-lg font-black text-slate-800">0</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+            <span class="text-[10px] uppercase font-bold text-slate-400">Categories</span>
+            <p id="statCategories" class="text-lg font-black text-slate-800">0</p>
+          </div>
+          <div class="bg-slate-50 p-3 rounded-xl border border-slate-200/80">
+            <span class="text-[10px] uppercase font-bold text-slate-400">Cloud Sync Status</span>
+            <p class="text-xs font-bold text-emerald-600 flex items-center gap-1 mt-1">
+              <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Connected
+            </p>
+          </div>
+        </div>
+
+        <!-- ADD / EDIT PRODUCT FORM -->
+        <form id="productForm" onsubmit="handleFormSubmit(event)" class="space-y-3 bg-slate-50 p-4 rounded-xl border border-slate-200/80 mb-6">
+          <div class="flex items-center justify-between mb-1">
+            <h3 id="formTitle" class="text-sm font-bold text-slate-800">Add New Affiliate Deal</h3>
+            <button type="button" id="cancelEditBtn" onclick="resetForm()" class="hidden text-xs text-slate-500 underline">Cancel Edit</button>
+          </div>
+
+          <input type="hidden" id="editingId" value="">
+          
+          <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Product Title</label>
+              <input type="text" id="pTitle" required placeholder="e.g. Ultima Atom 192 Earbuds" class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-orange-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Category</label>
+              <input type="text" id="pCategory" required placeholder="e.g. Audio, Keyboards, Wearables" class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-orange-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Price (NPR)</label>
+              <input type="number" id="pPrice" required placeholder="2499" class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-orange-500">
+            </div>
+
+            <div>
+              <label class="block text-xs font-semibold text-slate-600 mb-1">Badge / Tag (Optional)</label>
+              <input type="text" id="pBadge" placeholder="e.g. Best Value Under 3k" class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-orange-500">
+            </div>
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Product Image URL</label>
+            <input type="url" id="pImage" required placeholder="https://sg-test-11.slatic.net/p/..." class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-orange-500">
+          </div>
+
+          <div>
+            <label class="block text-xs font-semibold text-slate-600 mb-1">Daraz Affiliate Deep Link URL</label>
+            <input type="url" id="pAffiliateUrl" required placeholder="https://s.daraz.com.np/s/..." class="w-full px-3 py-2 border rounded-lg text-xs outline-none focus:ring-1 focus:ring-orange-500">
+          </div>
+
+          <button type="submit" id="submitBtn" class="w-full bg-slate-900 hover:bg-black text-white font-bold py-2.5 rounded-lg text-xs transition mt-2 flex items-center justify-center gap-1.5">
+            <i data-lucide="plus-circle" class="w-4 h-4"></i>
+            <span>Publish Deal to Cloud</span>
+          </button>
+        </form>
+
+        <!-- PRODUCT LIST MANAGEMENT -->
+        <div class="flex items-center justify-between mb-3">
+          <h3 class="text-sm font-bold text-slate-800">Live Database Items</h3>
+          <input type="text" id="adminSearchInput" oninput="renderAdminProducts()" placeholder="Filter items..." class="px-2.5 py-1 text-xs border rounded-lg outline-none focus:ring-1 focus:ring-orange-500 w-40">
+        </div>
+        
+        <div id="adminProductList" class="space-y-2 max-h-64 overflow-y-auto pr-1">
+          <!-- Rendered dynamically -->
+        </div>
+
+      </div>
+
+    </div>
+  </div>
+
+  <!-- FIREBASE SDK & CORE SCRIPT -->
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-app.js";
+    import { 
+      getFirestore, 
+      collection, 
+      onSnapshot, 
+      addDoc, 
+      updateDoc, 
+      deleteDoc, 
+      doc, 
+      serverTimestamp 
+    } from "https://www.gstatic.com/firebasejs/10.9.0/firebase-firestore.js";
+
+    // YOUR FIREBASE CONFIGURATION
+    const firebaseConfig = {
+      apiKey: "AIzaSyAs9bjiSfwK_ko1ieu4vPWXScOyWhn-Deo",
+      authDomain: "affiliatedaraz90.firebaseapp.com",
+      projectId: "affiliatedaraz90",
+      storageBucket: "affiliatedaraz90.firebasestorage.app",
+      messagingSenderId: "64358808257",
+      appId: "1:64358808257:web:394eece6e8d405c6573240",
+      measurementId: "G-6QVDWJ2BWR"
+    };
+
+    // INITIALIZE FIREBASE
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
+    const productsRef = collection(db, "products");
+
+    // STATE VARIABLES
+    window.products = [];
+    window.selectedCategory = 'All';
+    window.isAdminLoggedIn = false;
+
+    // REALTIME LISTENER FOR FIREBASE PRODUCTS
+    onSnapshot(productsRef, (snapshot) => {
+      window.products = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      // Update UI components dynamically
+      renderProducts();
+      if (window.isAdminLoggedIn) {
+        renderAdminProducts();
+        updateAdminStats();
+      }
+    }, (error) => {
+      console.error("Firestore Error:", error);
+      alert("Database connection error. Make sure Firestore rules are set to public test mode.");
+    });
+
+    // RENDER PUBLIC PRODUCT GRID
+    window.renderProducts = function() {
+      const grid = document.getElementById('productGrid');
+      const emptyState = document.getElementById('emptyState');
+      const searchQuery = (document.getElementById('searchInput')?.value || '').toLowerCase();
+
+      const filtered = window.products.filter(p => {
+        const matchesCategory = window.selectedCategory === 'All' || (p.category && p.category.toLowerCase() === window.selectedCategory.toLowerCase());
+        const matchesSearch = (p.title && p.title.toLowerCase().includes(searchQuery)) || (p.category && p.category.toLowerCase().includes(searchQuery));
+        return matchesCategory && matchesSearch;
+      });
+
+      document.getElementById('productCount').textContent = `Showing ${filtered.length} products`;
+
+      if (filtered.length === 0) {
+        grid.innerHTML = '';
+        emptyState.classList.remove('hidden');
+        return;
+      }
+
+      emptyState.classList.add('hidden');
+      grid.innerHTML = filtered.map(p => `
+        <div class="bg-white rounded-2xl border border-slate-200/80 shadow-sm hover:shadow-md transition flex flex-col justify-between overflow-hidden group">
+          <div class="p-4">
+            <div class="relative w-full h-44 bg-slate-50 rounded-xl overflow-hidden mb-3">
+              ${p.badge ? `<span class="absolute top-2 left-2 z-10 text-[10px] font-bold tracking-wider uppercase bg-orange-500 text-white px-2 py-0.5 rounded-md shadow-sm">${p.badge}</span>` : ''}
+              <img src="${p.image}" alt="${p.title}" class="w-full h-full object-contain p-2 group-hover:scale-105 transition duration-300" onerror="this.src='https://via.placeholder.com/300?text=No+Image'">
+            </div>
+            <span class="text-[11px] font-bold text-slate-400 uppercase tracking-wider">${p.category || 'General'}</span>
+            <h3 class="font-bold text-slate-800 text-sm line-clamp-2 mt-0.5 mb-2">${p.title}</h3>
+          </div>
+
+          <div class="px-4 pb-4 pt-0">
+            <div class="flex items-baseline gap-1 mb-3">
+              <span class="text-xs font-bold text-orange-600">Rs.</span>
+              <span class="text-xl font-extrabold text-slate-900">${Number(p.price).toLocaleString('ne-NP')}</span>
+            </div>
+            <a href="${p.affiliateUrl}" target="_blank" rel="noopener noreferrer" 
+               class="w-full bg-slate-900 hover:bg-orange-600 text-white font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition duration-200">
+               <span>Buy on Daraz</span>
+               <i data-lucide="external-link" class="w-3.5 h-3.5"></i>
+            </a>
+          </div>
+        </div>
+      `).join('');
+
+      renderCategories();
+      lucide.createIcons();
+    };
+
+    // RENDER CATEGORY PILLS
+    function renderCategories() {
+      const categories = ['All', ...new Set(window.products.map(p => p.category).filter(Boolean))];
+      const container = document.getElementById('categoryFilters');
+
+      container.innerHTML = categories.map(cat => `
+        <button 
+          onclick="setCategory('${cat}')" 
+          class="px-3 py-1.5 rounded-lg text-xs font-bold transition whitespace-nowrap ${window.selectedCategory === cat ? 'bg-orange-600 text-white shadow-sm' : 'bg-white border text-slate-600 hover:bg-slate-100'}">
+          ${cat}
+        </button>
+      `).join('');
+    }
+
+    window.setCategory = function(cat) {
+      window.selectedCategory = cat;
+      renderProducts();
+    };
+
+    // ADMIN MODAL LOGIC
+    window.toggleAdminModal = function(show) {
+      const modal = document.getElementById('adminModal');
+      if (show) {
+        modal.classList.remove('hidden');
+      } else {
+        modal.classList.add('hidden');
+      }
+    };
+
+    window.handleAdminLogin = function(e) {
+      e.preventDefault();
+      const pass = document.getElementById('adminPassword').value;
+      if (pass === 'admin') {
+        window.isAdminLoggedIn = true;
+        document.getElementById('adminAuthView').classList.add('hidden');
+        document.getElementById('adminDashboardView').classList.remove('hidden');
+        renderAdminProducts();
+        updateAdminStats();
+      } else {
+        alert('Invalid Admin Password!');
+      }
+    };
+
+    window.logoutAdmin = function() {
+      window.isAdminLoggedIn = false;
+      document.getElementById('adminPassword').value = '';
+      document.getElementById('adminDashboardView').classList.add('hidden');
+      document.getElementById('adminAuthView').classList.remove('hidden');
+    };
+
+    // HANDLE FIREBASE ADD / UPDATE FORM
+    window.handleFormSubmit = async function(e) {
+      e.preventDefault();
+      const submitBtn = document.getElementById('submitBtn');
+      submitBtn.disabled = true;
+      submitBtn.innerText = "Saving to Firebase...";
+
+      const editingId = document.getElementById('editingId').value;
+      const productData = {
+        title: document.getElementById('pTitle').value,
+        category: document.getElementById('pCategory').value,
+        price: Number(document.getElementById('pPrice').value),
+        badge: document.getElementById('pBadge').value,
+        image: document.getElementById('pImage').value,
+        affiliateUrl: document.getElementById('pAffiliateUrl').value,
+        updatedAt: serverTimestamp()
+      };
+
+      try {
+        if (editingId) {
+          // Update existing item
+          await updateDoc(doc(db, "products", editingId), productData);
+          alert("Deal updated in Firebase successfully!");
+        } else {
+          // Add new item
+          productData.createdAt = serverTimestamp();
+          await addDoc(productsRef, productData);
+          alert("New deal published to Cloud database!");
+        }
+        resetForm();
+      } catch (err) {
+        console.error("Cloud save failed:", err);
+        alert("Failed to save to Cloud: " + err.message);
+      } finally {
+        submitBtn.disabled = false;
+      }
+    };
+
+    // EDIT ITEM
+    window.editProduct = function(id) {
+      const p = window.products.find(item => item.id === id);
+      if (!p) return;
+
+      document.getElementById('editingId').value = p.id;
+      document.getElementById('pTitle').value = p.title || '';
+      document.getElementById('pCategory').value = p.category || '';
+      document.getElementById('pPrice').value = p.price || '';
+      document.getElementById('pBadge').value = p.badge || '';
+      document.getElementById('pImage').value = p.image || '';
+      document.getElementById('pAffiliateUrl').value = p.affiliateUrl || '';
+
+      document.getElementById('formTitle').innerText = "Edit Deal Details";
+      document.getElementById('submitBtn').innerHTML = `<i data-lucide="save" class="w-4 h-4"></i> Save Changes`;
+      document.getElementById('cancelEditBtn').classList.remove('hidden');
+      lucide.createIcons();
+    };
+
+    // RESET FORM
+    window.resetForm = function() {
+      document.getElementById('productForm').reset();
+      document.getElementById('editingId').value = '';
+      document.getElementById('formTitle').innerText = "Add New Affiliate Deal";
+      document.getElementById('submitBtn').innerHTML = `<i data-lucide="plus-circle" class="w-4 h-4"></i> Publish Deal to Cloud`;
+      document.getElementById('cancelEditBtn').classList.add('hidden');
+      lucide.createIcons();
+    };
+
+    // DELETE ITEM FROM FIREBASE
+    window.deleteProduct = async function(id) {
+      if (confirm('Are you sure you want to delete this deal permanently from Cloud database?')) {
+        try {
+          await deleteDoc(doc(db, "products", id));
+        } catch (err) {
+          console.error("Delete error:", err);
+          alert("Failed to delete item: " + err.message);
+        }
+      }
+    };
+
+    // RENDER ADMIN ITEMS LIST
+    window.renderAdminProducts = function() {
+      const list = document.getElementById('adminProductList');
+      const filterQuery = (document.getElementById('adminSearchInput')?.value || '').toLowerCase();
+
+      const filtered = window.products.filter(p => 
+        (p.title && p.title.toLowerCase().includes(filterQuery)) || 
+        (p.category && p.category.toLowerCase().includes(filterQuery))
+      );
+
+      if (filtered.length === 0) {
+        list.innerHTML = `<p class="text-xs text-slate-400 py-4 text-center">No products match your filter.</p>`;
+        return;
+      }
+
+      list.innerHTML = filtered.map(p => `
+        <div class="flex items-center justify-between p-2.5 bg-white border border-slate-200/80 rounded-xl text-xs hover:border-slate-300 transition">
+          <div class="flex items-center gap-3 overflow-hidden pr-2">
+            <img src="${p.image}" class="w-9 h-9 object-contain rounded-lg bg-slate-50 border p-0.5 flex-shrink-0" onerror="this.src='https://via.placeholder.com/50'">
+            <div class="truncate">
+              <p class="font-bold text-slate-800 truncate">${p.title}</p>
+              <p class="text-[10px] text-slate-400 font-semibold">Rs. ${p.price} • ${p.category}</p>
+            </div>
+          </div>
+          <div class="flex items-center gap-1">
+            <button onclick="editProduct('${p.id}')" title="Edit" class="text-slate-600 hover:text-orange-600 p-1.5 rounded-lg hover:bg-slate-100">
+              <i data-lucide="pencil" class="w-3.5 h-3.5"></i>
+            </button>
+            <button onclick="deleteProduct('${p.id}')" title="Delete" class="text-red-500 hover:text-red-700 p-1.5 rounded-lg hover:bg-red-50">
+              <i data-lucide="trash-2" class="w-3.5 h-3.5"></i>
+            </button>
+          </div>
+        </div>
+      `).join('');
+      
+      lucide.createIcons();
+    };
+
+    // UPDATE METRICS STATS
+    function updateAdminStats() {
+      document.getElementById('statTotal').textContent = window.products.length;
+      const categories = new Set(window.products.map(p => p.category).filter(Boolean));
+      document.getElementById('statCategories').textContent = categories.size;
+    }
+  </script>
+</body>
+</html>
