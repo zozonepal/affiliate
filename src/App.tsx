@@ -46,8 +46,19 @@ export default function App() {
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<ProductDeal | null>(null);
   const [editingProductForAdmin, setEditingProductForAdmin] = useState<ProductDeal | null>(null);
 
-  // 1. Subscribe to Firebase Auth state
+  // 1. Subscribe to Firebase Auth state & restore local persistent session
   useEffect(() => {
+    // Restore saved session immediately so refreshing on Vercel never loses authentication
+    const savedUserSession = localStorage.getItem('dealfinder_user_session');
+    if (savedUserSession) {
+      try {
+        const parsed: UserAccount = JSON.parse(savedUserSession);
+        setUser(parsed);
+      } catch {
+        localStorage.removeItem('dealfinder_user_session');
+      }
+    }
+
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const userEmail = (firebaseUser.email || '').toLowerCase().trim();
@@ -61,6 +72,7 @@ export default function App() {
           wishlist: []
         };
         setUser(currentAccount);
+        localStorage.setItem('dealfinder_user_session', JSON.stringify(currentAccount));
 
         // Automatically open the admin panel when signed in from affiliatedaraz25@gmail.com
         if (userEmail === 'affiliatedaraz25@gmail.com') {
@@ -70,13 +82,15 @@ export default function App() {
         const savedWishlist = await loadUserWishlist(firebaseUser.uid);
         setWishlist(savedWishlist);
       } else {
-        // Fallback to local guest wishlist
-        const localGuestWishlist = localStorage.getItem('dealfinder_wishlist_guest');
-        if (localGuestWishlist) {
-          try {
-            setWishlist(JSON.parse(localGuestWishlist));
-          } catch {
-            setWishlist([]);
+        // Fallback to local guest wishlist if no account session saved
+        if (!localStorage.getItem('dealfinder_user_session')) {
+          const localGuestWishlist = localStorage.getItem('dealfinder_wishlist_guest');
+          if (localGuestWishlist) {
+            try {
+              setWishlist(JSON.parse(localGuestWishlist));
+            } catch {
+              setWishlist([]);
+            }
           }
         }
       }
@@ -155,6 +169,10 @@ export default function App() {
   // Auth handlers
   const handleAuthSuccess = async (loggedInUser: UserAccount) => {
     setUser(loggedInUser);
+    localStorage.setItem('dealfinder_user_session', JSON.stringify(loggedInUser));
+    if (loggedInUser.role === 'admin' || loggedInUser.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') {
+      setIsAdminOpen(true);
+    }
     const userSaved = await loadUserWishlist(loggedInUser.uid);
     setWishlist(userSaved);
   };
@@ -163,6 +181,9 @@ export default function App() {
     await logoutCurrentAuth();
     setUser(null);
     setWishlist([]);
+    localStorage.removeItem('dealfinder_user_session');
+    localStorage.removeItem('dealfinder_admin_auth');
+    sessionStorage.removeItem('dealfinder_admin_auth');
   };
 
   const handleEditFromCard = (product: ProductDeal) => {
@@ -285,13 +306,6 @@ export default function App() {
               >
                 <RotateCcw className="w-3.5 h-3.5" />
                 <span>Reset Filters</span>
-              </button>
-              <button
-                onClick={() => setIsSubmitDealOpen(true)}
-                className="inline-flex items-center gap-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs px-4 py-2.5 rounded-xl transition shadow-xs"
-              >
-                <Plus className="w-3.5 h-3.5" />
-                <span>Submit a Deal</span>
               </button>
             </div>
           </div>

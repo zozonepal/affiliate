@@ -25,20 +25,20 @@ export function Navbar({
       <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
         
         {/* Brand Logo */}
-        <div className="flex items-center gap-2 sm:gap-3 min-w-0">
-          <a href="#" className="flex items-center gap-2 group min-w-0">
+        <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
+          <a href="#" className="flex items-center gap-2 group shrink-0">
             <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white shadow-sm shadow-orange-500/20 group-hover:scale-105 transition-transform shrink-0">
               <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
-            <div className="min-w-0">
-              <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-none">
+            <div className="shrink-0">
+              <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-none whitespace-nowrap">
                 <span>DealFinder</span>
                 <span className="text-orange-600">NP</span>
-                <span className="text-[9px] sm:text-[10px] uppercase font-bold bg-orange-100 text-orange-700 px-1 sm:px-1.5 py-0.5 rounded tracking-wide shrink-0">
+                <span className="hidden sm:inline-block text-[9px] sm:text-[10px] uppercase font-bold bg-orange-100 text-orange-700 px-1 sm:px-1.5 py-0.5 rounded tracking-wide shrink-0">
                   Daraz
                 </span>
               </div>
-              <p className="hidden sm:block text-[11px] text-slate-500 font-medium leading-none mt-0.5 truncate">
+              <p className="hidden md:block text-[11px] text-slate-500 font-medium leading-none mt-0.5 truncate">
                 Nepal Tech & Deals
               </p>
             </div>
@@ -66,13 +66,13 @@ export function Navbar({
         </div>
 
         {/* Right Navigation Actions */}
-        <div className="flex items-center gap-1.5 sm:gap-3 shrink-0">
+        <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
           
           {/* Wishlist Button */}
           <button
             id="nav-wishlist-btn"
             onClick={onOpenWishlist}
-            className="relative p-2 text-slate-700 hover:text-orange-600 hover:bg-slate-100 rounded-lg transition"
+            className="relative p-2 text-slate-700 hover:text-orange-600 hover:bg-slate-100 rounded-lg transition shrink-0"
             title="Saved Deals"
             aria-label="View Saved Deals"
           >
@@ -86,22 +86,23 @@ export function Navbar({
 
           {/* User Account / Auth Section */}
           {user ? (
-            <div className="flex items-center gap-2">
-              {/* Show Admin Panel button if signed in as fitoorbhandari38@gmail.com or admin */}
-              {(user.role === 'admin' || user.email?.toLowerCase() === 'fitoorbhandari38@gmail.com') && (
+            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
+              {/* Show Admin Panel button if signed in as admin or authorized email */}
+              {(user.role === 'admin' || user.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') && (
                 <button
                   id="nav-admin-panel-btn"
                   onClick={onOpenAdmin}
-                  className="flex items-center gap-1.5 text-xs font-bold text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 px-3 py-1.5 rounded-lg shadow-sm transition cursor-pointer"
+                  className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 px-2 sm:px-3 py-1.5 rounded-lg shadow-sm transition cursor-pointer whitespace-nowrap shrink-0"
                   title="Open Admin Panel"
                 >
-                  <ShieldCheck className="w-3.5 h-3.5" />
-                  <span>Admin Panel</span>
+                  <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
+                  <span className="hidden sm:inline">Admin Panel</span>
+                  <span className="sm:hidden text-[10px]">Admin</span>
                 </button>
               )}
 
-              <div className="flex items-center gap-2 pl-2 border-l border-slate-200">
-                <div className="w-8 h-8 rounded-full bg-orange-100 text-orange-700 font-bold flex items-center justify-center text-xs border border-orange-200 overflow-hidden">
+              <div className="flex items-center gap-1.5 pl-1.5 border-l border-slate-200 shrink-0">
+                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-orange-100 text-orange-700 font-bold flex items-center justify-center text-xs border border-orange-200 overflow-hidden shrink-0">
                   {user.photoURL ? (
                     <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
                   ) : (
@@ -113,7 +114,7 @@ export function Navbar({
                     <p className="text-xs font-bold text-slate-800 leading-tight max-w-[100px] truncate">
                       {user.displayName}
                     </p>
-                    {(user.role === 'admin' || user.email?.toLowerCase() === 'fitoorbhandari38@gmail.com') && (
+                    {(user.role === 'admin' || user.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') && (
                       <span className="text-[9px] bg-red-100 text-red-700 font-extrabold px-1.5 py-0.2 rounded uppercase">
                         Admin
                       </span>
@@ -129,7 +130,7 @@ export function Navbar({
               <button
                 id="nav-logout-btn"
                 onClick={onLogout}
-                className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-slate-100 transition"
+                className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-slate-100 transition shrink-0"
                 title="Sign Out"
               >
                 <LogOut className="w-4 h-4" />
@@ -149,7 +150,6 @@ export function Navbar({
               </button>
             </div>
           )}
-
         </div>
 
       </div>

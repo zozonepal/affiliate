@@ -52,7 +52,7 @@ const AUTHORIZED_ADMIN_PASS = 'daraz2121';
 export default function AdminApp() {
   // Authentication State
   const [isAuthenticated, setIsAuthenticated] = useState<boolean>(() => {
-    return sessionStorage.getItem('dealfinder_admin_auth') === 'true';
+    return localStorage.getItem('dealfinder_admin_auth') === 'true' || sessionStorage.getItem('dealfinder_admin_auth') === 'true';
   });
   const [loginEmail, setLoginEmail] = useState('');
   const [loginPassword, setLoginPassword] = useState('');
@@ -127,6 +127,7 @@ export default function AdminApp() {
       }
       setIsAuthenticated(true);
       sessionStorage.setItem('dealfinder_admin_auth', 'true');
+      localStorage.setItem('dealfinder_admin_auth', 'true');
       setIsLoggingIn(false);
       return;
     }
@@ -137,6 +138,7 @@ export default function AdminApp() {
       if (user.role === 'admin' || isAuthorizedEmail) {
         setIsAuthenticated(true);
         sessionStorage.setItem('dealfinder_admin_auth', 'true');
+        localStorage.setItem('dealfinder_admin_auth', 'true');
       } else {
         setAuthError('Unauthorized: This account does not have admin permissions.');
       }
@@ -150,6 +152,7 @@ export default function AdminApp() {
   const handleLogout = () => {
     setIsAuthenticated(false);
     sessionStorage.removeItem('dealfinder_admin_auth');
+    localStorage.removeItem('dealfinder_admin_auth');
   };
 
   const loadProductForEdit = (p: ProductDeal) => {
