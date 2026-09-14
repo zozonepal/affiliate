@@ -45,9 +45,7 @@ import {
 } from './lib/firebase';
 
 const AUTHORIZED_ADMIN_EMAILS = [
-  'fitoorbhandari38@gmail.com',
-  'affiliatedaraz25@gmail.com',
-  'zozonepal5@gmail.com'
+  'affiliatedaraz25@gmail.com'
 ];
 const AUTHORIZED_ADMIN_PASS = 'daraz2121';
 

@@ -28,12 +28,9 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       onSuccess(user);
       onClose();
     } catch (err: any) {
-      console.error('Google Sign In failed:', err);
-      // Helpful error messaging
+      console.error('Google Sign In:', err);
       if (err.code === 'auth/popup-closed-by-user') {
         setErrorMessage('Sign in popup was closed.');
-      } else if (err.code === 'auth/unauthorized-domain') {
-        setErrorMessage('Domain not authorized in Firebase Console yet. You can use Email login or Guest Mode below!');
       } else {
         setErrorMessage(err.message || 'Google sign-in could not be completed.');
       }
@@ -81,11 +78,11 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const handleAdminKeySubmit = (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
-    if (adminKey === 'admin' || adminKey === 'zozonepal5@gmail.com') {
+    if (adminKey === 'admin' || adminKey === 'affiliatedaraz25@gmail.com') {
       const adminUser: UserAccount = {
         uid: 'admin_local_primary',
-        email: 'zozonepal5@gmail.com',
-        displayName: 'DealFinder Admin',
+        email: 'affiliatedaraz25@gmail.com',
+        displayName: 'Affiliate Daraz Admin',
         role: 'admin',
         wishlist: []
       };

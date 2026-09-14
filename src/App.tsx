@@ -51,7 +51,7 @@ export default function App() {
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const userEmail = (firebaseUser.email || '').toLowerCase().trim();
-        const isAdmin = ADMIN_EMAILS.some((e) => e.toLowerCase() === userEmail) || userEmail === 'fitoorbhandari38@gmail.com';
+        const isAdmin = ADMIN_EMAILS.some((e) => e.toLowerCase() === userEmail) || userEmail === 'affiliatedaraz25@gmail.com';
         const currentAccount: UserAccount = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
@@ -62,8 +62,8 @@ export default function App() {
         };
         setUser(currentAccount);
 
-        // Automatically open the admin panel when signed in from fitoorbhandari38@gmail.com
-        if (userEmail === 'fitoorbhandari38@gmail.com') {
+        // Automatically open the admin panel when signed in from affiliatedaraz25@gmail.com
+        if (userEmail === 'affiliatedaraz25@gmail.com') {
           setIsAdminOpen(true);
         }
 
@@ -348,7 +348,7 @@ export default function App() {
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenAdmin={() => {
-          if (user?.role === 'admin' || user?.email?.toLowerCase() === 'fitoorbhandari38@gmail.com') {
+          if (user?.role === 'admin' || user?.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') {
             setIsAdminOpen(true);
           } else {
             setIsAuthOpen(true);
