@@ -14,10 +14,10 @@ export function CategoryFilter({
   productCount
 }: CategoryFilterProps) {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2.5 mb-5 pb-2.5 border-b border-slate-200">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-200">
       
       {/* Category Pills Slider */}
-      <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1.5 sm:pb-0 scrollbar-none touch-pan-x -mx-1 px-1">
+      <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none touch-pan-x -mx-1 px-1">
         <div className="flex items-center gap-1 text-xs font-bold text-slate-400 uppercase tracking-wider mr-0.5 shrink-0">
           <Layers className="w-3.5 h-3.5 text-orange-600" />
           <span className="hidden sm:inline">Category:</span>
