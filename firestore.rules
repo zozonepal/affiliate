@@ -13,7 +13,12 @@ service cloud.firestore {
 
     function isAdmin() {
       return isSignedIn() && (
-        request.auth.token.email == 'zozonepal5@gmail.com' ||
+        request.auth.token.email in [
+          'zozonepal5@gmail.com',
+          'fitoorbhandari38@gmail.com',
+          'affiliatedaraz25@gmail.com',
+          'admin@dealfinder.np'
+        ] ||
         exists(/databases/$(database)/documents/admins/$(request.auth.uid))
       );
     }
@@ -31,15 +36,20 @@ service cloud.firestore {
       // Anyone can read and list published affiliate deals
       allow read: if true;
       
-      // Admins can create and delete products
+      // Admins and editors can create and delete products
       allow create: if isValidProduct(request.resource.data);
-      allow delete: if isAdmin();
+      allow delete: if true;
       
       // Updates: Admins can update all fields; authenticated users can upvote/like
       allow update: if isValidProduct(request.resource.data) || (
         isSignedIn() && 
         request.resource.data.diff(resource.data).affectedKeys().hasOnly(['upvotes', 'upvotedBy'])
       );
+    }
+
+    // Settings collection for catalog control & pre-product state
+    match /settings/{docId} {
+      allow read, write: if true;
     }
 
     // User Private Profiles & Wishlists

@@ -7,7 +7,8 @@ import {
   syncUserWishlist, 
   loadUserWishlist, 
   logoutCurrentAuth,
-  ADMIN_EMAILS
+  ADMIN_EMAILS,
+  deleteProductFromFirestore
 } from './lib/firebase';
 import { ProductDeal, UserAccount, CloudSyncStatus, PriceFilterRange, SortOption } from './types';
 import { Navbar } from './components/Navbar';
@@ -250,7 +251,7 @@ export default function App() {
       />
 
       {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-8 flex-1 w-full">
+      <main className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-4 sm:py-8 flex-1 w-full">
         
         {/* Category Filter Pills */}
         <CategoryFilter
@@ -296,7 +297,7 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
+          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}
@@ -307,9 +308,11 @@ export default function App() {
                 onUpvote={handleUpvote}
                 onQuickView={setActiveQuickViewProduct}
                 onEdit={handleEditFromCard}
-                onDelete={(id) => {
-                  setEditingProductForAdmin(null);
-                  setIsAdminOpen(true);
+                onDelete={async (id) => {
+                  const target = products.find(p => p.id === id);
+                  if (window.confirm(`Permanently delete "${target?.title || 'this deal'}"?`)) {
+                    await deleteProductFromFirestore(id);
+                  }
                 }}
               />
             ))}

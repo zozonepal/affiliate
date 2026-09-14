@@ -106,7 +106,7 @@ export function MobileBottomNav({
             aria-label="Sign In"
           >
             <User className="w-5 h-5" />
-            <span className="text-[10px] font-bold mt-0.5">Sign In</span>
+            <span className="text-[10px] font-bold mt-0.5 whitespace-nowrap">Sign In</span>
           </button>
         )}
       </div>

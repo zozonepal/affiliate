@@ -22,7 +22,9 @@ import {
   addProductToFirestore, 
   updateProductInFirestore, 
   deleteProductFromFirestore, 
-  seedInitialDealsToFirestore 
+  seedInitialDealsToFirestore,
+  clearAllPreProducts,
+  deleteAllProductsFromCatalog
 } from '../lib/firebase';
 
 interface AdminModalProps {
@@ -135,14 +137,21 @@ export function AdminModal({
   };
 
   const handleDelete = async (id: string, dealTitle: string) => {
-    if (!window.confirm(`Delete "${dealTitle}" permanently from cloud database?`)) return;
+    if (!window.confirm(`Delete "${dealTitle}" permanently from the database?`)) return;
     try {
       await deleteProductFromFirestore(id);
-      setMessage({ type: 'success', text: 'Deal deleted successfully.' });
+      setMessage({ type: 'success', text: `"${dealTitle}" removed successfully.` });
       if (editingId === id) handleResetForm();
     } catch (err: any) {
       setMessage({ type: 'error', text: 'Failed to delete: ' + err.message });
     }
+  };
+
+  const handleClearPreProducts = () => {
+    if (!window.confirm('Delete all pre-products from the website? This clears out the initial placeholder products so you can insert your new products.')) return;
+    clearAllPreProducts();
+    setMessage({ type: 'success', text: 'All pre-products deleted! The catalog is now clear for your new products.' });
+    handleResetForm();
   };
 
   const handleSeedDeals = async () => {
@@ -193,20 +202,29 @@ export function AdminModal({
             </div>
           </div>
 
-          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
+          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-2.5 flex-wrap">
+            <button
+              onClick={handleClearPreProducts}
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-red-50 hover:bg-red-100 text-red-700 text-xs font-bold transition min-h-[36px] border border-red-200/60"
+              title="Delete all pre-products / sample items so you can start clean with your own products"
+            >
+              <Trash2 className="w-3.5 h-3.5" />
+              <span>Clear Pre-Products</span>
+            </button>
+
             <button
               onClick={handleSeedDeals}
               disabled={isSeeding}
               className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 text-xs font-bold transition disabled:opacity-50 min-h-[36px]"
-              title="Push sample top Nepal deals directly into Firestore"
+              title="Restore sample Nepal deals into Firestore"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>{isSeeding ? 'Seeding...' : 'Seed Deals'}</span>
+              <span>{isSeeding ? 'Seeding...' : 'Seed Sample Deals'}</span>
             </button>
 
             <button
               onClick={onLogoutAdmin}
-              className="text-xs font-bold text-red-600 hover:text-red-800 px-2 py-1.5 rounded hover:bg-red-50 transition min-h-[36px] flex items-center"
+              className="text-xs font-bold text-slate-600 hover:text-red-700 px-2 py-1.5 rounded hover:bg-red-50 transition min-h-[36px] flex items-center"
             >
               Exit Admin
             </button>
@@ -469,7 +487,14 @@ export function AdminModal({
                       }}
                     />
                     <div className="truncate">
-                      <p className="font-bold text-slate-900 truncate">{p.title}</p>
+                      <div className="flex items-center gap-1.5 truncate">
+                        <p className="font-bold text-slate-900 truncate">{p.title}</p>
+                        {p.id.startsWith('sample-') && (
+                          <span className="bg-amber-100 text-amber-800 font-bold text-[9px] px-1.5 py-0.2 rounded border border-amber-200 shrink-0">
+                            Pre-Product
+                          </span>
+                        )}
+                      </div>
                       <p className="text-[11px] text-slate-500 flex items-center gap-1.5 flex-wrap">
                         <span>Rs. {Number(p.price).toLocaleString('ne-NP')}</span>
                         <span>•</span>

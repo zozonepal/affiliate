@@ -26,6 +26,8 @@ import {
   updateProductInFirestore, 
   deleteProductFromFirestore, 
   seedInitialDealsToFirestore,
+  clearAllPreProducts,
+  deleteAllProductsFromCatalog,
   subscribeToProducts,
   loginWithEmail
 } from './lib/firebase';
@@ -218,13 +220,31 @@ export default function AdminApp() {
   };
 
   const handleDelete = async (id: string, productTitle: string) => {
-    if (!window.confirm(`Permanently delete "${productTitle}" from the cloud database?`)) return;
+    if (!window.confirm(`Permanently delete "${productTitle}" from the catalog?`)) return;
     try {
       await deleteProductFromFirestore(id);
       setStatusMessage({ type: 'success', text: `"${productTitle}" removed successfully.` });
       if (editingId === id) handleResetForm();
     } catch (err: any) {
       setStatusMessage({ type: 'error', text: 'Failed to delete: ' + err.message });
+    }
+  };
+
+  const handleClearPreProducts = () => {
+    if (!window.confirm('Delete all pre-products / sample items? This leaves the catalog clear so you can insert new products.')) return;
+    clearAllPreProducts();
+    setStatusMessage({ type: 'success', text: 'All pre-products removed! The catalog is now clear for your new products.' });
+    handleResetForm();
+  };
+
+  const handleWipeAllProducts = async () => {
+    if (!window.confirm('WARNING: Are you sure you want to delete ALL products and pre-products from the catalog?')) return;
+    try {
+      await deleteAllProductsFromCatalog();
+      setStatusMessage({ type: 'success', text: 'Catalog wiped clean! You can now add brand new products.' });
+      handleResetForm();
+    } catch (err: any) {
+      setStatusMessage({ type: 'error', text: 'Failed to wipe catalog: ' + err.message });
     }
   };
 
@@ -743,16 +763,37 @@ export default function AdminApp() {
               </p>
             </div>
 
-            {/* Search Input for Products */}
-            <div className="relative w-full sm:w-72">
-              <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
-              <input
-                type="text"
-                value={searchFilter}
-                onChange={(e) => setSearchFilter(e.target.value)}
-                placeholder="Search products by title, category, seller..."
-                className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
-              />
+            {/* Actions and Search */}
+            <div className="flex flex-col sm:flex-row items-stretch sm:items-center gap-2.5">
+              <button
+                onClick={handleClearPreProducts}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-red-950/60 hover:bg-red-900/80 text-red-300 border border-red-800/80 text-xs font-bold transition"
+                title="Remove pre-products so you have an empty slate to insert new products"
+              >
+                <Trash2 className="w-3.5 h-3.5 text-red-400" />
+                <span>Clear Pre-Products</span>
+              </button>
+
+              <button
+                onClick={handleSeed}
+                disabled={isSeeding}
+                className="inline-flex items-center justify-center gap-1.5 px-3 py-2 rounded-xl bg-slate-800 hover:bg-slate-700 text-slate-300 text-xs font-bold transition disabled:opacity-50"
+                title="Restore default deals"
+              >
+                <Sparkles className="w-3.5 h-3.5 text-amber-400" />
+                <span>{isSeeding ? 'Seeding...' : 'Seed Deals'}</span>
+              </button>
+
+              <div className="relative w-full sm:w-64">
+                <Search className="w-4 h-4 text-slate-500 absolute left-3 top-1/2 -translate-y-1/2" />
+                <input
+                  type="text"
+                  value={searchFilter}
+                  onChange={(e) => setSearchFilter(e.target.value)}
+                  placeholder="Search products..."
+                  className="w-full pl-9 pr-3 py-2 rounded-xl bg-slate-950 border border-slate-800 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-1 focus:ring-orange-500"
+                />
+              </div>
             </div>
           </div>
 
@@ -782,6 +823,11 @@ export default function AdminApp() {
                   />
                   <div className="flex-1 min-w-0">
                     <div className="flex items-center gap-1.5 flex-wrap">
+                      {p.id.startsWith('sample-') && (
+                        <span className="text-[10px] font-bold text-amber-300 bg-amber-500/20 px-1.5 py-0.5 rounded border border-amber-500/30">
+                          Pre-Product Sample
+                        </span>
+                      )}
                       <span className="text-[10px] font-bold uppercase text-orange-400 bg-orange-500/10 px-1.5 py-0.5 rounded">
                         {p.category}
                       </span>

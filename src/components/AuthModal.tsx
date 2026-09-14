@@ -142,7 +142,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         <div className="flex border-b border-slate-100 bg-slate-50/70 p-1">
           <button
             onClick={() => { setTab('signin'); setErrorMessage(null); }}
-            className={`flex-1 py-2.5 text-xs font-bold rounded-lg min-h-[40px] flex items-center justify-center transition active:scale-95 ${
+            className={`flex-1 py-2.5 text-xs font-bold rounded-lg min-h-[40px] flex items-center justify-center transition active:scale-95 whitespace-nowrap ${
               tab === 'signin' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -150,7 +150,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           </button>
           <button
             onClick={() => { setTab('register'); setErrorMessage(null); }}
-            className={`flex-1 py-2.5 text-xs font-bold rounded-lg min-h-[40px] flex items-center justify-center transition active:scale-95 ${
+            className={`flex-1 py-2.5 text-xs font-bold rounded-lg min-h-[40px] flex items-center justify-center transition active:scale-95 whitespace-nowrap ${
               tab === 'register' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'
             }`}
           >

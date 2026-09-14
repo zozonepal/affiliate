@@ -62,6 +62,88 @@ export function logFirestoreError(operation: string, path: string, error: unknow
   console.warn(`Firestore [${operation}] at [${path}]:`, error);
 }
 
+const DELETED_PREPRODUCTS_KEY = 'dealfinder_deleted_preproducts';
+const PREPRODUCTS_CLEARED_KEY = 'dealfinder_preproducts_cleared';
+
+export function getDeletedPreProductIds(): string[] {
+  try {
+    const raw = localStorage.getItem(DELETED_PREPRODUCTS_KEY);
+    return raw ? JSON.parse(raw) : [];
+  } catch {
+    return [];
+  }
+}
+
+export function isPreProductsCleared(): boolean {
+  try {
+    return localStorage.getItem(PREPRODUCTS_CLEARED_KEY) === 'true';
+  } catch {
+    return false;
+  }
+}
+
+export function markPreProductDeleted(id: string) {
+  const list = getDeletedPreProductIds();
+  if (!list.includes(id)) {
+    list.push(id);
+    try {
+      localStorage.setItem(DELETED_PREPRODUCTS_KEY, JSON.stringify(list));
+    } catch {}
+  }
+}
+
+export function clearAllPreProducts() {
+  try {
+    localStorage.setItem(PREPRODUCTS_CLEARED_KEY, 'true');
+  } catch {}
+  broadcastProducts();
+}
+
+export function resetPreProducts() {
+  try {
+    localStorage.removeItem(PREPRODUCTS_CLEARED_KEY);
+    localStorage.removeItem(DELETED_PREPRODUCTS_KEY);
+  } catch {}
+  broadcastProducts();
+}
+
+type ProductSubscriber = (products: ProductDeal[], status: CloudSyncStatus) => void;
+const subscribers: Set<ProductSubscriber> = new Set();
+let latestFirestoreItems: ProductDeal[] = [];
+let latestSyncStatus: CloudSyncStatus = 'connecting';
+
+function broadcastProducts() {
+  const productsToEmit = computeEffectiveProducts(latestFirestoreItems);
+  subscribers.forEach((callback) => {
+    try {
+      callback(productsToEmit, latestSyncStatus);
+    } catch (e) {
+      console.error('Subscriber callback error:', e);
+    }
+  });
+}
+
+function computeEffectiveProducts(items: ProductDeal[]): ProductDeal[] {
+  if (items.length > 0) {
+    return items;
+  }
+
+  // If Firestore is empty, check if admin explicitly cleared pre-products
+  if (isPreProductsCleared()) {
+    return [];
+  }
+
+  const deletedIds = getDeletedPreProductIds();
+  const availableSamples = INITIAL_DEALS
+    .map((d, index) => ({
+      id: `sample-${index + 1}`,
+      ...d
+    }))
+    .filter((d) => !deletedIds.includes(d.id));
+
+  return availableSamples;
+}
+
 /**
  * Real-time listener for products
  */
@@ -69,6 +151,13 @@ export function subscribeToProducts(
   onData: (products: ProductDeal[], status: CloudSyncStatus) => void,
   onError?: (err: any) => void
 ) {
+  subscribers.add(onData);
+
+  // Immediately emit current cached state if already known
+  if (latestSyncStatus !== 'connecting') {
+    onData(computeEffectiveProducts(latestFirestoreItems), latestSyncStatus);
+  }
+
   const productsRef = collection(db, 'products');
 
   try {
@@ -99,39 +188,29 @@ export function subscribeToProducts(
           };
         });
 
-        // If firestore is completely empty, offer the initial sample deals so UI is never blank
-        if (items.length === 0) {
-          const localMapped: ProductDeal[] = INITIAL_DEALS.map((d, index) => ({
-            id: `sample-${index + 1}`,
-            ...d
-          }));
-          onData(localMapped, 'connected');
-        } else {
-          onData(items, 'connected');
-        }
+        latestFirestoreItems = items;
+        latestSyncStatus = 'connected';
+        broadcastProducts();
       },
       (error) => {
         logFirestoreError('subscribeToProducts', 'products', error);
         if (onError) onError(error);
-        
-        // Fallback to local deals so user always has working UI
-        const localMapped: ProductDeal[] = INITIAL_DEALS.map((d, index) => ({
-          id: `sample-${index + 1}`,
-          ...d
-        }));
-        onData(localMapped, 'fallback');
+        latestSyncStatus = 'fallback';
+        broadcastProducts();
       }
     );
 
-    return unsubscribe;
+    return () => {
+      subscribers.delete(onData);
+      unsubscribe();
+    };
   } catch (err) {
     logFirestoreError('subscribeToProducts.catch', 'products', err);
-    const localMapped: ProductDeal[] = INITIAL_DEALS.map((d, index) => ({
-      id: `sample-${index + 1}`,
-      ...d
-    }));
-    onData(localMapped, 'fallback');
-    return () => {};
+    latestSyncStatus = 'fallback';
+    broadcastProducts();
+    return () => {
+      subscribers.delete(onData);
+    };
   }
 }
 
@@ -139,6 +218,8 @@ export function subscribeToProducts(
  * Add a new product deal to Firestore
  */
 export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
+  // When an admin adds a new product, clear pre-products flag so pre-products don't conflict
+  clearAllPreProducts();
   const productsRef = collection(db, 'products');
   const payload = {
     ...deal,
@@ -156,6 +237,17 @@ export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
  * Update an existing product deal in Firestore
  */
 export async function updateProductInFirestore(id: string, updates: Partial<ProductDeal>) {
+  if (id.startsWith('sample-')) {
+    // If updating a pre-product, save it as a new permanent Firestore product
+    const sample = INITIAL_DEALS.find((_, index) => `sample-${index + 1}` === id);
+    const merged = {
+      ...(sample || {}),
+      ...updates
+    } as Omit<ProductDeal, 'id'>;
+    markPreProductDeleted(id);
+    return await addProductToFirestore(merged);
+  }
+
   const docRef = doc(db, 'products', id);
   const payload: Record<string, any> = {
     ...updates,
@@ -167,11 +259,41 @@ export async function updateProductInFirestore(id: string, updates: Partial<Prod
 }
 
 /**
- * Delete a product deal from Firestore
+ * Delete a product deal from Firestore or pre-products catalog
  */
 export async function deleteProductFromFirestore(id: string) {
+  if (id.startsWith('sample-')) {
+    markPreProductDeleted(id);
+    broadcastProducts();
+    return;
+  }
+
   const docRef = doc(db, 'products', id);
-  return await deleteDoc(docRef);
+  await deleteDoc(docRef);
+
+  // If this deleted product leaves 0 products in Firestore, ensure pre-products don't auto-revive
+  if (latestFirestoreItems.length <= 1) {
+    clearAllPreProducts();
+  }
+}
+
+/**
+ * Permanently delete all products from both Firestore and pre-products catalog
+ */
+export async function deleteAllProductsFromCatalog() {
+  clearAllPreProducts();
+
+  try {
+    const productsRef = collection(db, 'products');
+    const snapshot = await getDocs(productsRef);
+    const deletePromises = snapshot.docs.map((docSnap) => deleteDoc(doc(db, 'products', docSnap.id)));
+    await Promise.all(deletePromises);
+  } catch (err) {
+    console.warn('Could not batch delete all from Firestore:', err);
+  }
+
+  latestFirestoreItems = [];
+  broadcastProducts();
 }
 
 /**
