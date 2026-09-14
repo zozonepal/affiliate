@@ -38,11 +38,14 @@ export function ProductDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-2xl w-full max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 flex flex-col">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-2xl w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200">
         
+        {/* Mobile drag handle bar */}
+        <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mt-2.5 sm:hidden" />
+
         {/* Header bar */}
-        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
+        <div className="flex items-center justify-between p-3.5 sm:p-5 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur-md z-20">
           <div className="flex items-center gap-2">
             <span className="text-xs font-bold uppercase tracking-wider bg-orange-100 text-orange-700 px-2.5 py-1 rounded-md">
               {product.category}
@@ -55,7 +58,8 @@ export function ProductDetailModal({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition"
+            aria-label="Close detail modal"
           >
             <X className="w-5 h-5" />
           </button>
@@ -221,18 +225,18 @@ export function ProductDetailModal({
 
         </div>
 
-        {/* Footer Action */}
-        <div className="p-4 sm:p-5 bg-slate-50 border-t border-slate-100 flex flex-col sm:flex-row items-center justify-between gap-3">
-          <div className="text-xs text-slate-500">
+        {/* Footer Action - Sticky on mobile */}
+        <div className="p-3.5 sm:p-5 bg-slate-50 border-t border-slate-200/80 sticky bottom-0 z-20 flex flex-col sm:flex-row items-center justify-between gap-2.5 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-5">
+          <div className="text-[11px] text-slate-500 text-center sm:text-left hidden sm:block">
             *Prices on Daraz Nepal may fluctuate with flash sales and vouchers.
           </div>
           <a
             href={product.affiliateUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 text-white font-bold text-sm py-2.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-sm transition"
+            className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-bold text-sm py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md shadow-orange-600/20 transition min-h-[48px] active:scale-[0.98]"
           >
-            <span>Proceed to Buy on Daraz</span>
+            <span>Proceed to Buy on Daraz Nepal</span>
             <ExternalLink className="w-4 h-4" />
           </a>
         </div>

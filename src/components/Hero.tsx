@@ -58,21 +58,21 @@ export function Hero({
       <div className="max-w-4xl mx-auto text-center relative z-10">
         
         {/* Headline badge */}
-        <div className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-orange-50 text-[11px] font-semibold mb-2 border border-white/20">
-          <Tag className="w-3 h-3 text-amber-200" />
-          <span>Curated Daily from Daraz Nepal 🇳🇵</span>
+        <div className="inline-flex items-center gap-1.5 px-3 py-1 rounded-full bg-white/20 backdrop-blur-md text-orange-50 text-[11px] sm:text-xs font-semibold mb-2.5 border border-white/25 shadow-2xs">
+          <Tag className="w-3.5 h-3.5 text-amber-200" />
+          <span>Curated Daily for Nepal 🇳🇵</span>
         </div>
 
         {/* Main Title */}
-        <h1 className="text-2xl sm:text-3xl md:text-3xl font-black tracking-tight text-white mb-1.5">
+        <h1 className="text-xl sm:text-3xl font-black tracking-tight text-white mb-1.5 leading-tight">
           Best Budget Tech & Lifestyle Deals
         </h1>
-        <p className="text-orange-100 text-xs sm:text-sm max-w-xl mx-auto mb-4 font-normal leading-snug">
-          Handpicked top-rated gadgets and accessories verified for authentic seller reviews and real discounts on Daraz Nepal.
+        <p className="text-orange-100 text-xs sm:text-sm max-w-xl mx-auto mb-3.5 font-normal leading-relaxed px-2">
+          Handpicked top-rated gadgets and lifestyle picks verified for authentic discounts on Daraz Nepal.
         </p>
 
         {/* Search & Filter Bar Container */}
-        <div className="bg-white p-2 rounded-2xl shadow-lg max-w-3xl mx-auto border border-orange-200/40">
+        <div className="bg-white p-2 sm:p-2.5 rounded-2xl shadow-lg max-w-3xl mx-auto border border-orange-200/40">
           <div className="flex flex-col sm:flex-row gap-2 items-center">
             
             {/* Search Input */}
@@ -84,14 +84,15 @@ export function Hero({
                 value={searchQuery}
                 onChange={(e) => handleInputChange(e.target.value)}
                 onKeyDown={handleSearchKeyDown}
-                placeholder="Search deals (e.g. Ultima earbuds, mechanical keyboard, power bank)..."
-                className="w-full pl-10 pr-9 py-2.5 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 hover:bg-white transition"
+                placeholder="Search deals (e.g. earbuds, watch, keyboard)..."
+                className="w-full pl-10 pr-9 py-2.5 sm:py-2.5 rounded-xl text-slate-900 placeholder-slate-400 text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 hover:bg-white transition min-h-[44px]"
               />
               {searchQuery && (
                 <button
                   onClick={() => onSearchChange('')}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-0.5"
+                  className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 hover:text-slate-600 p-1.5 min-w-[32px] min-h-[32px] flex items-center justify-center"
                   title="Clear search"
+                  aria-label="Clear search"
                 >
                   <X className="w-4 h-4" />
                 </button>
@@ -101,12 +102,12 @@ export function Hero({
             {/* Sort Selector */}
             <div className="flex items-center gap-2 w-full sm:w-auto">
               <div className="relative w-full sm:w-44">
-                <ArrowUpDown className="absolute left-3 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 pointer-events-none" />
+                <ArrowUpDown className="absolute left-3.5 top-1/2 -translate-y-1/2 w-3.5 h-3.5 text-slate-500 pointer-events-none" />
                 <select
                   id="sort-select"
                   value={sortOption}
                   onChange={(e) => onSortChange(e.target.value as SortOption)}
-                  className="w-full pl-8 pr-4 py-2.5 bg-slate-50 hover:bg-white text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer appearance-none"
+                  className="w-full pl-9 pr-4 py-2.5 bg-slate-50 hover:bg-white text-slate-700 text-xs font-semibold rounded-xl border border-slate-200 focus:outline-none focus:ring-2 focus:ring-orange-500 cursor-pointer appearance-none min-h-[44px]"
                 >
                   <option value="featured">Featured Deals</option>
                   <option value="popular">Most Upvoted 🔥</option>
@@ -120,7 +121,7 @@ export function Hero({
           </div>
 
           {/* Price Range Filter Pills */}
-          <div className="flex items-center gap-1.5 overflow-x-auto pt-2 mt-2 border-t border-slate-100 scrollbar-none">
+          <div className="flex items-center gap-1.5 overflow-x-auto pt-2 mt-2 border-t border-slate-100 scrollbar-none -mx-1 px-1 touch-pan-x">
             <span className="text-[11px] font-bold text-slate-400 uppercase tracking-wider pl-1 hidden sm:inline">
               Price:
             </span>
@@ -129,10 +130,10 @@ export function Hero({
                 key={pill.id}
                 id={`price-filter-${pill.id}`}
                 onClick={() => onPriceFilterChange(pill.id)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium whitespace-nowrap transition ${
+                className={`px-3 py-1.5 rounded-lg text-xs font-medium whitespace-nowrap min-h-[36px] flex items-center justify-center transition active:scale-95 ${
                   priceFilter === pill.id
                     ? 'bg-orange-600 text-white font-semibold shadow-xs'
-                    : 'text-slate-600 hover:bg-slate-100'
+                    : 'text-slate-600 hover:bg-slate-100 bg-slate-50/80 border border-slate-100 sm:border-transparent sm:bg-transparent'
                 }`}
               >
                 {pill.label}

@@ -63,10 +63,10 @@ export function ProductCard({
               e.stopPropagation();
               onToggleWishlist(product.id);
             }}
-            className={`absolute top-2.5 right-2.5 z-10 p-2 rounded-full backdrop-blur-md transition-all ${
+            className={`absolute top-2.5 right-2.5 z-10 p-2.5 min-w-[40px] min-h-[40px] flex items-center justify-center rounded-full backdrop-blur-md transition-all active:scale-90 ${
               isWishlisted
                 ? 'bg-red-50 text-red-600 shadow-xs scale-105'
-                : 'bg-white/80 text-slate-500 hover:text-red-500 hover:bg-white shadow-xs'
+                : 'bg-white/85 text-slate-500 hover:text-red-500 hover:bg-white shadow-xs'
             }`}
             title={isWishlisted ? 'Remove from Saved' : 'Save deal'}
             aria-label="Wishlist toggle"
@@ -79,18 +79,20 @@ export function ProductCard({
             src={imgError || !product.image ? 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80' : product.image}
             alt={product.title}
             onError={() => setImgError(true)}
-            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300"
+            onClick={() => onQuickView(product)}
+            className="w-full h-full object-contain p-2 group-hover:scale-105 transition-transform duration-300 cursor-pointer"
             loading="lazy"
           />
 
-          {/* Quick View overlay button */}
+          {/* Quick View overlay button (hover on desktop, visible tap cue on mobile) */}
           <button
             id={`quickview-btn-${product.id}`}
             onClick={() => onQuickView(product)}
-            className="absolute bottom-2 inset-x-2 bg-slate-900/80 hover:bg-slate-900 text-white text-xs font-semibold py-1.5 rounded-lg opacity-0 group-hover:opacity-100 transition-opacity flex items-center justify-center gap-1.5 backdrop-blur-xs"
+            className="absolute bottom-2 inset-x-2 bg-slate-900/85 hover:bg-slate-900 text-white text-xs font-semibold py-2 px-3 rounded-xl opacity-90 sm:opacity-0 sm:group-hover:opacity-100 transition-all flex items-center justify-center gap-1.5 backdrop-blur-xs min-h-[36px] active:scale-95"
+            aria-label="Quick View Deal"
           >
             <Eye className="w-3.5 h-3.5" />
-            <span>Quick Details</span>
+            <span>Quick View</span>
           </button>
         </div>
 
@@ -201,7 +203,7 @@ export function ProductCard({
             href={product.affiliateUrl}
             target="_blank"
             rel="noopener noreferrer"
-            className="w-full bg-slate-900 hover:bg-orange-600 text-white font-bold text-xs py-2.5 px-4 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-xs group-hover:bg-orange-600"
+            className="w-full bg-slate-900 hover:bg-orange-600 active:bg-orange-700 text-white font-bold text-xs py-3 px-4 rounded-xl flex items-center justify-center gap-2 transition duration-200 shadow-xs group-hover:bg-orange-600 min-h-[44px] active:scale-[0.98]"
           >
             <span>Buy on Daraz Nepal</span>
             <ExternalLink className="w-3.5 h-3.5" />

@@ -33,15 +33,15 @@ export function Navbar({
               <ShoppingBag className="w-5 h-5" />
             </div>
             <div>
-              <div className="flex items-center gap-1.5 font-black text-lg tracking-tight text-slate-900 leading-none">
+              <div className="flex items-center gap-1.5 font-black text-base sm:text-lg tracking-tight text-slate-900 leading-none">
                 <span>DealFinder</span>
                 <span className="text-orange-600">NP</span>
-                <span className="text-[10px] uppercase font-bold bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded tracking-wide">
+                <span className="text-[9px] sm:text-[10px] uppercase font-bold bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded tracking-wide">
                   Daraz
                 </span>
               </div>
-              <p className="text-[11px] text-slate-500 font-medium leading-none mt-0.5">
-                Nepal Tech & Lifestyle Deals
+              <p className="text-[10px] sm:text-[11px] text-slate-500 font-medium leading-none mt-0.5 truncate max-w-[140px] sm:max-w-none">
+                Nepal Tech & Deals
               </p>
             </div>
           </a>

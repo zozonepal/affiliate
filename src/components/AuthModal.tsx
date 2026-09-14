@@ -110,11 +110,14 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden max-h-[92vh] flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200">
         
+        {/* Mobile drag handle */}
+        <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mt-2.5 sm:hidden" />
+
         {/* Header Bar */}
-        <div className="flex items-center justify-between p-5 border-b border-slate-100">
+        <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
           <div className="flex items-center gap-2">
             <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center font-bold">
               <ShieldCheck className="w-4 h-4" />
@@ -128,7 +131,8 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition"
+            aria-label="Close authentication modal"
           >
             <X className="w-5 h-5" />
           </button>
@@ -138,7 +142,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         <div className="flex border-b border-slate-100 bg-slate-50/70 p-1">
           <button
             onClick={() => { setTab('signin'); setErrorMessage(null); }}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${
+            className={`flex-1 py-2.5 text-xs font-bold rounded-lg min-h-[40px] flex items-center justify-center transition active:scale-95 ${
               tab === 'signin' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -146,7 +150,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           </button>
           <button
             onClick={() => { setTab('register'); setErrorMessage(null); }}
-            className={`flex-1 py-2 text-xs font-bold rounded-lg transition ${
+            className={`flex-1 py-2.5 text-xs font-bold rounded-lg min-h-[40px] flex items-center justify-center transition active:scale-95 ${
               tab === 'register' ? 'bg-white text-slate-900 shadow-xs' : 'text-slate-500 hover:text-slate-800'
             }`}
           >
@@ -155,7 +159,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         </div>
 
         {/* Form Body */}
-        <div className="p-6 space-y-4">
+        <div className="p-5 sm:p-6 space-y-4 overflow-y-auto pb-[calc(1.5rem+env(safe-area-inset-bottom))]">
           
           {errorMessage && (
             <div className="p-3 bg-red-50 border border-red-200 text-red-700 text-xs rounded-xl">

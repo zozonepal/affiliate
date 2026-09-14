@@ -122,19 +122,25 @@ export function WishlistDrawer({
 
         {/* Footer info */}
         {wishlistedProducts.length > 0 && (
-          <div className="p-4 bg-slate-50 border-t border-slate-100 space-y-3">
+          <div className="p-4 bg-slate-50 border-t border-slate-100 space-y-3 pb-[calc(1rem+env(safe-area-inset-bottom))]">
             <div className="flex items-center justify-between text-xs">
-              <span className="font-semibold text-slate-500">Total Cart Value:</span>
+              <span className="font-semibold text-slate-500">Total Deals Value:</span>
               <span className="font-black text-slate-900 text-sm">
                 Rs. {totalValue.toLocaleString('ne-NP')}
               </span>
             </div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center justify-between gap-2 pt-1">
               <button
                 onClick={onClearWishlist}
-                className="text-xs font-semibold text-slate-500 hover:text-red-600 underline py-1"
+                className="text-xs font-semibold text-slate-500 hover:text-red-600 underline py-2 min-h-[40px] flex items-center"
               >
                 Clear All
+              </button>
+              <button
+                onClick={onClose}
+                className="bg-slate-900 hover:bg-slate-800 text-white text-xs font-bold px-4 py-2 rounded-xl transition min-h-[40px]"
+              >
+                Done
               </button>
             </div>
           </div>

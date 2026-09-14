@@ -19,6 +19,7 @@ import { AuthModal } from './components/AuthModal';
 import { AdminModal } from './components/AdminModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { SubmitDealModal } from './components/SubmitDealModal';
+import { MobileBottomNav } from './components/MobileBottomNav';
 import { Loader2, PackageOpen, RotateCcw, Plus, Sparkles } from 'lucide-react';
 
 export default function App() {
@@ -318,7 +319,7 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200/80 py-8 px-4 text-center text-xs text-slate-500 mt-12">
+      <footer className="bg-white border-t border-slate-200/80 py-8 px-4 text-center text-xs text-slate-500 mt-12 mb-16 md:mb-0">
         <div className="max-w-4xl mx-auto space-y-3">
           <div className="flex items-center justify-center gap-2 font-bold text-slate-800">
             <span>DealFinder NP</span>
@@ -337,6 +338,22 @@ export default function App() {
           </div>
         </div>
       </footer>
+
+      {/* Mobile Bottom Navigation Bar (thumb-friendly, sticky) */}
+      <MobileBottomNav
+        user={user}
+        wishlistCount={wishlist.length}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
+        onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAdmin={() => {
+          if (user?.role === 'admin' || user?.email?.toLowerCase() === 'fitoorbhandari38@gmail.com') {
+            setIsAdminOpen(true);
+          } else {
+            setIsAuthOpen(true);
+          }
+        }}
+      />
 
       {/* Modals & Drawers */}
       <ProductDetailModal

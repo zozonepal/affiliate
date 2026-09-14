@@ -171,46 +171,50 @@ export function AdminModal({
   });
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-center justify-center p-4">
-      <div className="bg-white rounded-3xl max-w-4xl w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 p-5 sm:p-7 flex flex-col">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
+      <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-4xl w-full max-h-[95vh] sm:max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 p-4 sm:p-7 flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200">
         
+        {/* Mobile drag handle */}
+        <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-3 sm:hidden" />
+
         {/* Top Header */}
-        <div className="flex items-center justify-between pb-4 mb-4 border-b border-slate-100">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center font-black">
-              <Database className="w-5 h-5" />
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-4 mb-4 border-b border-slate-100">
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-orange-600 text-white flex items-center justify-center font-black shrink-0">
+              <Database className="w-4 h-4 sm:w-5 sm:h-5" />
             </div>
             <div>
-              <h2 className="text-xl font-extrabold text-slate-900 leading-tight">
+              <h2 className="text-base sm:text-xl font-extrabold text-slate-900 leading-tight">
                 Firebase Cloud Admin Dashboard
               </h2>
-              <p className="text-xs text-slate-500">
-                Live Firestore real-time database management & catalog controls
+              <p className="text-[11px] sm:text-xs text-slate-500">
+                Live Firestore real-time database management & catalog
               </p>
             </div>
           </div>
 
-          <div className="flex items-center gap-2 sm:gap-3">
+          <div className="flex items-center justify-between sm:justify-end gap-2 sm:gap-3">
             <button
               onClick={handleSeedDeals}
               disabled={isSeeding}
-              className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 text-xs font-bold transition disabled:opacity-50"
+              className="inline-flex items-center gap-1.5 px-2.5 sm:px-3 py-1.5 rounded-lg bg-orange-50 hover:bg-orange-100 text-orange-700 text-xs font-bold transition disabled:opacity-50 min-h-[36px]"
               title="Push sample top Nepal deals directly into Firestore"
             >
               <Sparkles className="w-3.5 h-3.5" />
-              <span>{isSeeding ? 'Seeding...' : 'Seed Top Nepal Deals'}</span>
+              <span>{isSeeding ? 'Seeding...' : 'Seed Deals'}</span>
             </button>
 
             <button
               onClick={onLogoutAdmin}
-              className="text-xs font-bold text-red-600 hover:text-red-800 px-2 py-1 rounded hover:bg-red-50 transition"
+              className="text-xs font-bold text-red-600 hover:text-red-800 px-2 py-1.5 rounded hover:bg-red-50 transition min-h-[36px] flex items-center"
             >
               Exit Admin
             </button>
 
             <button
               onClick={onClose}
-              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+              className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition min-w-[36px] min-h-[36px] flex items-center justify-center"
+              aria-label="Close admin modal"
             >
               <X className="w-5 h-5" />
             </button>
