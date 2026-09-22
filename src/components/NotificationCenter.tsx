@@ -43,14 +43,15 @@ export function NotificationCenter({
     <div className="relative shrink-0" ref={dropdownRef}>
       {/* Bell Trigger Button */}
       <button
+        id="notifications-bell-btn"
         onClick={handleOpen}
-        className="relative p-2 text-slate-700 hover:text-orange-600 hover:bg-slate-100 rounded-lg transition shrink-0 active:scale-95"
+        className="relative w-8 h-8 rounded-xl text-slate-700 hover:text-orange-600 hover:bg-slate-100 border border-transparent hover:border-slate-200/60 transition shrink-0 active:scale-95 flex items-center justify-center"
         title="Notifications"
         aria-label="View notifications"
       >
-        <Bell className="w-5 h-5" />
+        <Bell className="w-4 h-4 shrink-0" />
         {unreadCount > 0 && (
-          <span className="absolute -top-1 -right-1 bg-red-600 text-white text-[10px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-pulse">
+          <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-pulse shadow-xs">
             {unreadCount}
           </span>
         )}
@@ -58,7 +59,7 @@ export function NotificationCenter({
 
       {/* Facebook-style Notification Dropdown */}
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200/90 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
+        <div className="absolute right-0 mt-2 w-[calc(100vw-1.5rem)] max-w-sm sm:w-96 bg-white rounded-2xl shadow-2xl border border-slate-200/90 z-50 overflow-hidden animate-in fade-in slide-in-from-top-2 duration-200">
           
           {/* Header */}
           <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">

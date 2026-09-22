@@ -156,10 +156,10 @@ export function MobileFilterModal({
         </div>
 
         {/* Footer Apply CTA */}
-        <div className="p-4 border-t border-slate-100 bg-slate-50/80">
+        <div className="p-4 border-t border-slate-100 bg-slate-50/80 pb-[calc(1rem+env(safe-area-inset-bottom))]">
           <button
             onClick={onClose}
-            className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-extrabold text-sm py-3.5 px-4 rounded-2xl shadow-md shadow-orange-500/25 active:scale-[0.98] transition flex items-center justify-center gap-2"
+            className="w-full bg-gradient-to-r from-orange-600 to-amber-500 hover:from-orange-500 hover:to-amber-400 text-white font-extrabold text-sm py-3.5 px-4 rounded-2xl shadow-md shadow-orange-500/25 active:scale-[0.98] transition flex items-center justify-center gap-2 cursor-pointer"
           >
             <span>Show {totalDealsCount} Matching Deals</span>
           </button>

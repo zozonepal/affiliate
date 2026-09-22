@@ -67,37 +67,36 @@ export function MobileHeader({
   };
 
   return (
-    <header className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs">
+    <header className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs w-full max-w-full overflow-hidden">
       
       {/* Top App Bar */}
-      <div className="px-3.5 pt-2 pb-1.5 flex items-center justify-between gap-2">
+      <div className="px-2.5 sm:px-3.5 pt-2 pb-1.5 flex items-center justify-between gap-1.5 sm:gap-2">
         
         {/* Brand */}
-        <div className="flex items-center gap-2">
-          <div className="w-8 h-8 rounded-xl bg-white border border-slate-200/90 p-0.5 flex items-center justify-center shadow-2xs overflow-hidden">
+        <div className="flex items-center gap-1.5 sm:gap-2 shrink min-w-0">
+          <div className="w-8 h-8 rounded-xl bg-white border border-slate-200/90 p-0.5 flex items-center justify-center shadow-2xs overflow-hidden shrink-0">
             <img src="/favicon.svg" alt="DealFinder Nepal Logo" className="w-full h-full object-contain" />
           </div>
-          <div className="flex items-center gap-1.5">
-            <span className="font-black text-base tracking-tight text-slate-900 leading-none">
+          <div className="flex items-center gap-1 min-w-0">
+            <span className="font-black text-sm sm:text-base tracking-tight text-slate-900 leading-none truncate">
               DealFinder<span className="text-orange-600">NP</span>
             </span>
-            <span className="text-[9px] uppercase font-black bg-orange-100 text-orange-700 px-1.5 py-0.5 rounded tracking-wide">
+            <span className="text-[8px] sm:text-[9px] uppercase font-black bg-orange-100 text-orange-700 px-1 py-0.5 rounded tracking-wide shrink-0">
               Daraz
             </span>
           </div>
         </div>
 
         {/* Quick Action Icons */}
-        <div className="flex items-center gap-1">
-          {/* Recommend Deal */}
+        <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
+          {/* Recommend Deal - Button 1 */}
           <button
             onClick={onOpenSubmitDeal}
-            className="flex items-center gap-1 text-[11px] font-bold text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 px-2 py-1 rounded-lg transition active:scale-95 min-h-[32px]"
+            className="w-8 h-8 rounded-xl text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 flex items-center justify-center transition active:scale-95 shrink-0"
             title="Submit a deal"
             aria-label="Submit a deal"
           >
-            <Plus className="w-3.5 h-3.5 text-orange-600" />
-            <span>Submit</span>
+            <Plus className="w-4 h-4 text-orange-600 shrink-0" />
           </button>
 
           {/* Notifications */}
@@ -108,35 +107,35 @@ export function MobileHeader({
             onOpenAuth={onOpenAuth}
           />
 
-          {/* Wishlist */}
+          {/* Wishlist - Button 2 */}
           <button
             onClick={onOpenWishlist}
-            className="relative p-1.5 text-slate-700 hover:text-orange-600 active:scale-90 transition rounded-lg min-w-[36px] min-h-[36px] flex items-center justify-center"
+            className="relative w-8 h-8 rounded-xl text-slate-700 hover:text-orange-600 hover:bg-slate-100 border border-transparent hover:border-slate-200/60 active:scale-90 transition flex items-center justify-center shrink-0"
             title="Saved Deals"
             aria-label="View Saved Deals"
           >
-            <Heart className="w-5 h-5" />
+            <Heart className="w-4 h-4 shrink-0" />
             {wishlistCount > 0 && (
-              <span className="absolute top-1 right-1 bg-orange-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+              <span className="absolute -top-0.5 -right-0.5 bg-orange-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
                 {wishlistCount > 9 ? '9+' : wishlistCount}
               </span>
             )}
           </button>
 
-          {/* User Account / Admin */}
+          {/* User Account / Admin - Button 3 */}
           {isAdmin ? (
             <button
               onClick={onOpenAdmin}
-              className="p-1 text-amber-700 bg-amber-50 border border-amber-200 rounded-lg min-w-[32px] min-h-[32px] flex items-center justify-center active:scale-95 transition"
+              className="w-8 h-8 rounded-xl text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 flex items-center justify-center active:scale-95 transition shrink-0"
               title="Admin Panel"
               aria-label="Admin Panel"
             >
-              <ShieldCheck className="w-4 h-4 text-orange-600" />
+              <ShieldCheck className="w-4 h-4 text-orange-600 shrink-0" />
             </button>
           ) : user ? (
             <button
               onClick={onOpenAuth}
-              className="w-7 h-7 rounded-full bg-orange-100 text-orange-700 font-bold text-xs flex items-center justify-center border border-orange-200 overflow-hidden active:scale-95 transition"
+              className="w-8 h-8 rounded-xl bg-orange-100 text-orange-700 font-bold text-xs flex items-center justify-center border border-orange-200 overflow-hidden active:scale-95 transition shrink-0 shadow-2xs"
               title={user.displayName || 'Account'}
               aria-label="Account"
             >
@@ -149,11 +148,11 @@ export function MobileHeader({
           ) : (
             <button
               onClick={onOpenAuth}
-              className="p-1.5 text-slate-600 hover:text-orange-600 active:scale-95 transition min-w-[32px] min-h-[32px] flex items-center justify-center"
+              className="w-8 h-8 rounded-xl text-slate-700 bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200/80 active:scale-95 transition flex items-center justify-center shrink-0"
               title="Sign In"
               aria-label="Sign In"
             >
-              <UserIcon className="w-5 h-5" />
+              <UserIcon className="w-4 h-4 text-slate-700 shrink-0" />
             </button>
           )}
         </div>
