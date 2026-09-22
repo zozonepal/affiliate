@@ -81,9 +81,9 @@ export function SubmitDealModal({
         <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-2 sm:hidden" />
 
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 sticky top-0 bg-white/95 backdrop-blur-md z-10">
-          <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
-              <Sparkles className="w-4 h-4" />
+          <div className="flex items-center gap-2.5">
+            <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-2xs shrink-0">
+              <img src="/logo.svg" alt="Finder Nepal" className="w-full h-full object-contain" />
             </div>
             <div>
               <h3 className="font-extrabold text-slate-900 text-base leading-none">

@@ -32,8 +32,8 @@ export function Navbar({
         {/* Brand Logo */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
           <a href="#" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0 overflow-hidden">
-              <img src="/favicon.svg" alt="DealFinder Nepal Logo" className="w-full h-full object-contain" />
+            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-md transition-all shrink-0 overflow-hidden">
+              <img src="/logo.svg" alt="DealFinder Nepal" className="w-full h-full object-contain" />
             </div>
             <div className="shrink-0">
               <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-none whitespace-nowrap">
@@ -44,7 +44,7 @@ export function Navbar({
                 </span>
               </div>
               <p className="hidden md:block text-[11px] text-slate-500 font-medium leading-none mt-0.5 truncate">
-                Nepal Tech & Deals
+                Finder Nepal Deals & Catalog
               </p>
             </div>
           </a>

@@ -311,8 +311,8 @@ export default function AdminApp() {
       <div className="min-h-screen bg-slate-950 flex flex-col justify-center items-center px-4 py-12 text-slate-100 font-sans">
         <div className="w-full max-w-md bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl">
           <div className="text-center mb-8">
-            <div className="w-14 h-14 mx-auto mb-3 bg-gradient-to-tr from-orange-600 to-amber-500 rounded-2xl flex items-center justify-center shadow-lg shadow-orange-500/20 text-white">
-              <ShieldCheck className="w-8 h-8" />
+            <div className="w-16 h-16 mx-auto mb-3 bg-white border border-slate-800 rounded-2xl flex items-center justify-center p-2 shadow-xl shadow-orange-500/10">
+              <img src="/logo.svg" alt="Finder Nepal" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-2xl font-black tracking-tight text-white">DealFinder Nepal</h1>
             <p className="text-xs text-orange-400 font-bold uppercase tracking-widest mt-1">
@@ -402,12 +402,12 @@ export default function AdminApp() {
         <div className="max-w-7xl mx-auto flex items-center justify-between">
           
           <div className="flex items-center gap-3">
-            <div className="w-10 h-10 rounded-xl bg-orange-600 flex items-center justify-center text-white font-black shadow-md shadow-orange-600/30">
-              <Database className="w-5 h-5" />
+            <div className="w-10 h-10 rounded-xl bg-white border border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-md">
+              <img src="/logo.svg" alt="Finder Nepal" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <span className="font-extrabold text-white text-base">DealFinder Admin</span>
+                <span className="font-extrabold text-white text-base">Finder Nepal Admin</span>
                 <span className="text-[10px] font-bold uppercase bg-orange-500/20 text-orange-400 px-2 py-0.5 rounded border border-orange-500/30">
                   Cloud Firestore
                 </span>

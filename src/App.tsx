@@ -24,7 +24,6 @@ import { SubmitDealModal } from './components/SubmitDealModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { MobileHeader } from './components/MobileHeader';
 import { MobileFilterModal } from './components/MobileFilterModal';
-import { SponsoredSpotlight } from './components/SponsoredSpotlight';
 import { PushNotificationToast } from './components/PushNotificationToast';
 import { Loader2, PackageOpen, RotateCcw, Plus, Sparkles, X as XIcon } from 'lucide-react';
 
@@ -398,17 +397,6 @@ export default function App() {
           )}
         </div>
 
-        {/* Top Best Deals Spotlight Banner (50% shorter length, automatically highlights best deals) */}
-        {!isLoading && !searchQuery && selectedCategory === 'All' && priceFilter === 'all' && bestDeals.length > 0 && (
-          <SponsoredSpotlight
-            deals={bestDeals.slice(0, 4)}
-            deal={bestDeals[0]}
-            onQuickView={setActiveQuickViewProduct}
-            onToggleWishlist={handleToggleWishlist}
-            isWishlisted={wishlist.includes(bestDeals[0].id)}
-          />
-        )}
-
         {/* Product Grid or Loading / Empty States */}
         {isLoading ? (
           <div className="py-24 text-center">
@@ -465,10 +453,11 @@ export default function App() {
       {/* Footer */}
       <footer className="bg-white border-t border-slate-200/80 py-8 px-4 text-center text-xs text-slate-500 mt-12 mb-16 md:mb-0">
         <div className="max-w-4xl mx-auto space-y-3">
-          <div className="flex items-center justify-center gap-2 font-bold text-slate-800">
-            <span>DealFinder NP</span>
+          <div className="flex items-center justify-center gap-2.5 font-bold text-slate-800">
+            <img src="/logo.svg" alt="Finder Nepal Logo" className="w-6 h-6 object-contain" />
+            <span>DealFinder Nepal</span>
             <span className="text-slate-300">•</span>
-            <span className="text-orange-600">🇳🇵 Nepal Tech & Lifestyle Recommendations</span>
+            <span className="text-orange-600">🇳🇵 Verified Tech & Lifestyle Recommendations</span>
           </div>
           <p className="max-w-xl mx-auto text-slate-400 text-[11px] leading-relaxed">
             DealFinder NP is an affiliate curation platform for Daraz Nepal. We earn a small commission through verified affiliate links at zero additional cost to buyers. Product prices and availability are accurate as of posting and are subject to change by Daraz sellers.

@@ -58,9 +58,9 @@ export function Hero({
       <div className="max-w-4xl mx-auto text-center relative z-10">
         
         {/* Headline badge (desktop only to preserve mobile vertical space) */}
-        <div className="hidden sm:inline-flex items-center gap-1.5 px-3 py-0.5 rounded-full bg-white/20 backdrop-blur-md text-orange-50 text-xs font-semibold mb-1 border border-white/25 shadow-2xs">
-          <Tag className="w-3.5 h-3.5 text-amber-200" />
-          <span>Curated Daily for Nepal 🇳🇵</span>
+        <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-orange-50 text-xs font-semibold mb-1 border border-white/25 shadow-2xs">
+          <img src="/logo.svg" alt="Finder Nepal" className="w-4 h-4 object-contain" />
+          <span>DealFinder Nepal • Curated Daily for Nepal 🇳🇵</span>
         </div>
 
         {/* Main Title */}
