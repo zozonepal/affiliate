@@ -1,197 +1,330 @@
-<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 800" width="800" height="800">
   <defs>
-    <!-- Orange D Fill Gradient -->
-    <linearGradient id="dGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-      <stop offset="0%" stop-color="#FF7A29" />
-      <stop offset="50%" stop-color="#F26522" />
-      <stop offset="100%" stop-color="#EA580C" />
-    </linearGradient>
-
-    <!-- Metallic Cart Gradient -->
-    <linearGradient id="cartMetal" x1="0%" y1="0%" x2="0%" y2="100%">
-      <stop offset="0%" stop-color="#94A3B8" />
-      <stop offset="50%" stop-color="#64748B" />
-      <stop offset="100%" stop-color="#475569" />
-    </linearGradient>
-
-    <!-- Chrome Highlight -->
-    <linearGradient id="chromeHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
-      <stop offset="0%" stop-color="#E2E8F0" />
-      <stop offset="50%" stop-color="#94A3B8" />
-      <stop offset="100%" stop-color="#64748B" />
-    </linearGradient>
-
-    <!-- Drop Shadow for Ground -->
-    <radialGradient id="shadowGrad" cx="50%" cy="50%" r="50%">
-      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.35" />
-      <stop offset="60%" stop-color="#334155" stop-opacity="0.15" />
-      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
-    </radialGradient>
-
-    <!-- Soft Filter for Depth -->
-    <filter id="cartShadow" x="-10%" y="-10%" width="120%" height="120%">
-      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.25" />
+    <!-- Crisp drop shadow for depth -->
+    <filter id="cartGlow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="2" stdDeviation="3" flood-color="#000000" flood-opacity="0.15" />
     </filter>
   </defs>
 
-  <g transform="translate(0, 5)">
-    <!-- 1. THE BIG ORANGE SERIF 'D' -->
+  <g id="dealfinder-logo" transform="translate(0, 0)">
+    <!-- ========================================== -->
+    <!-- 1. THE BIG ORANGE SERIF LETTER 'D'         -->
+    <!-- ========================================== -->
     <g id="letter-D">
-      <!-- Main D Body with Serifs -->
-      <!-- Outer path & Inner counter combined for perfect rendering with stroke -->
+      <!-- Main Orange Body with classic bracketed serifs and crisp black outline -->
       <path 
-        d="M 160 80 
-           L 300 80 
-           C 385 80 435 130 435 220 
-           C 435 310 385 360 300 360 
-           L 160 360 
-           L 160 335 
-           L 190 335 
-           L 190 105 
-           L 160 105 
-           Z 
-           M 235 118 
-           L 235 322 
-           L 295 322 
-           C 355 322 390 282 390 220 
-           C 390 158 355 118 295 118 
-           Z" 
-        fill="url(#dGradient)" 
-        stroke="#1E293B" 
-        stroke-width="7" 
+        d="M 270 190
+           L 330 190
+           C 420 190 495 240 495 365
+           C 495 490 420 540 330 540
+           L 270 540
+           L 270 522
+           L 305 522
+           L 305 208
+           L 270 208
+           Z
+           M 350 236
+           L 350 494
+           L 362 494
+           C 425 494 452 448 452 365
+           C 452 282 425 236 362 236
+           Z"
+        fill="#F87438"
+        stroke="#1A1A1A"
+        stroke-width="5"
         stroke-linejoin="round"
         fill-rule="evenodd"
       />
-      <!-- Top Left Serif Accent -->
-      <path d="M 140 80 L 210 80 L 210 92 L 140 92 Z" fill="url(#dGradient)" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
-      <!-- Bottom Left Serif Accent -->
-      <path d="M 140 348 L 210 348 L 210 360 L 140 360 Z" fill="url(#dGradient)" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+
+      <!-- Top Bracketed Serif details -->
+      <path 
+        d="M 260 190 L 335 190 L 335 204 C 322 204 316 210 316 222 L 316 226 L 300 226 L 300 222 C 300 210 294 204 260 204 Z" 
+        fill="#F87438" 
+        stroke="#1A1A1A" 
+        stroke-width="4" 
+        stroke-linejoin="round" 
+      />
+
+      <!-- Bottom Bracketed Serif details -->
+      <path 
+        d="M 260 540 L 335 540 L 335 526 C 322 526 316 520 316 508 L 316 504 L 300 504 L 300 508 C 300 520 294 526 260 526 Z" 
+        fill="#F87438" 
+        stroke="#1A1A1A" 
+        stroke-width="4" 
+        stroke-linejoin="round" 
+      />
     </g>
 
-    <!-- 2. GROUND SHADOW -->
-    <ellipse cx="270" cy="460" rx="140" ry="12" fill="url(#shadowGrad)" />
+    <!-- ========================================== -->
+    <!-- 2. VINTAGE ETCHED GROUND SHADOW (Below Wheels) -->
+    <!-- ========================================== -->
+    <g id="ground-hatching" stroke="#262626" stroke-linecap="round" opacity="0.8">
+      <!-- Layered fine etching strokes giving authentic hand-drawn shadow -->
+      <line x1="300" y1="672" x2="520" y2="672" stroke-width="2.5" />
+      <line x1="285" y1="675" x2="535" y2="675" stroke-width="2.2" />
+      <line x1="295" y1="678" x2="525" y2="678" stroke-width="2.0" />
+      <line x1="310" y1="681" x2="510" y2="681" stroke-width="1.8" />
+      <line x1="320" y1="684" x2="495" y2="684" stroke-width="1.5" />
+      <line x1="330" y1="687" x2="480" y2="687" stroke-width="1.2" />
+      <line x1="345" y1="690" x2="465" y2="690" stroke-width="1.0" />
 
-    <!-- 3. THE SHOPPING CART (Foreground) -->
-    <g id="shopping-cart" filter="url(#cartShadow)">
-      <!-- Cart Handle Grips -->
-      <path d="M 120 225 L 145 220 L 175 285" fill="none" stroke="#475569" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
-      <path d="M 116 226 L 146 220" stroke="#1E293B" stroke-width="11" stroke-linecap="round" />
-      <path d="M 118 226 L 144 221" stroke="#F97316" stroke-width="7" stroke-linecap="round" />
+      <!-- Additional fine sketch strokes under left wheel -->
+      <line x1="315" y1="674" x2="375" y2="674" stroke-width="3.0" opacity="0.9" />
+      <line x1="310" y1="676" x2="380" y2="676" stroke-width="2.8" opacity="0.9" />
+      <line x1="320" y1="679" x2="370" y2="679" stroke-width="2.2" opacity="0.9" />
 
-      <!-- Chassis / Undercarriage Tube Frame -->
+      <!-- Additional fine sketch strokes under right wheel -->
+      <line x1="450" y1="674" x2="510" y2="674" stroke-width="3.0" opacity="0.9" />
+      <line x1="445" y1="676" x2="515" y2="676" stroke-width="2.8" opacity="0.9" />
+      <line x1="455" y1="679" x2="505" y2="679" stroke-width="2.2" opacity="0.9" />
+    </g>
+
+    <!-- ========================================== -->
+    <!-- 3. THE VINTAGE ETCHED SHOPPING CART        -->
+    <!-- ========================================== -->
+    <g id="shopping-cart">
+      <!-- 3A. Handle Strut & Grip (Top Left) -->
+      <!-- Support strut extending up from rear chassis -->
       <path 
-        d="M 175 285 
-           L 185 410 
-           C 185 422 195 428 208 428 
-           L 365 428 
-           C 378 428 388 420 388 408 
-           L 400 285" 
+        d="M 330 520 L 290 410 L 255 330" 
         fill="none" 
-        stroke="#334155" 
+        stroke="#1A1A1A" 
         stroke-width="7" 
-        stroke-linejoin="round" 
         stroke-linecap="round" 
+        stroke-linejoin="round"
       />
       <path 
-        d="M 185 428 L 180 445 
-           M 365 428 L 368 445" 
-        stroke="#1E293B" 
-        stroke-width="7" 
+        d="M 330 520 L 290 410 L 255 330" 
+        fill="none" 
+        stroke="#E2E8F0" 
+        stroke-width="3" 
         stroke-linecap="round" 
+        stroke-linejoin="round"
       />
 
-      <!-- Cart Basket Frame (Solid Outer Outline) -->
-      <!-- Back wall, bottom, front slope, top rim -->
+      <!-- Cylindrical Handle Bar with engraved shading -->
+      <g transform="translate(250, 325) rotate(-15)">
+        <!-- Shadow outline -->
+        <rect x="-6" y="-8" width="56" height="16" rx="8" fill="#1A1A1A" />
+        <!-- White/light grey grip body -->
+        <rect x="-4" y="-6" width="52" height="12" rx="6" fill="#F1F5F9" />
+        <!-- Engraving line segments along the handle -->
+        <line x1="6" y1="-5" x2="6" y2="5" stroke="#475569" stroke-width="1.5" />
+        <line x1="14" y1="-5" x2="14" y2="5" stroke="#475569" stroke-width="1.5" />
+        <line x1="22" y1="-5" x2="22" y2="5" stroke="#475569" stroke-width="1.5" />
+        <line x1="30" y1="-5" x2="30" y2="5" stroke="#475569" stroke-width="1.5" />
+        <line x1="38" y1="-5" x2="38" y2="5" stroke="#475569" stroke-width="1.5" />
+      </g>
+
+      <!-- 3B. Lower Chassis & Base Frame (Tubular steel runners) -->
+      <!-- Main tubular bottom runner -->
+      <path 
+        d="M 315 545
+           L 320 625
+           C 320 635 330 642 342 642
+           L 485 642
+           C 498 642 505 635 505 625
+           L 512 555"
+        fill="none"
+        stroke="#1A1A1A"
+        stroke-width="8"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+      <!-- Metal highlight tube core -->
+      <path 
+        d="M 315 545
+           L 320 625
+           C 320 635 330 642 342 642
+           L 485 642
+           C 498 642 505 635 505 625
+           L 512 555"
+        fill="none"
+        stroke="#CBD5E1"
+        stroke-width="3"
+        stroke-linecap="round"
+        stroke-linejoin="round"
+      />
+
+      <!-- Diagonal chassis brace with hatching -->
+      <line x1="340" y1="638" x2="310" y2="540" stroke="#1A1A1A" stroke-width="5" stroke-linecap="round" />
+      <line x1="480" y1="638" x2="505" y2="540" stroke="#1A1A1A" stroke-width="5" stroke-linecap="round" />
+
+      <!-- Horizontal lower storage rack wires -->
+      <line x1="342" y1="632" x2="482" y2="632" stroke="#1A1A1A" stroke-width="3.5" />
+      <line x1="355" y1="624" x2="470" y2="624" stroke="#475569" stroke-width="2" />
+      <line x1="365" y1="616" x2="460" y2="616" stroke="#475569" stroke-width="1.8" />
+
+      <!-- Vertical wire rungs on lower rack -->
+      <line x1="365" y1="616" x2="365" y2="640" stroke="#475569" stroke-width="1.8" />
+      <line x1="385" y1="616" x2="385" y2="640" stroke="#475569" stroke-width="1.8" />
+      <line x1="405" y1="616" x2="405" y2="640" stroke="#475569" stroke-width="1.8" />
+      <line x1="425" y1="616" x2="425" y2="640" stroke="#475569" stroke-width="1.8" />
+      <line x1="445" y1="616" x2="445" y2="640" stroke="#475569" stroke-width="1.8" />
+
+      <!-- 3C. Vintage Etched Wheels -->
+      <!-- Left Caster Assembly -->
+      <g transform="translate(345, 650)">
+        <!-- Wheel Fork bracket -->
+        <path d="M -5 -12 L 5 -12 L 6 0 L -6 0 Z" fill="#334155" stroke="#1A1A1A" stroke-width="2.5" />
+        <!-- Outer rubber tire with etched contour -->
+        <circle cx="0" cy="8" r="18" fill="#1E293B" stroke="#0F172A" stroke-width="3" />
+        <!-- Inner metallic wheel rim -->
+        <circle cx="0" cy="8" r="12" fill="#E2E8F0" stroke="#334155" stroke-width="2" />
+        <!-- Wheel hub & vintage etched cross lines -->
+        <circle cx="0" cy="8" r="5" fill="#475569" stroke="#1A1A1A" stroke-width="1.5" />
+        <line x1="-10" y1="8" x2="10" y2="8" stroke="#64748B" stroke-width="1.5" />
+        <line x1="0" y1="-2" x2="0" y2="18" stroke="#64748B" stroke-width="1.5" />
+        <line x1="-7" y1="1" x2="7" y2="15" stroke="#64748B" stroke-width="1.2" />
+        <line x1="-7" y1="15" x2="7" y2="1" stroke="#64748B" stroke-width="1.2" />
+        <!-- Central axle nut -->
+        <circle cx="0" cy="8" r="2.5" fill="#0F172A" />
+      </g>
+
+      <!-- Right Caster Assembly -->
+      <g transform="translate(480, 650)">
+        <!-- Wheel Fork bracket -->
+        <path d="M -5 -12 L 5 -12 L 6 0 L -6 0 Z" fill="#334155" stroke="#1A1A1A" stroke-width="2.5" />
+        <!-- Outer rubber tire with etched contour -->
+        <circle cx="0" cy="8" r="18" fill="#1E293B" stroke="#0F172A" stroke-width="3" />
+        <!-- Inner metallic wheel rim -->
+        <circle cx="0" cy="8" r="12" fill="#E2E8F0" stroke="#334155" stroke-width="2" />
+        <!-- Wheel hub & vintage etched cross lines -->
+        <circle cx="0" cy="8" r="5" fill="#475569" stroke="#1A1A1A" stroke-width="1.5" />
+        <line x1="-10" y1="8" x2="10" y2="8" stroke="#64748B" stroke-width="1.5" />
+        <line x1="0" y1="-2" x2="0" y2="18" stroke="#64748B" stroke-width="1.5" />
+        <line x1="-7" y1="1" x2="7" y2="15" stroke="#64748B" stroke-width="1.2" />
+        <line x1="-7" y1="15" x2="7" y2="1" stroke="#64748B" stroke-width="1.2" />
+        <!-- Central axle nut -->
+        <circle cx="0" cy="8" r="2.5" fill="#0F172A" />
+      </g>
+
+      <!-- 3D. The Wire Basket (Transparent with vintage cross-hatching) -->
+      <!-- Back wall wire mesh (visible behind front wall) -->
+      <g id="back-wire-mesh" stroke="#64748B" stroke-width="2" opacity="0.6">
+        <line x1="315" y1="410" x2="335" y2="520" />
+        <line x1="340" y1="410" x2="355" y2="520" />
+        <line x1="365" y1="410" x2="375" y2="520" />
+        <line x1="390" y1="410" x2="395" y2="520" />
+        <line x1="415" y1="410" x2="415" y2="520" />
+        <line x1="440" y1="410" x2="435" y2="520" />
+        <line x1="465" y1="410" x2="455" y2="520" />
+        <line x1="490" y1="410" x2="475" y2="520" />
+        <!-- Back horizontal wires -->
+        <line x1="318" y1="435" x2="488" y2="435" />
+        <line x1="324" y1="465" x2="482" y2="465" />
+        <line x1="330" y1="495" x2="478" y2="495" />
+      </g>
+
+      <!-- Basket Floor solid rim -->
       <polygon 
-        points="175,285 195,385 385,385 420,285" 
-        fill="#F8FAFC" 
-        fill-opacity="0.12" 
-        stroke="#1E293B" 
-        stroke-width="8" 
+        points="310,540 330,520 480,520 500,540" 
+        fill="#1E293B" 
+        fill-opacity="0.08" 
+        stroke="#1A1A1A" 
+        stroke-width="5" 
+        stroke-linejoin="round"
+      />
+
+      <!-- Front Wall Wire Mesh (The distinct vintage etched wire cage) -->
+      <!-- Top Rim of Basket (heavy dual wire border) -->
+      <!-- Outer perimeter of basket -->
+      <polygon 
+        points="290,410 320,540 495,540 525,410" 
+        fill="none" 
+        stroke="#1A1A1A" 
+        stroke-width="7" 
         stroke-linejoin="round" 
       />
-      <!-- Top Rim Heavy Bar -->
-      <line x1="170" y1="285" x2="425" y2="285" stroke="url(#chromeHighlight)" stroke-width="10" stroke-linecap="round" />
-      <line x1="170" y1="285" x2="425" y2="285" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
 
-      <!-- Horizontal Wire Mesh Bars -->
-      <line x1="179" y1="310" x2="414" y2="310" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
-      <line x1="184" y1="335" x2="404" y2="335" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
-      <line x1="189" y1="360" x2="394" y2="360" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
+      <!-- Top Rim Chrome Bar -->
+      <line x1="285" y1="410" x2="530" y2="410" stroke="#1A1A1A" stroke-width="8" stroke-linecap="round" />
+      <line x1="287" y1="410" x2="528" y2="410" stroke="#E2E8F0" stroke-width="3" stroke-linecap="round" />
+      <line x1="289" y1="416" x2="526" y2="416" stroke="#334155" stroke-width="2.5" />
 
-      <!-- Vertical Wire Mesh Bars -->
-      <line x1="210" y1="288" x2="218" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
-      <line x1="240" y1="288" x2="246" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
-      <line x1="270" y1="288" x2="274" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
-      <line x1="300" y1="288" x2="302" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
-      <line x1="330" y1="288" x2="330" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
-      <line x1="360" y1="288" x2="358" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
-      <line x1="390" y1="288" x2="384" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
-
-      <!-- Basket Bottom Shelf Reinforcement -->
-      <line x1="195" y1="385" x2="385" y2="385" stroke="#1E293B" stroke-width="7" stroke-linecap="round" />
-
-      <!-- Wheels (Front & Rear) -->
-      <!-- Rear Left Wheel -->
-      <g transform="translate(180, 452)">
-        <!-- Wheel Fork -->
-        <path d="M 0 -10 L -4 4 L 4 4 Z" fill="#334155" stroke="#0F172A" stroke-width="2" />
-        <!-- Outer Tire -->
-        <circle cx="0" cy="4" r="15" fill="#1E293B" stroke="#0F172A" stroke-width="3" />
-        <!-- Metallic Hubcap -->
-        <circle cx="0" cy="4" r="9" fill="#CBD5E1" stroke="#475569" stroke-width="2" />
-        <circle cx="0" cy="4" r="4" fill="#64748B" />
-        <!-- Center Axle Pin -->
-        <circle cx="0" cy="4" r="2" fill="#0F172A" />
+      <!-- Horizontal Wire Ribs (Front face) with authentic vintage etching lines -->
+      <g stroke="#1A1A1A" stroke-width="4.5" stroke-linecap="round">
+        <line x1="298" y1="442" x2="517" y2="442" />
+        <line x1="305" y1="474" x2="510" y2="474" />
+        <line x1="312" y1="506" x2="503" y2="506" />
+      </g>
+      <!-- Highlights on horizontal ribs -->
+      <g stroke="#E2E8F0" stroke-width="1.8" stroke-linecap="round">
+        <line x1="300" y1="441" x2="515" y2="441" />
+        <line x1="307" y1="473" x2="508" y2="473" />
+        <line x1="314" y1="505" x2="501" y2="505" />
       </g>
 
-      <!-- Front Right Wheel -->
-      <g transform="translate(368, 452)">
-        <!-- Wheel Fork -->
-        <path d="M 0 -10 L -4 4 L 4 4 Z" fill="#334155" stroke="#0F172A" stroke-width="2" />
-        <!-- Outer Tire -->
-        <circle cx="0" cy="4" r="15" fill="#1E293B" stroke="#0F172A" stroke-width="3" />
-        <!-- Metallic Hubcap -->
-        <circle cx="0" cy="4" r="9" fill="#CBD5E1" stroke="#475569" stroke-width="2" />
-        <circle cx="0" cy="4" r="4" fill="#64748B" />
-        <!-- Center Axle Pin -->
-        <circle cx="0" cy="4" r="2" fill="#0F172A" />
+      <!-- Vertical Wire Ribs (Front face) with dual-line engraving style -->
+      <g stroke="#1A1A1A" stroke-width="4.5" stroke-linecap="round">
+        <line x1="315" y1="413" x2="335" y2="538" />
+        <line x1="338" y1="413" x2="353" y2="538" />
+        <line x1="361" y1="413" x2="371" y2="538" />
+        <line x1="384" y1="413" x2="389" y2="538" />
+        <line x1="407" y1="413" x2="407" y2="538" />
+        <line x1="430" y1="413" x2="425" y2="538" />
+        <line x1="453" y1="413" x2="443" y2="538" />
+        <line x1="476" y1="413" x2="461" y2="538" />
+        <line x1="499" y1="413" x2="479" y2="538" />
       </g>
+
+      <!-- Fine etched metallic highlights along vertical wire ribs -->
+      <g stroke="#CBD5E1" stroke-width="1.8" stroke-linecap="round">
+        <line x1="316" y1="413" x2="336" y2="538" />
+        <line x1="339" y1="413" x2="354" y2="538" />
+        <line x1="362" y1="413" x2="372" y2="538" />
+        <line x1="385" y1="413" x2="390" y2="538" />
+        <line x1="408" y1="413" x2="408" y2="538" />
+        <line x1="431" y1="413" x2="426" y2="538" />
+        <line x1="454" y1="413" x2="444" y2="538" />
+        <line x1="477" y1="413" x2="462" y2="538" />
+        <line x1="500" y1="413" x2="480" y2="538" />
+      </g>
+
+      <!-- Bottom Basket Rim reinforcement bar -->
+      <line x1="318" y1="540" x2="497" y2="540" stroke="#1A1A1A" stroke-width="7" stroke-linecap="round" />
+      <line x1="320" y1="540" x2="495" y2="540" stroke="#E2E8F0" stroke-width="2.5" stroke-linecap="round" />
+
+      <!-- Basket Corner Weld & Shading Dots -->
+      <circle cx="290" cy="410" r="4" fill="#1A1A1A" />
+      <circle cx="525" cy="410" r="4" fill="#1A1A1A" />
+      <circle cx="320" cy="540" r="4" fill="#1A1A1A" />
+      <circle cx="495" cy="540" r="4" fill="#1A1A1A" />
     </g>
 
-    <!-- 4. "Finder Nepal" TEXT (Underneath Basket) -->
-    
+    <!-- ========================================== -->
+    <!-- 4. "Finder Nepal" TEXT                     -->
+    <!-- Positioned directly in the lower chassis   -->
+    <!-- ========================================== -->
     <g id="brand-text">
-      <!-- Crisp White/Warm Glow Backing for contrast against any background -->
+      <!-- White backing for pristine contrast -->
       <text 
-        x="285" 
-        y="418" 
-        font-family="'Georgia', 'Times New Roman', 'Playfair Display', serif" 
-        font-size="34" 
+        x="414" 
+        y="586" 
+        font-family="'Playfair Display', 'Clarendon', 'Georgia', 'Times New Roman', serif" 
+        font-size="44" 
         font-weight="900" 
-        font-style="normal" 
-        letter-spacing="0.5" 
         text-anchor="middle" 
         fill="#FFFFFF" 
         stroke="#FFFFFF" 
-        stroke-width="7" 
+        stroke-width="8" 
         stroke-linejoin="round"
       >
         Finder Nepal
       </text>
-      <!-- Foreground Serif Text in Brand Orange -->
+
+      <!-- Foreground Brand Orange with delicate dark outline -->
       <text 
-        x="285" 
-        y="418" 
-        font-family="'Georgia', 'Times New Roman', 'Playfair Display', serif" 
-        font-size="34" 
+        x="414" 
+        y="586" 
+        font-family="'Playfair Display', 'Clarendon', 'Georgia', 'Times New Roman', serif" 
+        font-size="44" 
         font-weight="900" 
-        font-style="normal" 
-        letter-spacing="0.5" 
         text-anchor="middle" 
-        fill="#EA580C" 
-        stroke="#9A3412" 
-        stroke-width="1.2"
+        fill="#F87438" 
+        stroke="#1A1A1A" 
+        stroke-width="1.8" 
+        stroke-linejoin="round"
       >
         Finder Nepal
       </text>
