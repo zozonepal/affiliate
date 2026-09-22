@@ -1,4 +1,4 @@
-import { Home, Heart, PlusCircle, ShieldCheck, User } from 'lucide-react';
+import { Home, Heart, PlusCircle, ShieldCheck, User, SlidersHorizontal } from 'lucide-react';
 import { UserAccount } from '../types';
 
 interface MobileBottomNavProps {
@@ -7,6 +7,9 @@ interface MobileBottomNavProps {
   onOpenWishlist: () => void;
   onOpenAuth: () => void;
   onOpenAdmin: () => void;
+  onOpenFilter?: () => void;
+  onOpenSubmitDeal?: () => void;
+  isFilterActive?: boolean;
 }
 
 export function MobileBottomNav({
@@ -14,9 +17,12 @@ export function MobileBottomNav({
   wishlistCount,
   onOpenWishlist,
   onOpenAuth,
-  onOpenAdmin
+  onOpenAdmin,
+  onOpenFilter,
+  onOpenSubmitDeal,
+  isFilterActive
 }: MobileBottomNavProps) {
-  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'fitoorbhandari38@gmail.com';
+  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'fitoorbhandari38@gmail.com' || user?.email?.toLowerCase() === 'affiliatedaraz25@gmail.com';
 
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
@@ -25,23 +31,55 @@ export function MobileBottomNav({
   return (
     <nav
       aria-label="Mobile Navigation Bar"
-      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_16px_rgba(0,0,0,0.06)] px-2 py-1.5 pb-[calc(0.5rem+env(safe-area-inset-bottom))]"
+      className="md:hidden fixed bottom-0 left-0 right-0 z-40 bg-white/95 backdrop-blur-md border-t border-slate-200/90 shadow-[0_-4px_20px_rgba(0,0,0,0.07)] px-1.5 py-1.5 pb-[calc(0.5rem+env(safe-area-inset-bottom))]"
     >
       <div className="flex items-center justify-around max-w-md mx-auto">
-        {/* Explore / Home */}
+        
+        {/* Deals / Home */}
         <button
           onClick={scrollToTop}
-          className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-slate-600 hover:text-orange-600 active:scale-95 transition"
+          className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"
           aria-label="Explore Deals"
         >
           <Home className="w-5 h-5" />
-          <span className="text-[10px] font-bold mt-0.5">Explore</span>
+          <span className="text-[10px] font-bold mt-0.5">Deals</span>
         </button>
+
+        {/* Filter & Sort Bottom Sheet Trigger */}
+        {onOpenFilter && (
+          <button
+            onClick={onOpenFilter}
+            className="relative flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"
+            aria-label="Filter Deals"
+          >
+            <div className="relative">
+              <SlidersHorizontal className="w-5 h-5" />
+              {isFilterActive && (
+                <span className="absolute -top-1 -right-1 w-2.5 h-2.5 rounded-full bg-orange-600 border-2 border-white" />
+              )}
+            </div>
+            <span className="text-[10px] font-bold mt-0.5">Filters</span>
+          </button>
+        )}
+
+        {/* Recommend Deal (Submit) */}
+        {onOpenSubmitDeal && (
+          <button
+            onClick={onOpenSubmitDeal}
+            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-orange-600 active:scale-95 transition"
+            aria-label="Submit Deal"
+          >
+            <div className="w-8 h-8 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600 shadow-2xs">
+              <PlusCircle className="w-5 h-5" />
+            </div>
+            <span className="text-[10px] font-black text-orange-700 mt-0.5">Submit</span>
+          </button>
+        )}
 
         {/* Wishlist / Saved */}
         <button
           onClick={onOpenWishlist}
-          className="relative flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-slate-600 hover:text-orange-600 active:scale-95 transition"
+          className="relative flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"
           aria-label="View Saved Deals"
         >
           <div className="relative">
@@ -59,7 +97,7 @@ export function MobileBottomNav({
         {isAdmin ? (
           <button
             onClick={onOpenAdmin}
-            className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-amber-700 hover:text-amber-900 active:scale-95 transition"
+            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-amber-700 hover:text-amber-900 active:scale-95 transition"
             aria-label="Admin Panel"
           >
             <div className="relative">
@@ -71,7 +109,7 @@ export function MobileBottomNav({
         ) : user ? (
           <button
             onClick={onOpenAuth}
-            className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-slate-600 hover:text-orange-600 active:scale-95 transition"
+            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"
             aria-label="Account Profile"
           >
             <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-700 font-black text-[10px] flex items-center justify-center border border-orange-200 overflow-hidden">
@@ -88,13 +126,14 @@ export function MobileBottomNav({
         ) : (
           <button
             onClick={onOpenAuth}
-            className="flex flex-col items-center justify-center min-w-[56px] min-h-[44px] py-1 text-slate-600 hover:text-orange-600 active:scale-95 transition"
+            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"
             aria-label="Sign In"
           >
             <User className="w-5 h-5" />
             <span className="text-[10px] font-bold mt-0.5 whitespace-nowrap">Sign In</span>
           </button>
         )}
+
       </div>
     </nav>
   );

@@ -17,9 +17,11 @@ import {
   Tag,
   Ticket,
   Upload,
-  Image as ImageIcon
+  Image as ImageIcon,
+  Palette,
+  Check
 } from 'lucide-react';
-import { ProductDeal, CloudSyncStatus } from '../types';
+import { ProductDeal, CloudSyncStatus, ColorVariant } from '../types';
 import { 
   addProductToFirestore, 
   updateProductInFirestore, 
@@ -64,23 +66,109 @@ export function AdminModal({
   const [badge, setBadge] = useState('');
   const [promoCode, setPromoCode] = useState('');
   const [image, setImage] = useState('');
+  const [colorVariants, setColorVariants] = useState<ColorVariant[]>([]);
 
-  const handleImageFileChange = (e: ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-    if (file.size > 5 * 1024 * 1024) {
-      setMessage({ type: 'error', text: 'Please select an image file smaller than 5MB.' });
-      return;
-    }
-    const reader = new FileReader();
-    reader.onload = (event) => {
-      const dataUrl = event.target?.result;
-      if (typeof dataUrl === 'string') {
-        setImage(dataUrl);
-        setMessage({ type: 'success', text: 'Image file loaded directly!' });
+  const COMMON_COLOR_PRESETS = [
+    { name: 'Black', hex: '#18181b' },
+    { name: 'White', hex: '#f8fafc' },
+    { name: 'Blue', hex: '#2563eb' },
+    { name: 'Navy', hex: '#1e3a8a' },
+    { name: 'Red', hex: '#dc2626' },
+    { name: 'Green', hex: '#16a34a' },
+    { name: 'Gold', hex: '#eab308' },
+    { name: 'Silver / Grey', hex: '#94a3b8' },
+    { name: 'Pink', hex: '#f472b6' },
+    { name: 'Purple', hex: '#9333ea' }
+  ];
+
+  const handleMultipleImagesUpload = (e: ChangeEvent<HTMLInputElement>) => {
+    const files = e.target.files;
+    if (!files || files.length === 0) return;
+
+    const validFiles: File[] = [];
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i];
+      if (file.size > 5 * 1024 * 1024) {
+        setMessage({ type: 'error', text: `File "${file.name}" exceeds 5MB limit and was skipped.` });
+      } else {
+        validFiles.push(file);
       }
-    };
-    reader.readAsDataURL(file);
+    }
+    if (validFiles.length === 0) return;
+
+    let loadedCount = 0;
+    const newItems: ColorVariant[] = [];
+
+    Array.from(validFiles).forEach((file) => {
+      const reader = new FileReader();
+      reader.onload = (event) => {
+        const dataUrl = event.target?.result;
+        if (typeof dataUrl === 'string') {
+          const cleanName = file.name.toLowerCase();
+          const matched = COMMON_COLOR_PRESETS.find((p) => cleanName.includes(p.name.toLowerCase()));
+
+          let initialName = 'Default';
+          let initialHex = '#18181b';
+          if (matched) {
+            initialName = matched.name;
+            initialHex = matched.hex;
+          } else {
+            const offset = colorVariants.length + newItems.length;
+            if (offset < COMMON_COLOR_PRESETS.length) {
+              initialName = COMMON_COLOR_PRESETS[offset].name;
+              initialHex = COMMON_COLOR_PRESETS[offset].hex;
+            } else {
+              initialName = `Color ${offset + 1}`;
+              initialHex = '#18181b';
+            }
+          }
+
+          newItems.push({
+            name: initialName,
+            colorCode: initialHex,
+            image: dataUrl
+          });
+          loadedCount++;
+
+          if (loadedCount === validFiles.length) {
+            setColorVariants((prev) => {
+              const updated = [...prev, ...newItems];
+              if (!image && updated.length > 0) {
+                setImage(updated[0].image);
+              }
+              return updated;
+            });
+            setMessage({
+              type: 'success',
+              text: `Uploaded ${loadedCount} product image${loadedCount > 1 ? 's' : ''}! Customize their colors below.`
+            });
+          }
+        }
+      };
+      reader.readAsDataURL(file);
+    });
+
+    e.target.value = '';
+  };
+
+  const handleUpdateVariant = (index: number, updates: Partial<ColorVariant>) => {
+    setColorVariants((prev) => prev.map((v, i) => (i === index ? { ...v, ...updates } : v)));
+  };
+
+  const handleRemoveVariant = (index: number) => {
+    setColorVariants((prev) => {
+      const toRemove = prev[index];
+      const updated = prev.filter((_, i) => i !== index);
+      if (image === toRemove?.image) {
+        setImage(updated.length > 0 ? updated[0].image : '');
+      }
+      return updated;
+    });
+  };
+
+  const handleSetAsCover = (imgUrl: string) => {
+    setImage(imgUrl);
+    setMessage({ type: 'success', text: 'Set as primary cover image!' });
   };
   const [affiliateUrl, setAffiliateUrl] = useState('');
   const [description, setDescription] = useState('');
@@ -108,6 +196,13 @@ export function AdminModal({
     setBadge(p.badge || '');
     setPromoCode(p.promoCode || '');
     setImage(p.image || '');
+    if (p.colorVariants && p.colorVariants.length > 0) {
+      setColorVariants([...p.colorVariants]);
+    } else if (p.image) {
+      setColorVariants([{ name: 'Default', colorCode: '#18181b', image: p.image }]);
+    } else {
+      setColorVariants([]);
+    }
     setAffiliateUrl(p.affiliateUrl || '');
     setDescription(p.description || '');
     setMessage(null);
@@ -122,6 +217,7 @@ export function AdminModal({
     setBadge('');
     setPromoCode('');
     setImage('');
+    setColorVariants([]);
     setAffiliateUrl('');
     setDescription('');
     setMessage(null);
@@ -129,8 +225,9 @@ export function AdminModal({
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
-    if (!image) {
-      setMessage({ type: 'error', text: 'Please upload an image file or select a sample image below.' });
+    const primaryImg = image || (colorVariants.length > 0 ? colorVariants[0].image : '');
+    if (!primaryImg) {
+      setMessage({ type: 'error', text: 'Please upload a primary image or add at least one color variant with an image.' });
       return;
     }
     setIsSubmitting(true);
@@ -143,7 +240,8 @@ export function AdminModal({
       originalPrice: originalPrice ? Number(originalPrice) : undefined,
       badge: badge.trim() || undefined,
       promoCode: promoCode.trim() ? promoCode.trim().toUpperCase() : undefined,
-      image: image.trim(),
+      image: primaryImg.trim(),
+      colorVariants: colorVariants.length > 0 ? colorVariants : undefined,
       affiliateUrl: affiliateUrl.trim() || 'https://www.daraz.com.np',
       description: description.trim(),
       rating: 4.8,
@@ -407,96 +505,173 @@ export function AdminModal({
               />
             </div>
 
-            <div className="md:col-span-2 space-y-2">
-              <label className="block text-xs font-bold text-slate-700">
-                Product Image (Upload File or Select Preset) *
-              </label>
-              
-              {/* Selected Image Preview or Direct Upload Box */}
-              {image ? (
-                <div className="flex items-center gap-3 p-3 bg-slate-50 border border-slate-200 rounded-2xl">
-                  <img
-                    src={image}
-                    alt="Product preview"
-                    className="w-16 h-16 object-contain rounded-xl bg-white border border-slate-200 p-1 shrink-0"
-                    onError={(e) => {
-                      (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100&auto=format&fit=crop&q=80';
-                    }}
-                  />
-                  <div className="flex-1 min-w-0">
-                    <p className="text-xs font-bold text-slate-800 truncate">
-                      {image.startsWith('data:') ? 'Custom Uploaded Image File' : 'Selected Preset Image'}
-                    </p>
-                    <p className="text-[11px] text-slate-500 truncate">
-                      Ready to attach to product deal
-                    </p>
-                    <div className="flex items-center gap-2 mt-1.5">
-                      <label className="text-[11px] font-bold text-orange-600 hover:text-orange-700 cursor-pointer flex items-center gap-1 bg-orange-50 hover:bg-orange-100 px-2.5 py-1 rounded-lg transition border border-orange-200/60">
-                        <Upload className="w-3 h-3" />
-                        <span>Change Image</span>
-                        <input
-                          type="file"
-                          accept="image/*"
-                          onChange={handleImageFileChange}
-                          className="hidden"
-                        />
-                      </label>
-                      <button
-                        type="button"
-                        onClick={() => setImage('')}
-                        className="text-[11px] font-semibold text-slate-500 hover:text-red-600 transition"
-                      >
-                        Remove Image
-                      </button>
-                    </div>
-                  </div>
-                </div>
-              ) : (
-                <div className="space-y-2.5">
-                  {/* Direct File Drag & Upload Box */}
-                  <label className="flex flex-col items-center justify-center p-4 border-2 border-dashed border-orange-300 hover:border-orange-500 bg-orange-50/40 hover:bg-orange-50 rounded-2xl cursor-pointer transition text-center group">
-                    <div className="w-9 h-9 rounded-full bg-orange-100 group-hover:bg-orange-200 text-orange-600 flex items-center justify-center mb-1 transition">
-                      <Upload className="w-4 h-4" />
-                    </div>
-                    <span className="text-xs font-bold text-slate-800 group-hover:text-orange-600">
-                      Insert Image Directly from Device
-                    </span>
-                    <span className="text-[10px] text-slate-500 mt-0.5">
-                      Click to choose image file (PNG, JPG, WEBP)
-                    </span>
-                    <input
-                      type="file"
-                      accept="image/*"
-                      onChange={handleImageFileChange}
-                      className="hidden"
-                    />
-                  </label>
+            <div className="md:col-span-2 space-y-3">
+              <div className="flex items-center justify-between">
+                <label className="block text-xs font-bold text-slate-800">
+                  Product Images by Color (Upload File) *
+                </label>
+                {colorVariants.length > 0 && (
+                  <span className="text-[11px] font-bold text-orange-600 bg-orange-50 border border-orange-200/60 px-2.5 py-0.5 rounded-full">
+                    {colorVariants.length} {colorVariants.length === 1 ? 'Color Image' : 'Color Images'}
+                  </span>
+                )}
+              </div>
 
-                  {/* Quick Select Presets */}
-                  <div>
-                    <span className="text-[10px] uppercase font-bold text-slate-400 block mb-1.5">
-                      Or Select Sample Product Photo:
+              {/* Upload Dropzone / Button */}
+              {colorVariants.length === 0 ? (
+                <label className="flex flex-col items-center justify-center p-6 border-2 border-dashed border-orange-300 hover:border-orange-500 bg-orange-50/40 hover:bg-orange-50 rounded-2xl cursor-pointer transition text-center group">
+                  <div className="w-12 h-12 rounded-2xl bg-orange-100 group-hover:bg-orange-200 text-orange-600 flex items-center justify-center mb-2 transition shadow-2xs">
+                    <Upload className="w-6 h-6" />
+                  </div>
+                  <span className="text-sm font-extrabold text-slate-800 group-hover:text-orange-600">
+                    Upload Product Images from Device
+                  </span>
+                  <span className="text-xs text-slate-500 mt-1 max-w-sm">
+                    Select one or multiple photos according to colors (PNG, JPG, WEBP). Each image will have its own color variant!
+                  </span>
+                  <div className="flex items-center gap-2 mt-3">
+                    <span className="text-[11px] font-bold text-orange-700 bg-orange-100 px-3 py-1 rounded-lg">
+                      Choose Files from Device (Multiple Allowed)
                     </span>
-                    <div className="grid grid-cols-4 sm:grid-cols-8 gap-1.5">
-                      {PRODUCT_IMAGE_PRESETS.map((preset) => (
-                        <button
-                          key={preset.name}
-                          type="button"
-                          onClick={() => setImage(preset.url)}
-                          className="flex flex-col items-center p-1 rounded-xl border border-slate-200 hover:border-orange-400 bg-white hover:bg-orange-50/50 transition group"
-                          title={preset.name}
+                  </div>
+                  <input
+                    type="file"
+                    multiple
+                    accept="image/*"
+                    onChange={handleMultipleImagesUpload}
+                    className="hidden"
+                  />
+                </label>
+              ) : (
+                <div className="space-y-3">
+                  {/* Action Bar */}
+                  <div className="flex items-center justify-between gap-2 p-2.5 bg-slate-50 border border-slate-200 rounded-xl">
+                    <label className="cursor-pointer inline-flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-orange-600 hover:bg-orange-700 text-white text-xs font-bold transition shadow-2xs">
+                      <Upload className="w-3.5 h-3.5" />
+                      <span>+ Upload More Color Images</span>
+                      <input
+                        type="file"
+                        multiple
+                        accept="image/*"
+                        onChange={handleMultipleImagesUpload}
+                        className="hidden"
+                      />
+                    </label>
+
+                    <button
+                      type="button"
+                      onClick={() => {
+                        setColorVariants([]);
+                        setImage('');
+                      }}
+                      className="text-xs text-slate-400 hover:text-red-600 transition font-semibold"
+                    >
+                      Remove All Images
+                    </button>
+                  </div>
+
+                  {/* List of Uploaded Color Images */}
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-2.5">
+                    {colorVariants.map((variant, idx) => {
+                      const isCover = (image ? image === variant.image : idx === 0);
+                      return (
+                        <div
+                          key={idx}
+                          className={`p-3 rounded-2xl border bg-white shadow-2xs transition-all space-y-2.5 ${
+                            isCover ? 'border-orange-500 ring-2 ring-orange-500/20' : 'border-slate-200'
+                          }`}
                         >
-                          <img
-                            src={preset.url}
-                            alt={preset.name}
-                            className="w-8 h-8 object-cover rounded-lg mb-1 group-hover:scale-105 transition-transform"
-                          />
-                          <span className="text-[9px] text-slate-600 font-medium truncate w-full text-center">
-                            {preset.name}
-                          </span>
-                        </button>
-                      ))}
-                    </div>
+                          {/* Image preview & cover toggle */}
+                          <div className="flex items-center gap-3">
+                            <div className="relative w-16 h-16 rounded-xl bg-slate-50 border border-slate-200 p-1 shrink-0 flex items-center justify-center overflow-hidden">
+                              <img
+                                src={variant.image}
+                                alt={variant.name}
+                                className="max-h-full max-w-full object-contain"
+                                onError={(e) => {
+                                  (e.target as HTMLImageElement).src =
+                                    'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=100&auto=format&fit=crop&q=80';
+                                }}
+                              />
+                            </div>
+
+                            <div className="flex-1 min-w-0">
+                              <div className="flex items-center justify-between gap-1">
+                                {isCover ? (
+                                  <span className="text-[10px] font-extrabold text-emerald-700 bg-emerald-50 border border-emerald-200/80 px-2 py-0.5 rounded-md flex items-center gap-1">
+                                    <Check className="w-3 h-3" /> Primary Cover
+                                  </span>
+                                ) : (
+                                  <button
+                                    type="button"
+                                    onClick={() => handleSetAsCover(variant.image)}
+                                    className="text-[10px] font-bold text-orange-600 hover:text-orange-800 hover:underline"
+                                  >
+                                    Set as Primary Cover
+                                  </button>
+                                )}
+
+                                <button
+                                  type="button"
+                                  onClick={() => handleRemoveVariant(idx)}
+                                  className="p-1 text-slate-400 hover:text-red-600 rounded hover:bg-red-50 transition"
+                                  title="Remove this image"
+                                >
+                                  <Trash2 className="w-3.5 h-3.5" />
+                                </button>
+                              </div>
+
+                              {/* Color Name & Swatch */}
+                              <div className="flex items-center gap-1.5 mt-2">
+                                <div className="relative flex items-center">
+                                  <input
+                                    type="color"
+                                    value={variant.colorCode || '#18181b'}
+                                    onChange={(e) => handleUpdateVariant(idx, { colorCode: e.target.value })}
+                                    className="w-7 h-7 p-0.5 rounded-lg border border-slate-300 cursor-pointer bg-white"
+                                    title="Pick swatch color"
+                                  />
+                                </div>
+                                <input
+                                  type="text"
+                                  value={variant.name}
+                                  onChange={(e) => handleUpdateVariant(idx, { name: e.target.value })}
+                                  placeholder="e.g. Black"
+                                  className="flex-1 min-w-0 px-2 py-1 text-xs font-bold text-slate-800 border rounded-lg bg-slate-50 focus:bg-white focus:ring-2 focus:ring-orange-500 outline-none"
+                                />
+                              </div>
+                            </div>
+                          </div>
+
+                          {/* Quick Color Presets */}
+                          <div className="pt-1.5 border-t border-slate-100">
+                            <span className="text-[9px] text-slate-400 font-bold uppercase tracking-wider block mb-1">
+                              Quick Color Preset:
+                            </span>
+                            <div className="flex flex-wrap gap-1">
+                              {COMMON_COLOR_PRESETS.map((preset) => (
+                                <button
+                                  key={preset.name}
+                                  type="button"
+                                  onClick={() => handleUpdateVariant(idx, { name: preset.name, colorCode: preset.hex })}
+                                  className={`text-[9px] font-semibold px-1.5 py-0.5 rounded-md border flex items-center gap-1 transition ${
+                                    variant.name.toLowerCase() === preset.name.toLowerCase()
+                                      ? 'bg-orange-50 border-orange-300 text-orange-700'
+                                      : 'bg-white border-slate-200 text-slate-600 hover:border-slate-300'
+                                  }`}
+                                >
+                                  <span
+                                    className="w-2 h-2 rounded-full border border-slate-300 shrink-0"
+                                    style={{ backgroundColor: preset.hex }}
+                                  />
+                                  <span>{preset.name}</span>
+                                </button>
+                              ))}
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 </div>
               )}

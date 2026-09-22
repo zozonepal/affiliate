@@ -172,6 +172,7 @@ export function subscribeToProducts(
             badge: data.badge || '',
             promoCode: data.promoCode || undefined,
             image: data.image || '',
+            colorVariants: Array.isArray(data.colorVariants) ? data.colorVariants : undefined,
             affiliateUrl: data.affiliateUrl || 'https://www.daraz.com.np',
             description: data.description || '',
             rating: data.rating ? Number(data.rating) : 4.5,
@@ -225,6 +226,7 @@ export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
     badge: deal.badge || '',
     promoCode: deal.promoCode || '',
     image: deal.image || '',
+    colorVariants: Array.isArray(deal.colorVariants) ? deal.colorVariants : [],
     affiliateUrl: deal.affiliateUrl || 'https://www.daraz.com.np',
     description: deal.description || '',
     seller: deal.seller || 'Daraz Nepal Verified Seller',
@@ -256,6 +258,7 @@ export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
       badge: payload.badge || undefined,
       promoCode: payload.promoCode || undefined,
       image: payload.image,
+      colorVariants: payload.colorVariants,
       affiliateUrl: payload.affiliateUrl,
       description: payload.description,
       seller: payload.seller,
@@ -307,6 +310,7 @@ export async function updateProductInFirestore(id: string, updates: Partial<Prod
   if (updates.badge !== undefined) payload.badge = updates.badge || '';
   if (updates.promoCode !== undefined) payload.promoCode = updates.promoCode || '';
   if (updates.image !== undefined) payload.image = updates.image || '';
+  if (updates.colorVariants !== undefined) payload.colorVariants = updates.colorVariants;
   if (updates.affiliateUrl !== undefined) payload.affiliateUrl = updates.affiliateUrl || '';
   if (updates.description !== undefined) payload.description = updates.description || '';
   if (updates.seller !== undefined) payload.seller = updates.seller || 'Daraz Nepal Store';
@@ -536,3 +540,29 @@ export async function loadUserWishlist(userId: string): Promise<string[]> {
   }
   return [];
 }
+
+/**
+ * Add a newsletter subscriber to Firestore / local storage
+ */
+export async function addSubscriberToNewsletter(email: string) {
+  try {
+    const subscriberRef = collection(db, 'subscribers');
+    await addDoc(subscriberRef, {
+      email,
+      subscribedAt: serverTimestamp()
+    });
+  } catch (err) {
+    console.warn('Could not save subscriber to Firestore, saving to local cache:', err);
+    const existing = localStorage.getItem('dealfinder_subscribers') || '[]';
+    try {
+      const parsed = JSON.parse(existing);
+      if (!parsed.includes(email)) {
+        parsed.push(email);
+        localStorage.setItem('dealfinder_subscribers', JSON.stringify(parsed));
+      }
+    } catch {
+      localStorage.setItem('dealfinder_subscribers', JSON.stringify([email]));
+    }
+  }
+}
+

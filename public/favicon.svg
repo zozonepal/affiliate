@@ -1,0 +1,200 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512">
+  <defs>
+    <!-- Orange D Fill Gradient -->
+    <linearGradient id="dGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#FF7A29" />
+      <stop offset="50%" stop-color="#F26522" />
+      <stop offset="100%" stop-color="#EA580C" />
+    </linearGradient>
+
+    <!-- Metallic Cart Gradient -->
+    <linearGradient id="cartMetal" x1="0%" y1="0%" x2="0%" y2="100%">
+      <stop offset="0%" stop-color="#94A3B8" />
+      <stop offset="50%" stop-color="#64748B" />
+      <stop offset="100%" stop-color="#475569" />
+    </linearGradient>
+
+    <!-- Chrome Highlight -->
+    <linearGradient id="chromeHighlight" x1="0%" y1="0%" x2="100%" y2="0%">
+      <stop offset="0%" stop-color="#E2E8F0" />
+      <stop offset="50%" stop-color="#94A3B8" />
+      <stop offset="100%" stop-color="#64748B" />
+    </linearGradient>
+
+    <!-- Drop Shadow for Ground -->
+    <radialGradient id="shadowGrad" cx="50%" cy="50%" r="50%">
+      <stop offset="0%" stop-color="#1E293B" stop-opacity="0.35" />
+      <stop offset="60%" stop-color="#334155" stop-opacity="0.15" />
+      <stop offset="100%" stop-color="#000000" stop-opacity="0" />
+    </radialGradient>
+
+    <!-- Soft Filter for Depth -->
+    <filter id="cartShadow" x="-10%" y="-10%" width="120%" height="120%">
+      <feDropShadow dx="0" dy="4" stdDeviation="4" flood-color="#000000" flood-opacity="0.25" />
+    </filter>
+  </defs>
+
+  <g transform="translate(0, 5)">
+    <!-- 1. THE BIG ORANGE SERIF 'D' -->
+    <g id="letter-D">
+      <!-- Main D Body with Serifs -->
+      <!-- Outer path & Inner counter combined for perfect rendering with stroke -->
+      <path 
+        d="M 160 80 
+           L 300 80 
+           C 385 80 435 130 435 220 
+           C 435 310 385 360 300 360 
+           L 160 360 
+           L 160 335 
+           L 190 335 
+           L 190 105 
+           L 160 105 
+           Z 
+           M 235 118 
+           L 235 322 
+           L 295 322 
+           C 355 322 390 282 390 220 
+           C 390 158 355 118 295 118 
+           Z" 
+        fill="url(#dGradient)" 
+        stroke="#1E293B" 
+        stroke-width="7" 
+        stroke-linejoin="round"
+        fill-rule="evenodd"
+      />
+      <!-- Top Left Serif Accent -->
+      <path d="M 140 80 L 210 80 L 210 92 L 140 92 Z" fill="url(#dGradient)" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+      <!-- Bottom Left Serif Accent -->
+      <path d="M 140 348 L 210 348 L 210 360 L 140 360 Z" fill="url(#dGradient)" stroke="#1E293B" stroke-width="5" stroke-linejoin="round" />
+    </g>
+
+    <!-- 2. GROUND SHADOW -->
+    <ellipse cx="270" cy="460" rx="140" ry="12" fill="url(#shadowGrad)" />
+
+    <!-- 3. THE SHOPPING CART (Foreground) -->
+    <g id="shopping-cart" filter="url(#cartShadow)">
+      <!-- Cart Handle Grips -->
+      <path d="M 120 225 L 145 220 L 175 285" fill="none" stroke="#475569" stroke-width="9" stroke-linecap="round" stroke-linejoin="round" />
+      <path d="M 116 226 L 146 220" stroke="#1E293B" stroke-width="11" stroke-linecap="round" />
+      <path d="M 118 226 L 144 221" stroke="#F97316" stroke-width="7" stroke-linecap="round" />
+
+      <!-- Chassis / Undercarriage Tube Frame -->
+      <path 
+        d="M 175 285 
+           L 185 410 
+           C 185 422 195 428 208 428 
+           L 365 428 
+           C 378 428 388 420 388 408 
+           L 400 285" 
+        fill="none" 
+        stroke="#334155" 
+        stroke-width="7" 
+        stroke-linejoin="round" 
+        stroke-linecap="round" 
+      />
+      <path 
+        d="M 185 428 L 180 445 
+           M 365 428 L 368 445" 
+        stroke="#1E293B" 
+        stroke-width="7" 
+        stroke-linecap="round" 
+      />
+
+      <!-- Cart Basket Frame (Solid Outer Outline) -->
+      <!-- Back wall, bottom, front slope, top rim -->
+      <polygon 
+        points="175,285 195,385 385,385 420,285" 
+        fill="#F8FAFC" 
+        fill-opacity="0.12" 
+        stroke="#1E293B" 
+        stroke-width="8" 
+        stroke-linejoin="round" 
+      />
+      <!-- Top Rim Heavy Bar -->
+      <line x1="170" y1="285" x2="425" y2="285" stroke="url(#chromeHighlight)" stroke-width="10" stroke-linecap="round" />
+      <line x1="170" y1="285" x2="425" y2="285" stroke="#1E293B" stroke-width="3" stroke-linecap="round" />
+
+      <!-- Horizontal Wire Mesh Bars -->
+      <line x1="179" y1="310" x2="414" y2="310" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
+      <line x1="184" y1="335" x2="404" y2="335" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
+      <line x1="189" y1="360" x2="394" y2="360" stroke="#475569" stroke-width="4.5" stroke-linecap="round" />
+
+      <!-- Vertical Wire Mesh Bars -->
+      <line x1="210" y1="288" x2="218" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
+      <line x1="240" y1="288" x2="246" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
+      <line x1="270" y1="288" x2="274" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
+      <line x1="300" y1="288" x2="302" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
+      <line x1="330" y1="288" x2="330" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
+      <line x1="360" y1="288" x2="358" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
+      <line x1="390" y1="288" x2="384" y2="382" stroke="#64748B" stroke-width="4" stroke-linecap="round" />
+
+      <!-- Basket Bottom Shelf Reinforcement -->
+      <line x1="195" y1="385" x2="385" y2="385" stroke="#1E293B" stroke-width="7" stroke-linecap="round" />
+
+      <!-- Wheels (Front & Rear) -->
+      <!-- Rear Left Wheel -->
+      <g transform="translate(180, 452)">
+        <!-- Wheel Fork -->
+        <path d="M 0 -10 L -4 4 L 4 4 Z" fill="#334155" stroke="#0F172A" stroke-width="2" />
+        <!-- Outer Tire -->
+        <circle cx="0" cy="4" r="15" fill="#1E293B" stroke="#0F172A" stroke-width="3" />
+        <!-- Metallic Hubcap -->
+        <circle cx="0" cy="4" r="9" fill="#CBD5E1" stroke="#475569" stroke-width="2" />
+        <circle cx="0" cy="4" r="4" fill="#64748B" />
+        <!-- Center Axle Pin -->
+        <circle cx="0" cy="4" r="2" fill="#0F172A" />
+      </g>
+
+      <!-- Front Right Wheel -->
+      <g transform="translate(368, 452)">
+        <!-- Wheel Fork -->
+        <path d="M 0 -10 L -4 4 L 4 4 Z" fill="#334155" stroke="#0F172A" stroke-width="2" />
+        <!-- Outer Tire -->
+        <circle cx="0" cy="4" r="15" fill="#1E293B" stroke="#0F172A" stroke-width="3" />
+        <!-- Metallic Hubcap -->
+        <circle cx="0" cy="4" r="9" fill="#CBD5E1" stroke="#475569" stroke-width="2" />
+        <circle cx="0" cy="4" r="4" fill="#64748B" />
+        <!-- Center Axle Pin -->
+        <circle cx="0" cy="4" r="2" fill="#0F172A" />
+      </g>
+    </g>
+
+    <!-- 4. "Finder Nepal" TEXT (Underneath Basket) -->
+    
+    <g id="brand-text">
+      <!-- Crisp White/Warm Glow Backing for contrast against any background -->
+      <text 
+        x="285" 
+        y="418" 
+        font-family="'Georgia', 'Times New Roman', 'Playfair Display', serif" 
+        font-size="34" 
+        font-weight="900" 
+        font-style="normal" 
+        letter-spacing="0.5" 
+        text-anchor="middle" 
+        fill="#FFFFFF" 
+        stroke="#FFFFFF" 
+        stroke-width="7" 
+        stroke-linejoin="round"
+      >
+        Finder Nepal
+      </text>
+      <!-- Foreground Serif Text in Brand Orange -->
+      <text 
+        x="285" 
+        y="418" 
+        font-family="'Georgia', 'Times New Roman', 'Playfair Display', serif" 
+        font-size="34" 
+        font-weight="900" 
+        font-style="normal" 
+        letter-spacing="0.5" 
+        text-anchor="middle" 
+        fill="#EA580C" 
+        stroke="#9A3412" 
+        stroke-width="1.2"
+      >
+        Finder Nepal
+      </text>
+    </g>
+  </g>
+</svg>

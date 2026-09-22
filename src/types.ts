@@ -1,3 +1,10 @@
+export interface ColorVariant {
+  id?: string;
+  name: string; // e.g. "Midnight Black", "Glacier Blue", "Silver", "Rose Pink"
+  colorCode?: string; // hex code like "#111827", "#3b82f6", "#e2e8f0"
+  image: string; // Image URL or direct uploaded data URL for this color
+}
+
 export interface ProductDeal {
   id: string;
   title: string;
@@ -7,6 +14,7 @@ export interface ProductDeal {
   badge?: string;
   promoCode?: string;
   image: string;
+  colorVariants?: ColorVariant[];
   affiliateUrl: string;
   description?: string;
   rating?: number;

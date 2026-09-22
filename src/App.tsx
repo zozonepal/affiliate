@@ -8,7 +8,8 @@ import {
   loadUserWishlist, 
   logoutCurrentAuth,
   ADMIN_EMAILS,
-  deleteProductFromFirestore
+  deleteProductFromFirestore,
+  addSubscriberToNewsletter
 } from './lib/firebase';
 import { ProductDeal, UserAccount, CloudSyncStatus, PriceFilterRange, SortOption } from './types';
 import { Navbar } from './components/Navbar';
@@ -21,7 +22,11 @@ import { AdminModal } from './components/AdminModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { SubmitDealModal } from './components/SubmitDealModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
-import { Loader2, PackageOpen, RotateCcw, Plus, Sparkles } from 'lucide-react';
+import { MobileHeader } from './components/MobileHeader';
+import { MobileFilterModal } from './components/MobileFilterModal';
+import { SponsoredSpotlight } from './components/SponsoredSpotlight';
+import { PushNotificationToast } from './components/PushNotificationToast';
+import { Loader2, PackageOpen, RotateCcw, Plus, Sparkles, X as XIcon } from 'lucide-react';
 
 export default function App() {
   const [products, setProducts] = useState<ProductDeal[]>([]);
@@ -43,6 +48,7 @@ export default function App() {
   });
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isSubmitDealOpen, setIsSubmitDealOpen] = useState(false);
+  const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<ProductDeal | null>(null);
   const [editingProductForAdmin, setEditingProductForAdmin] = useState<ProductDeal | null>(null);
 
@@ -117,6 +123,20 @@ export default function App() {
     return () => unsubscribe();
   }, []);
 
+  // Auto-open deal when opened from a WhatsApp / Facebook shareable link
+  useEffect(() => {
+    if (products.length > 0 && !activeQuickViewProduct) {
+      const params = new URLSearchParams(window.location.search);
+      const sharedDealId = params.get('deal');
+      if (sharedDealId) {
+        const found = products.find((p) => p.id === sharedDealId);
+        if (found) {
+          setActiveQuickViewProduct(found);
+        }
+      }
+    }
+  }, [products]);
+
   // Wishlist handlers
   const handleToggleWishlist = (productId: string) => {
     setWishlist((prev) => {
@@ -170,6 +190,12 @@ export default function App() {
   const handleAuthSuccess = async (loggedInUser: UserAccount) => {
     setUser(loggedInUser);
     localStorage.setItem('dealfinder_user_session', JSON.stringify(loggedInUser));
+    
+    // Automatically register user's email into the automated notification system
+    if (loggedInUser.email && !loggedInUser.email.includes('guest')) {
+      addSubscriberToNewsletter(loggedInUser.email).catch(console.error);
+    }
+
     if (loggedInUser.role === 'admin' || loggedInUser.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') {
       setIsAdminOpen(true);
     }
@@ -231,6 +257,30 @@ export default function App() {
     });
   }, [products, searchQuery, selectedCategory, priceFilter, sortOption]);
 
+  // Automatically score and insert the BEST deals without any manual interference
+  const bestDeals = useMemo(() => {
+    if (products.length === 0) return [];
+    
+    return [...products]
+      .map((p) => {
+        const orig = p.originalPrice || Math.round(p.price * 1.35);
+        const savings = orig > p.price ? orig - p.price : 0;
+        const discountPercent = orig > p.price ? Math.round((savings / orig) * 100) : 0;
+        
+        // Multi-factor Deal Value Score (calculates highest % discount, savings, community upvotes, and ratings)
+        const dealScore = 
+          discountPercent * 2.5 + 
+          (p.upvotes || 0) * 3 + 
+          ((p.rating || 4.5) * 3) + 
+          (p.promoCode ? 15 : 0) + 
+          (p.badge ? 10 : 0);
+          
+        return { product: p, dealScore };
+      })
+      .sort((a, b) => b.dealScore - a.dealScore)
+      .map((item) => item.product);
+  }, [products]);
+
   const resetAllFilters = () => {
     setSearchQuery('');
     setSelectedCategory('All');
@@ -241,11 +291,53 @@ export default function App() {
   return (
     <div className="min-h-screen bg-slate-50/50 text-slate-800 flex flex-col font-sans selection:bg-orange-500 selection:text-white">
       
-      {/* Top Navbar */}
-      <Navbar
+      {/* Desktop Header & Hero (Loaded for desktop screens) */}
+      <div className="hidden md:block">
+        <Navbar
+          user={user}
+          syncStatus={syncStatus}
+          wishlistCount={wishlist.length}
+          deals={products}
+          onQuickView={setActiveQuickViewProduct}
+          onOpenAuth={() => setIsAuthOpen(true)}
+          onOpenAdmin={() => {
+            if (user?.role === 'admin') {
+              setIsAdminOpen(true);
+            } else {
+              setIsAuthOpen(true);
+            }
+          }}
+          onOpenWishlist={() => setIsWishlistOpen(true)}
+          onLogout={handleLogout}
+        />
+
+        <Hero
+          searchQuery={searchQuery}
+          onSearchChange={setSearchQuery}
+          priceFilter={priceFilter}
+          onPriceFilterChange={setPriceFilter}
+          sortOption={sortOption}
+          onSortChange={setSortOption}
+          totalDeals={products.length}
+          onOpenAdmin={() => setIsAdminOpen(true)}
+        />
+      </div>
+
+      {/* Mobile App Header (Loaded for mobile devices) */}
+      <MobileHeader
         user={user}
-        syncStatus={syncStatus}
         wishlistCount={wishlist.length}
+        deals={products}
+        onQuickView={setActiveQuickViewProduct}
+        searchQuery={searchQuery}
+        onSearchChange={setSearchQuery}
+        selectedCategory={selectedCategory}
+        onSelectCategory={setSelectedCategory}
+        categories={categories}
+        priceFilter={priceFilter}
+        sortOption={sortOption}
+        onOpenFilterModal={() => setIsMobileFilterOpen(true)}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenAdmin={() => {
           if (user?.role === 'admin') {
@@ -254,32 +346,68 @@ export default function App() {
             setIsAuthOpen(true);
           }
         }}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-        onLogout={handleLogout}
+        onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
+        totalDeals={filteredProducts.length}
       />
 
-      {/* Hero Section with Search & Sorting */}
-      <Hero
-        searchQuery={searchQuery}
-        onSearchChange={setSearchQuery}
-        priceFilter={priceFilter}
-        onPriceFilterChange={setPriceFilter}
-        sortOption={sortOption}
-        onSortChange={setSortOption}
-        totalDeals={products.length}
-        onOpenAdmin={() => setIsAdminOpen(true)}
-      />
-
-      {/* Main Content Area */}
-      <main className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-4 flex-1 w-full">
+      {/* Main Content Area (With bottom padding compensation for mobile nav) */}
+      <main className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-4 flex-1 w-full pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
         
-        {/* Category Filter Pills */}
-        <CategoryFilter
-          categories={categories}
-          selectedCategory={selectedCategory}
-          onSelectCategory={setSelectedCategory}
-          productCount={filteredProducts.length}
-        />
+        {/* Category Filter Pills (Desktop only, as mobile has native header scroll pills) */}
+        <div className="hidden md:block">
+          <CategoryFilter
+            categories={categories}
+            selectedCategory={selectedCategory}
+            onSelectCategory={setSelectedCategory}
+            productCount={filteredProducts.length}
+          />
+        </div>
+
+        {/* Mobile Active Filter Badge Row */}
+        <div className="md:hidden flex items-center justify-between gap-2 px-1 mb-2.5 text-xs text-slate-500">
+          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
+            <span className="font-black text-slate-800 text-[11px] shrink-0">
+              {filteredProducts.length} Deals
+            </span>
+            {priceFilter !== 'all' && (
+              <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full text-[10px] shrink-0">
+                <span>{priceFilter === 'under1k' ? '< Rs. 1k' : priceFilter === '1k-3k' ? '1k-3k' : priceFilter === '3k-5k' ? '3k-5k' : '5k+'}</span>
+                <button onClick={() => setPriceFilter('all')} className="hover:text-orange-950 font-black">×</button>
+              </span>
+            )}
+            {sortOption !== 'featured' && (
+              <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full text-[10px] shrink-0">
+                <span>{sortOption}</span>
+                <button onClick={() => setSortOption('featured')} className="hover:text-orange-950 font-black">×</button>
+              </span>
+            )}
+            {searchQuery && (
+              <span className="inline-flex items-center gap-1 bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded-full text-[10px] shrink-0">
+                <span>"{searchQuery.length > 15 ? searchQuery.slice(0, 15) + '...' : searchQuery}"</span>
+                <button onClick={() => setSearchQuery('')} className="hover:text-slate-950 font-black">×</button>
+              </span>
+            )}
+          </div>
+          {(priceFilter !== 'all' || sortOption !== 'featured' || searchQuery || selectedCategory !== 'All') && (
+            <button
+              onClick={resetAllFilters}
+              className="text-[10px] text-orange-600 font-bold shrink-0 hover:underline active:text-orange-700"
+            >
+              Reset
+            </button>
+          )}
+        </div>
+
+        {/* Top Best Deals Spotlight Banner (50% shorter length, automatically highlights best deals) */}
+        {!isLoading && !searchQuery && selectedCategory === 'All' && priceFilter === 'all' && bestDeals.length > 0 && (
+          <SponsoredSpotlight
+            deals={bestDeals.slice(0, 4)}
+            deal={bestDeals[0]}
+            onQuickView={setActiveQuickViewProduct}
+            onToggleWishlist={handleToggleWishlist}
+            isWishlisted={wishlist.includes(bestDeals[0].id)}
+          />
+        )}
 
         {/* Product Grid or Loading / Empty States */}
         {isLoading ? (
@@ -423,6 +551,53 @@ export default function App() {
         onClose={() => setIsSubmitDealOpen(false)}
         user={user}
         onOpenAuth={() => setIsAuthOpen(true)}
+      />
+
+      {/* Mobile Bottom Bar Navigation */}
+      <MobileBottomNav
+        user={user}
+        wishlistCount={wishlist.length}
+        onOpenWishlist={() => setIsWishlistOpen(true)}
+        onOpenAuth={() => setIsAuthOpen(true)}
+        onOpenAdmin={() => {
+          if (user?.role === 'admin') {
+            setIsAdminOpen(true);
+          } else {
+            setIsAuthOpen(true);
+          }
+        }}
+        onOpenFilter={() => setIsMobileFilterOpen(true)}
+        onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
+        isFilterActive={priceFilter !== 'all' || sortOption !== 'featured'}
+      />
+
+      {/* Mobile Filter & Sort Bottom Sheet Modal */}
+      <MobileFilterModal
+        isOpen={isMobileFilterOpen}
+        onClose={() => setIsMobileFilterOpen(false)}
+        priceFilter={priceFilter}
+        onPriceFilterChange={(price) => {
+          setPriceFilter(price);
+          setIsMobileFilterOpen(false);
+        }}
+        sortOption={sortOption}
+        onSortChange={(sort) => {
+          setSortOption(sort);
+          setIsMobileFilterOpen(false);
+        }}
+        totalDealsCount={filteredProducts.length}
+        onReset={() => {
+          setPriceFilter('all');
+          setSortOption('featured');
+          setIsMobileFilterOpen(false);
+        }}
+      />
+
+      {/* Real-time In-App Push Notification (Fires automatically on sign-in like Facebook/native apps) */}
+      <PushNotificationToast
+        user={user}
+        latestDeal={bestDeals[0] || products[0] || null}
+        onQuickView={setActiveQuickViewProduct}
       />
 
     </div>

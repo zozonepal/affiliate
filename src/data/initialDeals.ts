@@ -9,6 +9,23 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     badge: 'Best Value Under 2k',
     promoCode: 'ULTIMA150',
     image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Carbon Black',
+        colorCode: '#18181b',
+        image: 'https://images.unsplash.com/photo-1590658268037-6bf12165a8df?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Arctic White',
+        colorCode: '#f1f5f9',
+        image: 'https://images.unsplash.com/photo-1606220588913-b3aacb4d2f46?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Ocean Blue',
+        colorCode: '#0284c7',
+        image: 'https://images.unsplash.com/photo-1572536147248-ac59a8abfa4b?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/m8bK',
     description: '13mm dynamic drivers with deep bass, low latency gaming mode (60ms), IPX4 water resistance, and fast Type-C charging.',
     rating: 4.6,
@@ -26,6 +43,18 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     badge: 'Daraz Verified Top Seller',
     promoCode: 'FANTECH10',
     image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Stealth Black',
+        colorCode: '#0f172a',
+        image: 'https://images.unsplash.com/photo-1587829741301-dc798b83add3?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Mercury White',
+        colorCode: '#e2e8f0',
+        image: 'https://images.unsplash.com/photo-1618384887929-16ec33fab9ef?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/u9kL',
     description: '19 Anti-ghosting keys, RGB chroma lighting with 3 spectrum modes, ergonomic floating keycaps, brushed aluminium top plate.',
     rating: 4.8,
@@ -42,6 +71,23 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     originalPrice: 7999,
     badge: 'Top Pick for Fitness',
     image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Obsidian Black',
+        colorCode: '#1e293b',
+        image: 'https://images.unsplash.com/photo-1579586337278-3befd40fd17a?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Blush Pink',
+        colorCode: '#f472b6',
+        image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Glacier Silver',
+        colorCode: '#cbd5e1',
+        image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/v2eT',
     description: 'Accurate 4-satellite positioning systems, SpO2 & 24H heart rate tracking, 60+ sports modes, 5 ATM water-resistance.',
     rating: 4.7,
@@ -58,6 +104,18 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     originalPrice: 6500,
     badge: 'Laptop Compatible 65W',
     image: 'https://images.unsplash.com/photo-1609592426507-7d5fa369527f?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Space Black',
+        colorCode: '#09090b',
+        image: 'https://images.unsplash.com/photo-1609592426507-7d5fa369527f?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Metallic Silver',
+        colorCode: '#94a3b8',
+        image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/w7qR',
     description: 'Supports USB-C Power Delivery 65W, digital LED display showing voltage and current, fast charges MacBook Air, iPhones, Samsung.',
     rating: 4.9,
@@ -74,6 +132,18 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     originalPrice: 3200,
     badge: 'Popular for Gamers',
     image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Matte Black RGB',
+        colorCode: '#111827',
+        image: 'https://images.unsplash.com/photo-1615663245857-ac93bb7c39e7?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Pure White RGB',
+        colorCode: '#f8fafc',
+        image: 'https://images.unsplash.com/photo-1527864550417-7fd91fc51a46?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/k3pM',
     description: 'High precision optical sensor up to 10,000 DPI, 16.8 million RGB color options, Omron switches with 20 million click lifespan.',
     rating: 4.7,
@@ -90,6 +160,23 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     originalPrice: 4499,
     badge: '38% OFF Special',
     image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Lush Black',
+        colorCode: '#0f172a',
+        image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Hazel Beige',
+        colorCode: '#d4b996',
+        image: 'https://images.unsplash.com/photo-1546435770-a3e426bf472b?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Aqua Blue',
+        colorCode: '#0284c7',
+        image: 'https://images.unsplash.com/photo-1484704849700-f032a568e944?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/x4nT',
     description: '40mm drivers for punchy bass, plush earcups with matte finish, adaptive earcups and lightweight folding design.',
     rating: 4.5,
@@ -106,6 +193,18 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     originalPrice: 2499,
     badge: 'Budget Hero Under 2k',
     image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Classic White',
+        colorCode: '#f8fafc',
+        image: 'https://images.unsplash.com/photo-1583863788434-e58a36330cf0?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Deep Black',
+        colorCode: '#18181b',
+        image: 'https://images.unsplash.com/photo-1609592424109-dd9892f1b177?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/z9mL',
     description: 'Compact pocketable 20000mAh capacity, dual USB 2.1A output, micro-USB & Type-C dual input with safety temperature protection.',
     rating: 4.4,
@@ -122,6 +221,18 @@ export const INITIAL_DEALS: Omit<ProductDeal, 'id'>[] = [
     originalPrice: 5999,
     badge: 'Bestselling Tracker',
     image: 'https://images.unsplash.com/photo-1557438159-51eec7a6c9e8?w=600&auto=format&fit=crop&q=80',
+    colorVariants: [
+      {
+        name: 'Graphite Black',
+        colorCode: '#18181b',
+        image: 'https://images.unsplash.com/photo-1557438159-51eec7a6c9e8?w=600&auto=format&fit=crop&q=80'
+      },
+      {
+        name: 'Champagne Gold',
+        colorCode: '#fef08a',
+        image: 'https://images.unsplash.com/photo-1508685096489-7aacd43bd3b1?w=600&auto=format&fit=crop&q=80'
+      }
+    ],
     affiliateUrl: 'https://s.daraz.com.np/s/p5jH',
     description: '60Hz smooth AMOLED display with auto brightness, stylish quick-release straps, up to 16 days typical battery life, 50m water resistance.',
     rating: 4.8,

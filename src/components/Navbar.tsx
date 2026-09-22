@@ -1,10 +1,13 @@
 import { ShoppingBag, ShieldCheck, Heart, User as UserIcon, LogOut, Flame, Wifi, RefreshCw } from 'lucide-react';
-import { UserAccount, CloudSyncStatus } from '../types';
+import { UserAccount, CloudSyncStatus, ProductDeal } from '../types';
+import { NotificationCenter } from './NotificationCenter';
 
 interface NavbarProps {
   user: UserAccount | null;
   syncStatus: CloudSyncStatus;
   wishlistCount: number;
+  deals?: ProductDeal[];
+  onQuickView?: (product: ProductDeal) => void;
   onOpenAuth: () => void;
   onOpenAdmin: () => void;
   onOpenWishlist: () => void;
@@ -15,6 +18,8 @@ export function Navbar({
   user,
   syncStatus,
   wishlistCount,
+  deals = [],
+  onQuickView = () => {},
   onOpenAuth,
   onOpenAdmin,
   onOpenWishlist,
@@ -26,9 +31,9 @@ export function Navbar({
         
         {/* Brand Logo */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
-          <a href="#" className="flex items-center gap-2 group shrink-0">
-            <div className="w-8 h-8 sm:w-10 sm:h-10 rounded-xl bg-gradient-to-tr from-orange-600 to-amber-500 flex items-center justify-center text-white shadow-sm shadow-orange-500/20 group-hover:scale-105 transition-transform shrink-0">
-              <ShoppingBag className="w-4 h-4 sm:w-5 sm:h-5" />
+          <a href="#" className="flex items-center gap-2.5 group shrink-0">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs group-hover:scale-105 transition-transform shrink-0 overflow-hidden">
+              <img src="/favicon.svg" alt="DealFinder Nepal Logo" className="w-full h-full object-contain" />
             </div>
             <div className="shrink-0">
               <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-none whitespace-nowrap">
@@ -43,31 +48,19 @@ export function Navbar({
               </p>
             </div>
           </a>
-
-          {/* Cloud Sync Status Indicator */}
-          <div className="hidden md:flex items-center gap-1.5 ml-4 px-2.5 py-1 rounded-full text-[11px] font-semibold border bg-slate-50 border-slate-200 text-slate-600">
-            {syncStatus === 'connected' ? (
-              <>
-                <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span>
-                <span className="text-emerald-700 font-medium">Real-time Firestore</span>
-              </>
-            ) : syncStatus === 'connecting' ? (
-              <>
-                <RefreshCw className="w-3 h-3 text-amber-500 animate-spin" />
-                <span className="text-amber-700 font-medium">Connecting...</span>
-              </>
-            ) : (
-              <>
-                <span className="w-2 h-2 rounded-full bg-amber-500"></span>
-                <span className="text-slate-600 font-medium">Local Cache Mode</span>
-              </>
-            )}
-          </div>
         </div>
 
         {/* Right Navigation Actions */}
         <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
           
+          {/* Notification Center (Auto Push Deals) */}
+          <NotificationCenter
+            user={user}
+            deals={deals}
+            onQuickView={onQuickView}
+            onOpenAuth={onOpenAuth}
+          />
+
           {/* Wishlist Button */}
           <button
             id="nav-wishlist-btn"
