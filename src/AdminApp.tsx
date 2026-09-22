@@ -312,7 +312,7 @@ export default function AdminApp() {
         <div className="w-full max-w-md bg-slate-900 border border-slate-800 p-8 rounded-3xl shadow-2xl">
           <div className="text-center mb-8">
             <div className="w-16 h-16 mx-auto mb-3 bg-white border border-slate-800 rounded-2xl flex items-center justify-center p-2 shadow-xl shadow-orange-500/10">
-              <img src="/logo.svg" alt="Finder Nepal" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Finder Nepal" className="w-full h-full object-contain" />
             </div>
             <h1 className="text-2xl font-black tracking-tight text-white">DealFinder Nepal</h1>
             <p className="text-xs text-orange-400 font-bold uppercase tracking-widest mt-1">
@@ -403,7 +403,7 @@ export default function AdminApp() {
           
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white border border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-md">
-              <img src="/logo.svg" alt="Finder Nepal" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Finder Nepal" className="w-full h-full object-contain" />
             </div>
             <div>
               <div className="flex items-center gap-2">

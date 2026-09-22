@@ -454,7 +454,7 @@ export default function App() {
       <footer className="bg-white border-t border-slate-200/80 py-8 px-4 text-center text-xs text-slate-500 mt-12 mb-16 md:mb-0">
         <div className="max-w-4xl mx-auto space-y-3">
           <div className="flex items-center justify-center gap-2.5 font-bold text-slate-800">
-            <img src="/logo.svg" alt="Finder Nepal Logo" className="w-6 h-6 object-contain" />
+            <img src="/logo.png" alt="Finder Nepal Logo" className="w-6 h-6 object-contain" />
             <span>DealFinder Nepal</span>
             <span className="text-slate-300">•</span>
             <span className="text-orange-600">🇳🇵 Verified Tech & Lifestyle Recommendations</span>

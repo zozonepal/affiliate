@@ -117,7 +117,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
           <div className="flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-2xs shrink-0">
-              <img src="/logo.svg" alt="Finder Nepal" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Finder Nepal" className="w-full h-full object-contain" />
             </div>
             <div>
               <h3 className="font-extrabold text-slate-900 text-base leading-none">

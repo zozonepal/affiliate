@@ -390,7 +390,7 @@ export function AdminModal({
           <div className="flex items-center justify-between gap-2 min-w-0">
             <div className="flex items-center gap-2.5 min-w-0 flex-1">
               <div className="w-9 h-9 sm:w-11 sm:h-11 rounded-xl bg-white border border-slate-200 p-1 flex items-center justify-center shrink-0 shadow-2xs">
-                <img src="/logo.svg" alt="Finder Nepal" className="w-full h-full object-contain" />
+                <img src="/logo.png" alt="Finder Nepal" className="w-full h-full object-contain" />
               </div>
               <div className="min-w-0 flex-1">
                 <h2 className="text-sm sm:text-lg font-extrabold text-slate-900 leading-tight truncate">
