@@ -78,11 +78,11 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
   const handleAdminKeySubmit = (e: FormEvent) => {
     e.preventDefault();
     setErrorMessage(null);
-    if (adminKey === 'admin' || adminKey === 'affiliatedaraz25@gmail.com') {
+    if (adminKey === 'admin' || adminKey === 'zozonepal5@gmail.com' || adminKey === 'affiliatedaraz25@gmail.com') {
       const adminUser: UserAccount = {
         uid: 'admin_local_primary',
-        email: 'affiliatedaraz25@gmail.com',
-        displayName: 'Affiliate Daraz Admin',
+        email: 'zozonepal5@gmail.com',
+        displayName: 'DealFinder Admin',
         role: 'admin',
         wishlist: []
       };

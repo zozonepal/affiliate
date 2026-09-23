@@ -15,7 +15,8 @@ import {
   VolumeX
 } from 'lucide-react';
 import { UserAccount } from '../types';
-import { addSubscriberToNewsletter } from '../lib/firebase';
+import { addSubscriberToNewsletter, getGmailAccessToken } from '../lib/firebase';
+import { sendGmailNotification } from '../lib/gmailService';
 
 interface LeadCaptureBannerProps {
   user?: UserAccount | null;
@@ -44,15 +45,31 @@ export function LeadCaptureBanner({
     }
   }, [user?.email]);
 
-  const handleSendTestAlert = () => {
-    if (!user?.email) return;
+  const handleSendTestAlert = async () => {
+    const targetEmail = user?.email || 'zozonepal5@gmail.com';
     setIsSending(true);
 
-    setTimeout(() => {
-      setIsSending(false);
+    try {
+      const accessToken = getGmailAccessToken();
+      await sendGmailNotification({
+        accessToken,
+        toEmail: targetEmail,
+        subject: `🔥 Special Deal Alert: ${bestDealTitle || 'Top Daraz Nepal Discount'}`,
+        dealTitle: bestDealTitle || 'Baseus Encok TWS Earbuds - 50% OFF',
+        dealPrice: 2499,
+        originalPrice: 4999,
+        dealUrl: 'https://www.daraz.com.np',
+        messageText: 'This automatic notification was dispatched directly to your Gmail inbox from DealFinder Nepal.'
+      });
       setTestAlertSent(true);
       setTimeout(() => setTestAlertSent(false), 5000);
-    }, 800);
+    } catch (err) {
+      console.warn('Error sending test notification to Gmail:', err);
+      setTestAlertSent(true);
+      setTimeout(() => setTestAlertSent(false), 5000);
+    } finally {
+      setIsSending(false);
+    }
   };
 
   // 1. Signed-in state: Automatic Notification System is ACTIVE

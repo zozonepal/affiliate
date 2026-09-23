@@ -65,8 +65,8 @@ export function NotificationCenter({
           <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
             <div className="flex items-center gap-2">
               <h3 className="font-extrabold text-sm text-slate-900">Notifications</h3>
-              <span className="bg-orange-100 text-orange-700 text-[10px] font-black px-2 py-0.5 rounded-full">
-                Auto-Push
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
+                Gmail Inbox Alerts
               </span>
             </div>
             {user ? (
@@ -138,8 +138,8 @@ export function NotificationCenter({
 
           {/* Footer */}
           <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
-            <span className="text-[10px] text-slate-500">
-              ⚡ Automated 24/7 Daraz Nepal deal tracker
+            <span className="text-[10px] text-slate-600 font-medium">
+              📩 Notifications sent directly to Gmail ({user?.email || 'zozonepal5@gmail.com'})
             </span>
           </div>
 

@@ -81,24 +81,11 @@ export function MobileHeader({
             <span className="font-black text-sm sm:text-base tracking-tight text-slate-900 leading-none truncate">
               DealFinder<span className="text-orange-600">NP</span>
             </span>
-            <span className="text-[8px] sm:text-[9px] uppercase font-black bg-orange-100 text-orange-700 px-1 py-0.5 rounded tracking-wide shrink-0">
-              Daraz
-            </span>
           </div>
         </div>
 
         {/* Quick Action Icons */}
         <div className="flex items-center gap-1 sm:gap-1.5 shrink-0">
-          {/* Recommend Deal - Button 1 */}
-          <button
-            onClick={onOpenSubmitDeal}
-            className="w-8 h-8 rounded-xl text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200/80 flex items-center justify-center transition active:scale-95 shrink-0"
-            title="Submit a deal"
-            aria-label="Submit a deal"
-          >
-            <Plus className="w-4 h-4 text-orange-600 shrink-0" />
-          </button>
-
           {/* Notifications */}
           <NotificationCenter
             user={user}

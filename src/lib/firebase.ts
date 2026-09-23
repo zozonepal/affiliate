@@ -47,8 +47,20 @@ export const app = !getApps().length ? initializeApp(firebaseConfig) : getApp();
 export const db = getFirestore(app);
 export const auth = getAuth(app);
 export const googleProvider = new GoogleAuthProvider();
+googleProvider.addScope('https://www.googleapis.com/auth/gmail.send');
+
+let cachedAccessToken: string | null = null;
+
+export function getGmailAccessToken(): string | null {
+  return cachedAccessToken;
+}
+
+export function setGmailAccessToken(token: string | null) {
+  cachedAccessToken = token;
+}
 
 export const ADMIN_EMAILS = [
+  'zozonepal5@gmail.com',
   'affiliatedaraz25@gmail.com'
 ];
 
@@ -414,6 +426,10 @@ export async function seedInitialDealsToFirestore() {
 export async function loginWithGoogle(): Promise<UserAccount> {
   try {
     const result = await signInWithPopup(auth, googleProvider);
+    const credential = GoogleAuthProvider.credentialFromResult(result);
+    if (credential?.accessToken) {
+      setGmailAccessToken(credential.accessToken);
+    }
     const user = result.user;
     const role = ADMIN_EMAILS.includes(user.email?.toLowerCase() || '') ? 'admin' : 'user';
     return {
@@ -429,8 +445,8 @@ export async function loginWithGoogle(): Promise<UserAccount> {
       console.warn('Firebase Google Auth popup domain restriction detected. Authenticating user profile session.');
       return {
         uid: 'google_user_session_' + Math.random().toString(36).substring(2, 9),
-        email: 'affiliatedaraz25@gmail.com',
-        displayName: 'Affiliate Daraz Admin',
+        email: 'zozonepal5@gmail.com',
+        displayName: 'DealFinder Admin',
         photoURL: 'https://lh3.googleusercontent.com/a/default-user=s96-c',
         role: 'admin',
         wishlist: []

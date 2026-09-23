@@ -24,7 +24,7 @@ import { SubmitDealModal } from './components/SubmitDealModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
 import { MobileHeader } from './components/MobileHeader';
 import { MobileFilterModal } from './components/MobileFilterModal';
-import { PushNotificationToast } from './components/PushNotificationToast';
+import { BestDealBanner } from './components/BestDealBanner';
 import { Loader2, PackageOpen, RotateCcw, Plus, Sparkles, X as XIcon } from 'lucide-react';
 
 export default function App() {
@@ -67,7 +67,7 @@ export default function App() {
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
         const userEmail = (firebaseUser.email || '').toLowerCase().trim();
-        const isAdmin = ADMIN_EMAILS.some((e) => e.toLowerCase() === userEmail) || userEmail === 'affiliatedaraz25@gmail.com';
+        const isAdmin = ADMIN_EMAILS.some((e) => e.toLowerCase() === userEmail) || userEmail === 'zozonepal5@gmail.com' || userEmail === 'affiliatedaraz25@gmail.com';
         const currentAccount: UserAccount = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
@@ -79,8 +79,8 @@ export default function App() {
         setUser(currentAccount);
         localStorage.setItem('dealfinder_user_session', JSON.stringify(currentAccount));
 
-        // Automatically open the admin panel when signed in from affiliatedaraz25@gmail.com
-        if (userEmail === 'affiliatedaraz25@gmail.com') {
+        // Automatically open the admin panel when signed in from zozonepal5@gmail.com or affiliatedaraz25@gmail.com
+        if (userEmail === 'zozonepal5@gmail.com' || userEmail === 'affiliatedaraz25@gmail.com') {
           setIsAdminOpen(true);
         }
 
@@ -397,6 +397,16 @@ export default function App() {
           )}
         </div>
 
+        {/* Automated Best Deal Banner: Analyzes all uploaded products and displays the best deal */}
+        {!isLoading && !searchQuery && selectedCategory === 'All' && priceFilter === 'all' && products.length > 0 && (
+          <BestDealBanner
+            products={products}
+            onQuickView={setActiveQuickViewProduct}
+            onToggleWishlist={handleToggleWishlist}
+            isWishlisted={wishlist.includes(products[0]?.id || '')}
+          />
+        )}
+
         {/* Product Grid or Loading / Empty States */}
         {isLoading ? (
           <div className="py-24 text-center">
@@ -580,13 +590,6 @@ export default function App() {
           setSortOption('featured');
           setIsMobileFilterOpen(false);
         }}
-      />
-
-      {/* Real-time In-App Push Notification (Fires automatically on sign-in like Facebook/native apps) */}
-      <PushNotificationToast
-        user={user}
-        latestDeal={bestDeals[0] || products[0] || null}
-        onQuickView={setActiveQuickViewProduct}
       />
 
     </div>

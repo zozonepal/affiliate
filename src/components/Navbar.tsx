@@ -39,9 +39,6 @@ export function Navbar({
               <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-none whitespace-nowrap">
                 <span>DealFinder</span>
                 <span className="text-orange-600">NP</span>
-                <span className="hidden sm:inline-block text-[9px] sm:text-[10px] uppercase font-bold bg-orange-100 text-orange-700 px-1 sm:px-1.5 py-0.5 rounded tracking-wide shrink-0">
-                  Daraz
-                </span>
               </div>
               <p className="hidden md:block text-[11px] text-slate-500 font-medium leading-none mt-0.5 truncate">
                 Finder Nepal Deals & Catalog
