@@ -87,6 +87,89 @@ export default function AdminApp() {
   const [isSeeding, setIsSeeding] = useState(false);
   const [statusMessage, setStatusMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Automatic Product Extractor State
+  const [autoLink, setAutoLink] = useState('');
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractStep, setExtractStep] = useState('');
+
+  const handleAutoExtractProduct = async (autoPublish = false) => {
+    if (!autoLink || !autoLink.trim().startsWith('http')) {
+      setStatusMessage({ type: 'error', text: 'Please paste a valid product link (e.g. Daraz, Amazon, AliExpress URL).' });
+      return;
+    }
+
+    setIsExtracting(true);
+    setStatusMessage(null);
+    setExtractStep('Connecting to product link & fetching page data...');
+
+    try {
+      setExtractStep('Extracting specs, pricing & photos with Gemini AI...');
+      const response = await fetch('/api/extract-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: autoLink.trim() }),
+      });
+
+      const result = await response.json();
+
+      if (!result.success || !result.data) {
+        throw new Error(result.error || 'Failed to extract product details from URL.');
+      }
+
+      const data = result.data;
+      setExtractStep('Auto-filling product details...');
+
+      // Auto-populate state
+      setTitle(data.title || '');
+      setCategory(data.category || 'Audio');
+      setPrice(data.price ? data.price.toString() : '');
+      setOriginalPrice(data.originalPrice ? data.originalPrice.toString() : '');
+      setBadge(data.badge || '');
+      setPromoCode(data.promoCode || '');
+      setImage(data.image || '');
+      setAffiliateUrl(data.affiliateUrl || autoLink.trim());
+      setDescription(data.description || '');
+      setSeller(data.seller || 'Daraz Nepal Store');
+      setRating(data.rating ? data.rating.toString() : '4.8');
+      setReviewsCount(data.reviewsCount ? data.reviewsCount.toString() : '35');
+      setInStock(data.inStock !== false);
+
+      if (autoPublish) {
+        setExtractStep('Publishing directly to Cloud Firestore...');
+        const dealPayload: Omit<ProductDeal, 'id'> = {
+          title: (data.title || '').trim(),
+          category: (data.category || 'Tech').trim(),
+          price: Number(data.price) || 1999,
+          originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
+          badge: data.badge ? data.badge.trim() : undefined,
+          promoCode: data.promoCode ? data.promoCode.trim().toUpperCase() : undefined,
+          image: (data.image || '').trim(),
+          affiliateUrl: (data.affiliateUrl || autoLink).trim(),
+          description: (data.description || '').trim(),
+          seller: (data.seller || 'Daraz Nepal Store').trim(),
+          rating: data.rating ? Number(data.rating) : 4.8,
+          reviewsCount: data.reviewsCount ? Number(data.reviewsCount) : 35,
+          inStock: data.inStock !== false,
+          upvotes: 0,
+          upvotedBy: []
+        };
+
+        await addProductToFirestore(dealPayload);
+        setStatusMessage({ type: 'success', text: `⚡ Product "${data.title}" automatically extracted & published to Cloud Firestore catalog!` });
+        handleResetForm();
+        setAutoLink('');
+      } else {
+        setStatusMessage({ type: 'success', text: `⚡ Product details for "${data.title}" extracted & loaded automatically! Review details below or click Publish.` });
+      }
+    } catch (err: any) {
+      console.error('Auto extraction error:', err);
+      setStatusMessage({ type: 'error', text: 'Automatic Extraction Notice: ' + (err.message || 'Check link or connection') });
+    } finally {
+      setIsExtracting(false);
+      setExtractStep('');
+    }
+  };
+
   // Real-time Firestore sync
   useEffect(() => {
     if (!isAuthenticated) return;
@@ -399,8 +482,8 @@ export default function AdminApp() {
   return (
     <div className="min-h-screen bg-slate-950 text-slate-100 font-sans selection:bg-orange-500 selection:text-white">
       {/* Admin Top Navbar */}
-      <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5">
-        <div className="max-w-7xl mx-auto flex items-center justify-between">
+      <header className="sticky top-0 z-30 bg-slate-900/90 backdrop-blur-md border-b border-slate-800 px-4 sm:px-8 py-3.5 w-full">
+        <div className="w-full px-2 sm:px-4 lg:px-6 flex items-center justify-between">
           
           <div className="flex items-center gap-3">
             <div className="w-10 h-10 rounded-xl bg-white border border-slate-700 p-1 flex items-center justify-center shrink-0 shadow-md">
@@ -450,7 +533,7 @@ export default function AdminApp() {
         </div>
       </header>
 
-      <main className="max-w-7xl mx-auto px-4 sm:px-8 py-8 space-y-8">
+      <main className="w-full px-4 sm:px-8 lg:px-10 py-8 space-y-8">
         
         {/* Status Message Notification */}
         {statusMessage && (
@@ -537,6 +620,76 @@ export default function AdminApp() {
 
           <form onSubmit={handleSubmit} className="space-y-6">
             
+            {/* AUTOMATIC PRODUCT DETAILS EXTRACTION SYSTEM */}
+            {!editingId && (
+              <div className="bg-gradient-to-r from-orange-950/80 via-slate-950 to-amber-950/80 border border-orange-500/40 p-4 sm:p-5 rounded-2xl shadow-lg relative overflow-hidden">
+                <div className="flex items-center gap-2 mb-2">
+                  <Sparkles className="w-5 h-5 text-orange-400 animate-pulse shrink-0" />
+                  <h3 className="text-sm font-black text-white">⚡ Automatic Product Details System</h3>
+                  <span className="text-[10px] font-extrabold uppercase bg-orange-500 text-slate-950 px-2 py-0.5 rounded-full ml-auto">
+                    AI Auto-Fetch
+                  </span>
+                </div>
+                <p className="text-xs text-slate-300 mb-3">
+                  Paste any product link (Daraz Nepal, Amazon, AliExpress, etc.) and our AI system will automatically load title, category, NPR price, original price, discount badge, images, seller, rating, and specifications!
+                </p>
+
+                <div className="flex flex-col sm:flex-row gap-2">
+                  <div className="relative flex-1 min-w-0">
+                    <ExternalLink className="w-4 h-4 text-slate-500 absolute left-3.5 top-1/2 -translate-y-1/2" />
+                    <input
+                      type="url"
+                      value={autoLink}
+                      onChange={(e) => setAutoLink(e.target.value)}
+                      placeholder="Paste product link here (e.g. https://www.daraz.com.np/products/...)"
+                      disabled={isExtracting}
+                      className="w-full pl-10 pr-3.5 py-2.5 rounded-xl bg-slate-900 border border-orange-500/30 text-xs text-white placeholder-slate-500 focus:outline-none focus:ring-2 focus:ring-orange-500 transition"
+                    />
+                  </div>
+
+                  <div className="flex items-center gap-2 shrink-0">
+                    <button
+                      type="button"
+                      onClick={() => handleAutoExtractProduct(false)}
+                      disabled={isExtracting || !autoLink.trim()}
+                      className="px-4 py-2.5 bg-orange-600 hover:bg-orange-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-md disabled:opacity-50 cursor-pointer"
+                    >
+                      {isExtracting ? (
+                        <>
+                          <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                          <span>Extracting...</span>
+                        </>
+                      ) : (
+                        <>
+                          <Sparkles className="w-3.5 h-3.5" />
+                          <span>Auto Extract & Load</span>
+                        </>
+                      )}
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={() => handleAutoExtractProduct(true)}
+                      disabled={isExtracting || !autoLink.trim()}
+                      className="px-4 py-2.5 bg-gradient-to-r from-amber-600 to-emerald-600 hover:from-amber-500 hover:to-emerald-500 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1.5 shadow-md disabled:opacity-50 cursor-pointer"
+                      title="Automatically extract and publish to live database in 1 click"
+                    >
+                      <Save className="w-3.5 h-3.5" />
+                      <span>Extract & Instant Publish</span>
+                    </button>
+                  </div>
+                </div>
+
+                {/* Live Extraction Progress Stepper */}
+                {isExtracting && extractStep && (
+                  <div className="mt-3 pt-3 border-t border-orange-500/20 flex items-center gap-2 text-xs text-orange-300 font-medium animate-pulse">
+                    <RefreshCw className="w-4 h-4 animate-spin text-orange-400 shrink-0" />
+                    <span>{extractStep}</span>
+                  </div>
+                )}
+              </div>
+            )}
+
             {/* Primary Details Row */}
             <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
               <div className="md:col-span-2">

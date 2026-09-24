@@ -55,7 +55,7 @@ export function Hero({
       <div className="absolute top-0 right-0 -mr-16 -mt-16 w-64 h-64 bg-white/10 rounded-full blur-xl pointer-events-none"></div>
       <div className="absolute bottom-0 left-0 -ml-16 -mb-16 w-64 h-64 bg-black/10 rounded-full blur-xl pointer-events-none"></div>
 
-      <div className="max-w-4xl mx-auto text-center relative z-10">
+      <div className="max-w-6xl mx-auto text-center relative z-10">
         
         {/* Headline badge (desktop only to preserve mobile vertical space) */}
         <div className="hidden sm:inline-flex items-center gap-2 px-3.5 py-1 rounded-full bg-white/20 backdrop-blur-md text-orange-50 text-xs font-semibold mb-1 border border-white/25 shadow-2xs">
@@ -67,12 +67,12 @@ export function Hero({
         <h1 className="text-base sm:text-2xl font-black tracking-tight text-white mb-0.5 sm:mb-1 leading-tight">
           Best Budget Tech & Lifestyle Deals
         </h1>
-        <p className="hidden sm:block text-orange-100 text-xs sm:text-xs max-w-xl mx-auto mb-2 font-normal leading-normal px-2">
+        <p className="hidden sm:block text-orange-100 text-xs sm:text-xs max-w-2xl mx-auto mb-2 font-normal leading-normal px-2">
           Handpicked top-rated gadgets and lifestyle picks verified for authentic discounts on Daraz Nepal.
         </p>
 
         {/* Unified Integrated Search & Filter Bar */}
-        <div className="bg-white p-1 sm:p-1.5 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg max-w-3xl mx-auto border border-orange-200/40">
+        <div className="bg-white p-1 sm:p-1.5 rounded-xl sm:rounded-2xl shadow-md sm:shadow-lg max-w-4xl mx-auto border border-orange-200/40">
           <div className="flex flex-wrap sm:flex-nowrap items-center gap-1.5 sm:gap-2">
             
             {/* Search Input */}

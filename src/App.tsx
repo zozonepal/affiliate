@@ -350,7 +350,7 @@ export default function App() {
       />
 
       {/* Main Content Area (With bottom padding compensation for mobile nav) */}
-      <main className="max-w-7xl mx-auto px-2.5 sm:px-6 lg:px-8 py-2.5 sm:py-4 flex-1 w-full pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
+      <main className="w-full px-3 sm:px-6 lg:px-10 py-2.5 sm:py-4 flex-1 pb-[calc(5.5rem+env(safe-area-inset-bottom))] md:pb-8">
         
         {/* Category Filter Pills (Desktop only, as mobile has native header scroll pills) */}
         <div className="hidden md:block">
@@ -436,7 +436,7 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-2.5 sm:gap-6">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-5">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

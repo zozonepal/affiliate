@@ -191,6 +191,90 @@ export function AdminModal({
   const [isSeeding, setIsSeeding] = useState(false);
   const [message, setMessage] = useState<{ type: 'success' | 'error'; text: string } | null>(null);
 
+  // Automatic Link Extraction State
+  const [autoLink, setAutoLink] = useState('');
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractStep, setExtractStep] = useState('');
+
+  const handleAutoExtractProduct = async (autoPublish = false) => {
+    if (!autoLink || !autoLink.trim().startsWith('http')) {
+      setMessage({ type: 'error', text: 'Please enter a valid product link starting with http:// or https://' });
+      return;
+    }
+
+    setIsExtracting(true);
+    setMessage(null);
+    setExtractStep('Connecting to product link & fetching page metadata...');
+
+    try {
+      setExtractStep('Extracting specs, pricing & photos with Gemini AI...');
+      const res = await fetch('/api/extract-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: autoLink.trim() }),
+      });
+
+      const result = await res.json();
+      if (!result.success || !result.data) {
+        throw new Error(result.error || 'Could not extract product details.');
+      }
+
+      const data = result.data;
+      setExtractStep('Auto-filling form fields...');
+
+      setTitle(data.title || '');
+      setCategory(data.category || 'Tech');
+      setPrice(data.price ? data.price.toString() : '');
+      setOriginalPrice(data.originalPrice ? data.originalPrice.toString() : '');
+      setBadge(data.badge || '');
+      setPromoCode(data.promoCode || '');
+      setImage(data.image || '');
+      if (data.colorVariants && data.colorVariants.length > 0) {
+        setColorVariants(data.colorVariants);
+      } else if (data.image) {
+        setColorVariants([{ name: 'Default', colorCode: '#18181b', image: data.image }]);
+      }
+      setAffiliateUrl(data.affiliateUrl || autoLink.trim());
+      setDescription(data.description || '');
+
+      if (autoPublish) {
+        setExtractStep('Publishing directly to Cloud Firestore...');
+        const primaryImg = data.image || (data.colorVariants?.length ? data.colorVariants[0].image : '');
+        const dealPayload: Omit<ProductDeal, 'id'> = {
+          title: (data.title || '').trim(),
+          category: (data.category || 'Tech').trim(),
+          price: Number(data.price) || 1999,
+          originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
+          badge: data.badge ? data.badge.trim() : undefined,
+          promoCode: data.promoCode ? data.promoCode.trim().toUpperCase() : undefined,
+          image: primaryImg,
+          colorVariants: data.colorVariants && data.colorVariants.length > 0 ? data.colorVariants : undefined,
+          affiliateUrl: (data.affiliateUrl || autoLink).trim(),
+          description: (data.description || '').trim(),
+          rating: data.rating ? Number(data.rating) : 4.8,
+          reviewsCount: data.reviewsCount ? Number(data.reviewsCount) : 35,
+          upvotes: 0,
+          upvotedBy: [],
+          inStock: true,
+          seller: data.seller || 'Daraz Nepal Store'
+        };
+
+        await addProductToFirestore(dealPayload);
+        setMessage({ type: 'success', text: `⚡ Product "${data.title}" automatically extracted & published to Firestore!` });
+        handleResetForm();
+        setAutoLink('');
+      } else {
+        setMessage({ type: 'success', text: `⚡ Product "${data.title}" details extracted automatically! Review or update below.` });
+      }
+    } catch (err: any) {
+      console.error('Auto extraction error in AdminModal:', err);
+      setMessage({ type: 'error', text: 'Extraction Notice: ' + (err.message || 'Check link or backend server') });
+    } finally {
+      setIsExtracting(false);
+      setExtractStep('');
+    }
+  };
+
   useEffect(() => {
     if (initialEditProduct) {
       loadProductForEdit(initialEditProduct);
@@ -501,6 +585,72 @@ export function AdminModal({
               </button>
             )}
           </div>
+
+          {/* AUTOMATIC PRODUCT DETAILS SYSTEM */}
+          {!editingId && (
+            <div className="bg-gradient-to-r from-orange-500/10 via-amber-500/10 to-emerald-500/10 border border-orange-300 p-3.5 sm:p-4 rounded-xl shadow-2xs space-y-2">
+              <div className="flex items-center gap-2">
+                <Sparkles className="w-4 h-4 text-orange-600 animate-pulse shrink-0" />
+                <span className="text-xs font-black text-slate-900">⚡ Automatic Product System (Paste Product URL)</span>
+                <span className="text-[9px] font-extrabold uppercase bg-orange-600 text-white px-2 py-0.5 rounded-full ml-auto">
+                  1-Click Fill
+                </span>
+              </div>
+              <p className="text-[11px] text-slate-600">
+                Give us any product link (Daraz Nepal, Amazon, etc.) to automatically populate title, NPR price, specs, and photos!
+              </p>
+
+              <div className="flex flex-col sm:flex-row gap-2">
+                <input
+                  type="url"
+                  value={autoLink}
+                  onChange={(e) => setAutoLink(e.target.value)}
+                  placeholder="Paste product URL (e.g. https://www.daraz.com.np/...)"
+                  disabled={isExtracting}
+                  className="flex-1 px-3 py-2 border border-orange-300 rounded-xl text-xs bg-white focus:ring-2 focus:ring-orange-500 outline-none"
+                />
+
+                <div className="flex items-center gap-1.5 shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => handleAutoExtractProduct(false)}
+                    disabled={isExtracting || !autoLink.trim()}
+                    className="px-3 py-2 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1 disabled:opacity-50 cursor-pointer"
+                  >
+                    {isExtracting ? (
+                      <>
+                        <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                        <span>Extracting...</span>
+                      </>
+                    ) : (
+                      <>
+                        <Sparkles className="w-3.5 h-3.5" />
+                        <span>Auto Extract & Fill</span>
+                      </>
+                    )}
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={() => handleAutoExtractProduct(true)}
+                    disabled={isExtracting || !autoLink.trim()}
+                    className="px-3 py-2 bg-emerald-600 hover:bg-emerald-700 text-white font-bold text-xs rounded-xl transition flex items-center justify-center gap-1 disabled:opacity-50 cursor-pointer"
+                    title="Extract and immediately publish to live database"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>Extract & Publish</span>
+                  </button>
+                </div>
+              </div>
+
+              {isExtracting && extractStep && (
+                <p className="text-[11px] text-orange-700 font-semibold animate-pulse flex items-center gap-1 mt-1">
+                  <RefreshCw className="w-3 h-3 animate-spin text-orange-600" />
+                  <span>{extractStep}</span>
+                </p>
+              )}
+            </div>
+          )}
 
           <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-3.5">
             <div className="min-w-0">

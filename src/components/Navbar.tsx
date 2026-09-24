@@ -26,8 +26,8 @@ export function Navbar({
   onLogout
 }: NavbarProps) {
   return (
-    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs">
-      <div className="max-w-7xl mx-auto px-3 sm:px-6 lg:px-8 h-14 sm:h-16 flex items-center justify-between gap-2">
+    <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs w-full">
+      <div className="w-full px-3 sm:px-6 lg:px-10 h-14 sm:h-16 flex items-center justify-between gap-2">
         
         {/* Brand Logo */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">

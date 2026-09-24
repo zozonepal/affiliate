@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { X, Send, Sparkles, CheckCircle2 } from 'lucide-react';
+import { X, Send, Sparkles, CheckCircle2, RefreshCw } from 'lucide-react';
 import { addProductToFirestore } from '../lib/firebase';
 import { ProductDeal, UserAccount } from '../types';
 
@@ -26,7 +26,48 @@ export function SubmitDealModal({
   const [submitting, setSubmitting] = useState(false);
   const [success, setSuccess] = useState(false);
 
+  // Auto Extractor state
+  const [isExtracting, setIsExtracting] = useState(false);
+  const [extractMsg, setExtractMsg] = useState('');
+
   if (!isOpen) return null;
+
+  const handleAutoExtract = async () => {
+    if (!affiliateUrl || !affiliateUrl.trim().startsWith('http')) {
+      alert('Please enter a product link starting with http:// or https://');
+      return;
+    }
+
+    setIsExtracting(true);
+    setExtractMsg('Extracting product details with Gemini AI...');
+
+    try {
+      const res = await fetch('/api/extract-product', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ url: affiliateUrl.trim() }),
+      });
+
+      const result = await res.json();
+      if (!result.success || !result.data) {
+        throw new Error(result.error || 'Failed to extract product details.');
+      }
+
+      const data = result.data;
+      setTitle(data.title || '');
+      setCategory(data.category || 'Audio');
+      setPrice(data.price ? data.price.toString() : '');
+      setPromoCode(data.promoCode || '');
+      setImage(data.image || '');
+      setDescription(data.description || '');
+      setExtractMsg('⚡ Product details automatically loaded!');
+    } catch (err: any) {
+      alert('Auto extraction notice: ' + (err.message || 'Could not fetch product details'));
+      setExtractMsg('');
+    } finally {
+      setIsExtracting(false);
+    }
+  };
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -65,6 +106,7 @@ export function SubmitDealModal({
         setImage('');
         setAffiliateUrl('');
         setDescription('');
+        setExtractMsg('');
       }, 2000);
     } catch (err: any) {
       alert('Error submitting deal: ' + err.message);
@@ -109,6 +151,41 @@ export function SubmitDealModal({
           </div>
         ) : (
           <form onSubmit={handleSubmit} className="space-y-3">
+            {/* Quick Link Extractor Box */}
+            <div className="bg-orange-50 border border-orange-200 p-3 rounded-xl space-y-2">
+              <label className="block text-xs font-extrabold text-orange-950 flex items-center justify-between">
+                <span className="flex items-center gap-1">
+                  <Sparkles className="w-3.5 h-3.5 text-orange-600 animate-pulse" />
+                  <span>Paste Product Link for Auto-Fill</span>
+                </span>
+              </label>
+              <div className="flex gap-2">
+                <input
+                  type="url"
+                  value={affiliateUrl}
+                  onChange={(e) => setAffiliateUrl(e.target.value)}
+                  placeholder="https://s.daraz.com.np/s/... or Amazon URL"
+                  className="flex-1 px-3 py-1.5 border border-orange-300 rounded-lg text-xs bg-white focus:ring-2 focus:ring-orange-500 outline-none"
+                />
+                <button
+                  type="button"
+                  onClick={handleAutoExtract}
+                  disabled={isExtracting || !affiliateUrl.trim()}
+                  className="px-3 py-1.5 bg-orange-600 hover:bg-orange-700 text-white font-bold text-xs rounded-lg transition flex items-center gap-1 shrink-0 disabled:opacity-50"
+                >
+                  {isExtracting ? (
+                    <RefreshCw className="w-3.5 h-3.5 animate-spin" />
+                  ) : (
+                    <Sparkles className="w-3.5 h-3.5" />
+                  )}
+                  <span>Auto Load</span>
+                </button>
+              </div>
+              {extractMsg && (
+                <p className="text-[10px] text-orange-800 font-semibold">{extractMsg}</p>
+              )}
+            </div>
+
             <div>
               <label className="block text-xs font-bold text-slate-700 mb-1">Product Title *</label>
               <input
@@ -172,18 +249,6 @@ export function SubmitDealModal({
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
                 placeholder="https://sg-test-11.slatic.net/p/..."
-                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
-              />
-            </div>
-
-            <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Daraz Product Link *</label>
-              <input
-                type="url"
-                required
-                value={affiliateUrl}
-                onChange={(e) => setAffiliateUrl(e.target.value)}
-                placeholder="https://s.daraz.com.np/s/..."
                 className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
               />
             </div>
