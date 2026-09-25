@@ -22,6 +22,7 @@ import {
   Check
 } from 'lucide-react';
 import { ProductDeal, CloudSyncStatus, ColorVariant } from '../types';
+import { extractProductFromUrl } from '../utils/productExtractor';
 import { 
   addProductToFirestore, 
   updateProductInFirestore, 
@@ -204,22 +205,11 @@ export function AdminModal({
 
     setIsExtracting(true);
     setMessage(null);
-    setExtractStep('Connecting to product link & fetching page metadata...');
+    setExtractStep('Connecting to product link & extracting details...');
 
     try {
-      setExtractStep('Extracting specs, pricing & photos with Gemini AI...');
-      const res = await fetch('/api/extract-product', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: autoLink.trim() }),
-      });
+      const data = await extractProductFromUrl(autoLink.trim());
 
-      const result = await res.json();
-      if (!result.success || !result.data) {
-        throw new Error(result.error || 'Could not extract product details.');
-      }
-
-      const data = result.data;
       setExtractStep('Auto-filling form fields...');
 
       setTitle(data.title || '');
@@ -267,7 +257,7 @@ export function AdminModal({
         setMessage({ type: 'success', text: `⚡ Product "${data.title}" details extracted automatically! Review or update below.` });
       }
     } catch (err: any) {
-      console.error('Auto extraction error in AdminModal:', err);
+      console.error('Auto extraction notice in AdminModal:', err);
       setMessage({ type: 'error', text: 'Extraction Notice: ' + (err.message || 'Check link or backend server') });
     } finally {
       setIsExtracting(false);

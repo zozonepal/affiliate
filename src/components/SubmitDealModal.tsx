@@ -2,6 +2,7 @@ import { useState, type FormEvent } from 'react';
 import { X, Send, Sparkles, CheckCircle2, RefreshCw } from 'lucide-react';
 import { addProductToFirestore } from '../lib/firebase';
 import { ProductDeal, UserAccount } from '../types';
+import { extractProductFromUrl } from '../utils/productExtractor';
 
 interface SubmitDealModalProps {
   isOpen: boolean;
@@ -42,18 +43,7 @@ export function SubmitDealModal({
     setExtractMsg('Extracting product details with Gemini AI...');
 
     try {
-      const res = await fetch('/api/extract-product', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: affiliateUrl.trim() }),
-      });
-
-      const result = await res.json();
-      if (!result.success || !result.data) {
-        throw new Error(result.error || 'Failed to extract product details.');
-      }
-
-      const data = result.data;
+      const data = await extractProductFromUrl(affiliateUrl.trim());
       setTitle(data.title || '');
       setCategory(data.category || 'Audio');
       setPrice(data.price ? data.price.toString() : '');

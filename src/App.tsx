@@ -482,21 +482,6 @@ export default function App() {
         </div>
       </footer>
 
-      {/* Mobile Bottom Navigation Bar (thumb-friendly, sticky) */}
-      <MobileBottomNav
-        user={user}
-        wishlistCount={wishlist.length}
-        onOpenWishlist={() => setIsWishlistOpen(true)}
-        onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenAdmin={() => {
-          if (user?.role === 'admin' || user?.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') {
-            setIsAdminOpen(true);
-          } else {
-            setIsAuthOpen(true);
-          }
-        }}
-      />
-
       {/* Modals & Drawers */}
       <ProductDetailModal
         product={activeQuickViewProduct}

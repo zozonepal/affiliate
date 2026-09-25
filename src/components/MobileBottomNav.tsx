@@ -62,20 +62,6 @@ export function MobileBottomNav({
           </button>
         )}
 
-        {/* Recommend Deal (Submit) */}
-        {onOpenSubmitDeal && (
-          <button
-            onClick={onOpenSubmitDeal}
-            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-orange-600 active:scale-95 transition"
-            aria-label="Submit Deal"
-          >
-            <div className="w-8 h-8 rounded-full bg-orange-50 border border-orange-200 flex items-center justify-center text-orange-600 shadow-2xs">
-              <PlusCircle className="w-5 h-5" />
-            </div>
-            <span className="text-[10px] font-black text-orange-700 mt-0.5">Submit</span>
-          </button>
-        )}
-
         {/* Wishlist / Saved */}
         <button
           onClick={onOpenWishlist}

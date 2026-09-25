@@ -33,6 +33,7 @@ const PRODUCT_IMAGE_PRESETS = [
   { name: 'Speaker', url: 'https://images.unsplash.com/photo-1608043152269-423dbba4e7e1?w=600&auto=format&fit=crop&q=80' },
 ];
 import { ProductDeal, CloudSyncStatus } from './types';
+import { extractProductFromUrl } from './utils/productExtractor';
 import { 
   addProductToFirestore, 
   updateProductInFirestore, 
@@ -100,23 +101,11 @@ export default function AdminApp() {
 
     setIsExtracting(true);
     setStatusMessage(null);
-    setExtractStep('Connecting to product link & fetching page data...');
+    setExtractStep('Connecting to product link & extracting details...');
 
     try {
-      setExtractStep('Extracting specs, pricing & photos with Gemini AI...');
-      const response = await fetch('/api/extract-product', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ url: autoLink.trim() }),
-      });
+      const data = await extractProductFromUrl(autoLink.trim());
 
-      const result = await response.json();
-
-      if (!result.success || !result.data) {
-        throw new Error(result.error || 'Failed to extract product details from URL.');
-      }
-
-      const data = result.data;
       setExtractStep('Auto-filling product details...');
 
       // Auto-populate state
@@ -162,8 +151,8 @@ export default function AdminApp() {
         setStatusMessage({ type: 'success', text: `⚡ Product details for "${data.title}" extracted & loaded automatically! Review details below or click Publish.` });
       }
     } catch (err: any) {
-      console.error('Auto extraction error:', err);
-      setStatusMessage({ type: 'error', text: 'Automatic Extraction Notice: ' + (err.message || 'Check link or connection') });
+      console.error('Auto extraction notice:', err);
+      setStatusMessage({ type: 'error', text: 'Automatic Extraction Notice: ' + (err.message || 'Check link format') });
     } finally {
       setIsExtracting(false);
       setExtractStep('');
