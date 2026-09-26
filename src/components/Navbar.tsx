@@ -1,4 +1,4 @@
-import { ShoppingBag, ShieldCheck, Heart, User as UserIcon, LogOut, Flame, Wifi, RefreshCw } from 'lucide-react';
+import { Heart, User as UserIcon, LogOut } from 'lucide-react';
 import { UserAccount, CloudSyncStatus, ProductDeal } from '../types';
 import { NotificationCenter } from './NotificationCenter';
 
@@ -9,19 +9,16 @@ interface NavbarProps {
   deals?: ProductDeal[];
   onQuickView?: (product: ProductDeal) => void;
   onOpenAuth: () => void;
-  onOpenAdmin: () => void;
   onOpenWishlist: () => void;
   onLogout: () => void;
 }
 
 export function Navbar({
   user,
-  syncStatus,
   wishlistCount,
   deals = [],
   onQuickView = () => {},
   onOpenAuth,
-  onOpenAdmin,
   onOpenWishlist,
   onLogout
 }: NavbarProps) {
@@ -77,20 +74,6 @@ export function Navbar({
           {/* User Account / Auth Section */}
           {user ? (
             <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              {/* Show Admin Panel button if signed in as admin or authorized email */}
-              {(user.role === 'admin' || user.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') && (
-                <button
-                  id="nav-admin-panel-btn"
-                  onClick={onOpenAdmin}
-                  className="flex items-center gap-1 text-[11px] sm:text-xs font-bold text-white bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 px-2 sm:px-3 py-1.5 rounded-lg shadow-sm transition cursor-pointer whitespace-nowrap shrink-0"
-                  title="Open Admin Panel"
-                >
-                  <ShieldCheck className="w-3.5 h-3.5 shrink-0" />
-                  <span className="hidden sm:inline">Admin Panel</span>
-                  <span className="sm:hidden text-[10px]">Admin</span>
-                </button>
-              )}
-
               <div className="flex items-center gap-1.5 pl-1.5 border-l border-slate-200 shrink-0">
                 <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-orange-100 text-orange-700 font-bold flex items-center justify-center text-xs border border-orange-200 overflow-hidden shrink-0">
                   {user.photoURL ? (
@@ -100,16 +83,9 @@ export function Navbar({
                   )}
                 </div>
                 <div className="hidden lg:block text-left">
-                  <div className="flex items-center gap-1">
-                    <p className="text-xs font-bold text-slate-800 leading-tight max-w-[100px] truncate">
-                      {user.displayName}
-                    </p>
-                    {(user.role === 'admin' || user.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') && (
-                      <span className="text-[9px] bg-red-100 text-red-700 font-extrabold px-1.5 py-0.2 rounded uppercase">
-                        Admin
-                      </span>
-                    )}
-                  </div>
+                  <p className="text-xs font-bold text-slate-800 leading-tight max-w-[100px] truncate">
+                    {user.displayName}
+                  </p>
                   <p className="text-[10px] text-slate-400 truncate max-w-[100px]">
                     {user.email || 'Guest User'}
                   </p>

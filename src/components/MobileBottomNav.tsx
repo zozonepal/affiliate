@@ -1,4 +1,4 @@
-import { Home, Heart, PlusCircle, ShieldCheck, User, SlidersHorizontal } from 'lucide-react';
+import { Home, Heart, User, SlidersHorizontal } from 'lucide-react';
 import { UserAccount } from '../types';
 
 interface MobileBottomNavProps {
@@ -6,7 +6,6 @@ interface MobileBottomNavProps {
   wishlistCount: number;
   onOpenWishlist: () => void;
   onOpenAuth: () => void;
-  onOpenAdmin: () => void;
   onOpenFilter?: () => void;
   onOpenSubmitDeal?: () => void;
   isFilterActive?: boolean;
@@ -17,13 +16,10 @@ export function MobileBottomNav({
   wishlistCount,
   onOpenWishlist,
   onOpenAuth,
-  onOpenAdmin,
   onOpenFilter,
   onOpenSubmitDeal,
   isFilterActive
 }: MobileBottomNavProps) {
-  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'fitoorbhandari38@gmail.com' || user?.email?.toLowerCase() === 'affiliatedaraz25@gmail.com';
-
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
@@ -79,20 +75,8 @@ export function MobileBottomNav({
           <span className="text-[10px] font-bold mt-0.5">Saved</span>
         </button>
 
-        {/* Admin or Profile */}
-        {isAdmin ? (
-          <button
-            onClick={onOpenAdmin}
-            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-amber-700 hover:text-amber-900 active:scale-95 transition"
-            aria-label="Admin Panel"
-          >
-            <div className="relative">
-              <ShieldCheck className="w-5 h-5 text-orange-600" />
-              <span className="absolute -top-1 -right-1 w-2 h-2 rounded-full bg-orange-500 animate-ping" />
-            </div>
-            <span className="text-[10px] font-black mt-0.5 text-orange-600">Admin</span>
-          </button>
-        ) : user ? (
+        {/* Profile or Sign In */}
+        {user ? (
           <button
             onClick={onOpenAuth}
             className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"

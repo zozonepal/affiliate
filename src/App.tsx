@@ -1,14 +1,14 @@
 import { useState, useEffect, useMemo } from 'react';
+import { collection, onSnapshot } from 'firebase/firestore';
 import { 
   subscribeToProducts, 
   onAuthStateChanged, 
   auth, 
+  db,
   toggleProductUpvote, 
   syncUserWishlist, 
   loadUserWishlist, 
   logoutCurrentAuth,
-  ADMIN_EMAILS,
-  deleteProductFromFirestore,
   addSubscriberToNewsletter
 } from './lib/firebase';
 import { ProductDeal, UserAccount, CloudSyncStatus, PriceFilterRange, SortOption } from './types';
@@ -18,7 +18,6 @@ import { CategoryFilter } from './components/CategoryFilter';
 import { ProductCard } from './components/ProductCard';
 import { ProductDetailModal } from './components/ProductDetailModal';
 import { AuthModal } from './components/AuthModal';
-import { AdminModal } from './components/AdminModal';
 import { WishlistDrawer } from './components/WishlistDrawer';
 import { SubmitDealModal } from './components/SubmitDealModal';
 import { MobileBottomNav } from './components/MobileBottomNav';
@@ -42,14 +41,10 @@ export default function App() {
 
   // Modal visibility states
   const [isAuthOpen, setIsAuthOpen] = useState(false);
-  const [isAdminOpen, setIsAdminOpen] = useState(() => {
-    return window.location.hash === '#admin' || window.location.search.includes('admin=true');
-  });
   const [isWishlistOpen, setIsWishlistOpen] = useState(false);
   const [isSubmitDealOpen, setIsSubmitDealOpen] = useState(false);
   const [isMobileFilterOpen, setIsMobileFilterOpen] = useState(false);
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<ProductDeal | null>(null);
-  const [editingProductForAdmin, setEditingProductForAdmin] = useState<ProductDeal | null>(null);
 
   // 1. Subscribe to Firebase Auth state & restore local persistent session
   useEffect(() => {
@@ -66,23 +61,16 @@ export default function App() {
 
     const unsubscribeAuth = onAuthStateChanged(auth, async (firebaseUser) => {
       if (firebaseUser) {
-        const userEmail = (firebaseUser.email || '').toLowerCase().trim();
-        const isAdmin = ADMIN_EMAILS.some((e) => e.toLowerCase() === userEmail) || userEmail === 'zozonepal5@gmail.com' || userEmail === 'affiliatedaraz25@gmail.com';
         const currentAccount: UserAccount = {
           uid: firebaseUser.uid,
           email: firebaseUser.email,
           displayName: firebaseUser.displayName || firebaseUser.email?.split('@')[0] || 'Shopper',
           photoURL: firebaseUser.photoURL,
-          role: isAdmin ? 'admin' : 'user',
+          role: 'user',
           wishlist: []
         };
         setUser(currentAccount);
         localStorage.setItem('dealfinder_user_session', JSON.stringify(currentAccount));
-
-        // Automatically open the admin panel when signed in from zozonepal5@gmail.com or affiliatedaraz25@gmail.com
-        if (userEmail === 'zozonepal5@gmail.com' || userEmail === 'affiliatedaraz25@gmail.com') {
-          setIsAdminOpen(true);
-        }
 
         const savedWishlist = await loadUserWishlist(firebaseUser.uid);
         setWishlist(savedWishlist);
@@ -104,17 +92,53 @@ export default function App() {
     return () => unsubscribeAuth();
   }, []);
 
-  // 2. Subscribe to real-time Firestore collection
+  // 2. Connect to shared Firebase Firestore database using collection named "products"
   useEffect(() => {
-    const unsubscribe = subscribeToProducts(
-      (items, status) => {
-        setProducts(items);
-        setSyncStatus(status);
+    const productsCollectionRef = collection(db, 'products');
+
+    const unsubscribe = onSnapshot(
+      productsCollectionRef,
+      (snapshot) => {
+        const liveProducts: ProductDeal[] = snapshot.docs.map((docSnap) => {
+          const data = docSnap.data();
+          const docId = docSnap.id;
+          const name = data.name || data.title || 'Untitled Deal';
+          const price = Number(data.price) || 0;
+          const description = data.description || '';
+          const imageUrl = data.imageUrl || data.image || '';
+
+          return {
+            id: docId,
+            name: name,
+            title: name,
+            price: price,
+            originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
+            description: description,
+            imageUrl: imageUrl,
+            image: imageUrl,
+            category: data.category || 'General',
+            badge: data.badge || '',
+            promoCode: data.promoCode || undefined,
+            colorVariants: Array.isArray(data.colorVariants) ? data.colorVariants : undefined,
+            affiliateUrl: data.affiliateUrl || 'https://www.daraz.com.np',
+            rating: data.rating ? Number(data.rating) : 4.5,
+            reviewsCount: data.reviewsCount ? Number(data.reviewsCount) : 10,
+            upvotes: Number(data.upvotes) || 0,
+            upvotedBy: Array.isArray(data.upvotedBy) ? data.upvotedBy : [],
+            inStock: data.inStock !== false,
+            seller: data.seller || 'Daraz Seller',
+            createdAt: data.createdAt,
+            updatedAt: data.updatedAt
+          };
+        });
+
+        setProducts(liveProducts);
+        setSyncStatus('connected');
         setIsLoading(false);
       },
       (error) => {
-        console.warn('Live subscription error, using local fallback:', error);
-        setSyncStatus('fallback');
+        console.warn('Live Firestore "products" listener notice:', error);
+        setSyncStatus('error');
         setIsLoading(false);
       }
     );
@@ -195,9 +219,6 @@ export default function App() {
       addSubscriberToNewsletter(loggedInUser.email).catch(console.error);
     }
 
-    if (loggedInUser.role === 'admin' || loggedInUser.email?.toLowerCase() === 'affiliatedaraz25@gmail.com') {
-      setIsAdminOpen(true);
-    }
     const userSaved = await loadUserWishlist(loggedInUser.uid);
     setWishlist(userSaved);
   };
@@ -207,13 +228,6 @@ export default function App() {
     setUser(null);
     setWishlist([]);
     localStorage.removeItem('dealfinder_user_session');
-    localStorage.removeItem('dealfinder_admin_auth');
-    sessionStorage.removeItem('dealfinder_admin_auth');
-  };
-
-  const handleEditFromCard = (product: ProductDeal) => {
-    setEditingProductForAdmin(product);
-    setIsAdminOpen(true);
   };
 
   // Filter categories dynamically
@@ -299,13 +313,6 @@ export default function App() {
           deals={products}
           onQuickView={setActiveQuickViewProduct}
           onOpenAuth={() => setIsAuthOpen(true)}
-          onOpenAdmin={() => {
-            if (user?.role === 'admin') {
-              setIsAdminOpen(true);
-            } else {
-              setIsAuthOpen(true);
-            }
-          }}
           onOpenWishlist={() => setIsWishlistOpen(true)}
           onLogout={handleLogout}
         />
@@ -318,7 +325,6 @@ export default function App() {
           sortOption={sortOption}
           onSortChange={setSortOption}
           totalDeals={products.length}
-          onOpenAdmin={() => setIsAdminOpen(true)}
         />
       </div>
 
@@ -338,13 +344,6 @@ export default function App() {
         onOpenFilterModal={() => setIsMobileFilterOpen(true)}
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenAdmin={() => {
-          if (user?.role === 'admin') {
-            setIsAdminOpen(true);
-          } else {
-            setIsAuthOpen(true);
-          }
-        }}
         onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
         totalDeals={filteredProducts.length}
       />
@@ -441,18 +440,10 @@ export default function App() {
               <ProductCard
                 key={product.id}
                 product={product}
-                user={user}
                 isWishlisted={wishlist.includes(product.id)}
                 onToggleWishlist={handleToggleWishlist}
                 onUpvote={handleUpvote}
                 onQuickView={setActiveQuickViewProduct}
-                onEdit={handleEditFromCard}
-                onDelete={async (id) => {
-                  const target = products.find(p => p.id === id);
-                  if (window.confirm(`Permanently delete "${target?.title || 'this deal'}"?`)) {
-                    await deleteProductFromFirestore(id);
-                  }
-                }}
               />
             ))}
           </div>
@@ -495,29 +486,7 @@ export default function App() {
       <AuthModal
         isOpen={isAuthOpen}
         onClose={() => setIsAuthOpen(false)}
-        onSuccess={(account) => {
-          handleAuthSuccess(account);
-          if (account.role === 'admin') {
-            setIsAdminOpen(true);
-          }
-        }}
-      />
-
-      <AdminModal
-        isOpen={isAdminOpen}
-        onClose={() => {
-          setIsAdminOpen(false);
-          setEditingProductForAdmin(null);
-        }}
-        products={products}
-        syncStatus={syncStatus}
-        initialEditProduct={editingProductForAdmin}
-        onLogoutAdmin={() => {
-          setIsAdminOpen(false);
-          if (user?.role === 'admin') {
-            handleLogout();
-          }
-        }}
+        onSuccess={handleAuthSuccess}
       />
 
       <WishlistDrawer
@@ -543,13 +512,6 @@ export default function App() {
         wishlistCount={wishlist.length}
         onOpenWishlist={() => setIsWishlistOpen(true)}
         onOpenAuth={() => setIsAuthOpen(true)}
-        onOpenAdmin={() => {
-          if (user?.role === 'admin') {
-            setIsAdminOpen(true);
-          } else {
-            setIsAuthOpen(true);
-          }
-        }}
         onOpenFilter={() => setIsMobileFilterOpen(true)}
         onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
         isFilterActive={priceFilter !== 'all' || sortOption !== 'featured'}

@@ -59,11 +59,6 @@ export function setGmailAccessToken(token: string | null) {
   cachedAccessToken = token;
 }
 
-export const ADMIN_EMAILS = [
-  'zozonepal5@gmail.com',
-  'affiliatedaraz25@gmail.com'
-];
-
 /**
  * Format error for logging and diagnosis
  */
@@ -133,24 +128,7 @@ function broadcastProducts() {
 }
 
 function computeEffectiveProducts(items: ProductDeal[]): ProductDeal[] {
-  if (items.length > 0) {
-    return items;
-  }
-
-  // If Firestore is empty, check if admin explicitly cleared pre-products
-  if (isPreProductsCleared()) {
-    return [];
-  }
-
-  const deletedIds = getDeletedPreProductIds();
-  const availableSamples = INITIAL_DEALS
-    .map((d, index) => ({
-      id: `sample-${index + 1}`,
-      ...d
-    }))
-    .filter((d) => !deletedIds.includes(d.id));
-
-  return availableSamples;
+  return items;
 }
 
 /**
@@ -175,15 +153,21 @@ export function subscribeToProducts(
       (snapshot) => {
         const items: ProductDeal[] = snapshot.docs.map((docSnap) => {
           const data = docSnap.data();
+          const docId = docSnap.id;
+          const name = data.name || data.title || 'Untitled Deal';
+          const imageUrl = data.imageUrl || data.image || '';
+
           return {
-            id: docSnap.id,
-            title: data.title || 'Untitled Deal',
+            id: docId,
+            name: name,
+            title: name,
             category: data.category || 'General',
             price: Number(data.price) || 0,
             originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
             badge: data.badge || '',
             promoCode: data.promoCode || undefined,
-            image: data.image || '',
+            image: imageUrl,
+            imageUrl: imageUrl,
             colorVariants: Array.isArray(data.colorVariants) ? data.colorVariants : undefined,
             affiliateUrl: data.affiliateUrl || 'https://www.daraz.com.np',
             description: data.description || '',
@@ -431,13 +415,12 @@ export async function loginWithGoogle(): Promise<UserAccount> {
       setGmailAccessToken(credential.accessToken);
     }
     const user = result.user;
-    const role = ADMIN_EMAILS.includes(user.email?.toLowerCase() || '') ? 'admin' : 'user';
     return {
       uid: user.uid,
       email: user.email,
       displayName: user.displayName || user.email?.split('@')[0] || 'Google User',
       photoURL: user.photoURL,
-      role,
+      role: 'user',
       wishlist: []
     };
   } catch (err: any) {
@@ -445,10 +428,10 @@ export async function loginWithGoogle(): Promise<UserAccount> {
       console.warn('Firebase Google Auth popup domain restriction detected. Authenticating user profile session.');
       return {
         uid: 'google_user_session_' + Math.random().toString(36).substring(2, 9),
-        email: 'zozonepal5@gmail.com',
-        displayName: 'DealFinder Admin',
+        email: 'user@dealfinder.np',
+        displayName: 'DealFinder Shopper',
         photoURL: 'https://lh3.googleusercontent.com/a/default-user=s96-c',
-        role: 'admin',
+        role: 'user',
         wishlist: []
       };
     }
@@ -459,13 +442,12 @@ export async function loginWithGoogle(): Promise<UserAccount> {
 export async function loginWithEmail(email: string, pass: string): Promise<UserAccount> {
   const result = await signInWithEmailAndPassword(auth, email, pass);
   const user = result.user;
-  const role = ADMIN_EMAILS.includes(user.email || '') ? 'admin' : 'user';
   return {
     uid: user.uid,
     email: user.email,
     displayName: user.displayName || user.email?.split('@')[0] || 'Shopper',
     photoURL: user.photoURL,
-    role,
+    role: 'user',
     wishlist: []
   };
 }
@@ -476,13 +458,12 @@ export async function registerWithEmail(email: string, pass: string, name: strin
   if (name) {
     await updateProfile(user, { displayName: name });
   }
-  const role = ADMIN_EMAILS.includes(user.email || '') ? 'admin' : 'user';
   return {
     uid: user.uid,
     email: user.email,
     displayName: name || user.email?.split('@')[0] || 'Shopper',
     photoURL: user.photoURL,
-    role,
+    role: 'user',
     wishlist: []
   };
 }

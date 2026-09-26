@@ -1,4 +1,3 @@
-import { type KeyboardEvent } from 'react';
 import { Search, X, SlidersHorizontal, ArrowUpDown, Tag, CheckCircle2 } from 'lucide-react';
 import { PriceFilterRange, SortOption } from '../types';
 
@@ -10,7 +9,6 @@ interface HeroProps {
   sortOption: SortOption;
   onSortChange: (sort: SortOption) => void;
   totalDeals: number;
-  onOpenAdmin?: () => void;
 }
 
 export function Hero({
@@ -20,8 +18,7 @@ export function Hero({
   onPriceFilterChange,
   sortOption,
   onSortChange,
-  totalDeals,
-  onOpenAdmin
+  totalDeals
 }: HeroProps) {
   const pricePills: { id: PriceFilterRange; label: string }[] = [
     { id: 'all', label: 'All Prices' },
@@ -30,24 +27,6 @@ export function Hero({
     { id: '3k-5k', label: 'Rs. 3,000 - 5,000' },
     { id: 'over5k', label: 'Rs. 5,000+' }
   ];
-
-  const handleSearchKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const q = searchQuery.trim().toLowerCase();
-      if (q === 'admin' || q === 'admin.html' || q === '/admin.html' || q === 'admin/') {
-        e.preventDefault();
-        window.location.href = '/admin.html';
-      }
-    }
-  };
-
-  const handleInputChange = (val: string) => {
-    onSearchChange(val);
-    const q = val.trim().toLowerCase();
-    if (q === 'admin.html' || q === '/admin.html') {
-      window.location.href = '/admin.html';
-    }
-  };
 
   return (
     <section className="bg-gradient-to-b from-orange-600 via-orange-500 to-amber-500 text-white py-2 px-3 sm:py-3.5 sm:px-6 lg:px-8 relative overflow-hidden">
@@ -82,8 +61,7 @@ export function Hero({
                 id="main-search-input"
                 type="text"
                 value={searchQuery}
-                onChange={(e) => handleInputChange(e.target.value)}
-                onKeyDown={handleSearchKeyDown}
+                onChange={(e) => onSearchChange(e.target.value)}
                 placeholder="Search deals..."
                 className="w-full pl-8 sm:pl-10 pr-7 sm:pr-9 py-1.5 sm:py-2 rounded-lg sm:rounded-xl text-slate-900 placeholder-slate-400 text-xs sm:text-sm focus:outline-none focus:ring-2 focus:ring-orange-500 bg-slate-50 hover:bg-white transition min-h-[36px] sm:min-h-[40px]"
               />

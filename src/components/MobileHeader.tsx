@@ -7,7 +7,6 @@ import {
   Heart, 
   Plus, 
   User as UserIcon,
-  ShieldCheck,
   Sparkles
 } from 'lucide-react';
 import { UserAccount, PriceFilterRange, SortOption, ProductDeal } from '../types';
@@ -28,7 +27,6 @@ interface MobileHeaderProps {
   onOpenFilterModal: () => void;
   onOpenWishlist: () => void;
   onOpenAuth: () => void;
-  onOpenAdmin: () => void;
   onOpenSubmitDeal: () => void;
   totalDeals: number;
 }
@@ -48,23 +46,11 @@ export function MobileHeader({
   onOpenFilterModal,
   onOpenWishlist,
   onOpenAuth,
-  onOpenAdmin,
   onOpenSubmitDeal,
   totalDeals
 }: MobileHeaderProps) {
   const scrollContainerRef = useRef<HTMLDivElement>(null);
   const isFilterActive = priceFilter !== 'all' || sortOption !== 'featured';
-  const isAdmin = user?.role === 'admin' || user?.email?.toLowerCase() === 'fitoorbhandari38@gmail.com' || user?.email?.toLowerCase() === 'affiliatedaraz25@gmail.com';
-
-  const handleSearchKeyDown = (e: KeyboardEvent<HTMLInputElement>) => {
-    if (e.key === 'Enter') {
-      const q = searchQuery.trim().toLowerCase();
-      if (q === 'admin' || q === 'admin.html' || q === '/admin.html' || q === 'admin/') {
-        e.preventDefault();
-        window.location.href = '/admin.html';
-      }
-    }
-  };
 
   return (
     <header className="md:hidden sticky top-0 z-30 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-2xs w-full max-w-full overflow-hidden">
@@ -109,17 +95,8 @@ export function MobileHeader({
             )}
           </button>
 
-          {/* User Account / Admin - Button 3 */}
-          {isAdmin ? (
-            <button
-              onClick={onOpenAdmin}
-              className="w-8 h-8 rounded-xl text-amber-700 bg-amber-50 hover:bg-amber-100 border border-amber-200/80 flex items-center justify-center active:scale-95 transition shrink-0"
-              title="Admin Panel"
-              aria-label="Admin Panel"
-            >
-              <ShieldCheck className="w-4 h-4 text-orange-600 shrink-0" />
-            </button>
-          ) : user ? (
+          {/* User Account - Button 3 */}
+          {user ? (
             <button
               onClick={onOpenAuth}
               className="w-8 h-8 rounded-xl bg-orange-100 text-orange-700 font-bold text-xs flex items-center justify-center border border-orange-200 overflow-hidden active:scale-95 transition shrink-0 shadow-2xs"
@@ -156,7 +133,6 @@ export function MobileHeader({
             type="text"
             value={searchQuery}
             onChange={(e) => onSearchChange(e.target.value)}
-            onKeyDown={handleSearchKeyDown}
             placeholder="Search deals, earbuds, electronics..."
             className="w-full pl-9 pr-8 py-2 bg-slate-100/80 focus:bg-white text-slate-900 placeholder-slate-400 text-xs rounded-xl border border-transparent focus:border-orange-500 focus:outline-none focus:ring-2 focus:ring-orange-500/20 transition min-h-[38px]"
           />

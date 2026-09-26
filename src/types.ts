@@ -8,12 +8,14 @@ export interface ColorVariant {
 export interface ProductDeal {
   id: string;
   title: string;
+  name?: string;
   category: string;
   price: number;
   originalPrice?: number;
   badge?: string;
   promoCode?: string;
   image: string;
+  imageUrl?: string;
   colorVariants?: ColorVariant[];
   affiliateUrl: string;
   description?: string;
@@ -32,7 +34,7 @@ export interface UserAccount {
   email: string | null;
   displayName: string | null;
   photoURL?: string | null;
-  role: 'admin' | 'user';
+  role?: 'user';
   wishlist: string[];
   isAnonymous?: boolean;
 }

@@ -1,5 +1,5 @@
 import { useState, type FormEvent } from 'react';
-import { X, Lock, Mail, User, ShieldCheck, ArrowRight, Loader2, Sparkles } from 'lucide-react';
+import { X, Lock, Mail, User, ArrowRight, Loader2, Sparkles } from 'lucide-react';
 import { loginWithGoogle, loginWithEmail, registerWithEmail, loginAsGuest } from '../lib/firebase';
 import { UserAccount } from '../types';
 
@@ -10,11 +10,10 @@ interface AuthModalProps {
 }
 
 export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
-  const [tab, setTab] = useState<'signin' | 'register' | 'admin'>('signin');
+  const [tab, setTab] = useState<'signin' | 'register'>('signin');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [name, setName] = useState('');
-  const [adminKey, setAdminKey] = useState('');
   const [loading, setLoading] = useState(false);
   const [errorMessage, setErrorMessage] = useState<string | null>(null);
 
@@ -75,24 +74,6 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
     }
   };
 
-  const handleAdminKeySubmit = (e: FormEvent) => {
-    e.preventDefault();
-    setErrorMessage(null);
-    if (adminKey === 'admin' || adminKey === 'zozonepal5@gmail.com' || adminKey === 'affiliatedaraz25@gmail.com') {
-      const adminUser: UserAccount = {
-        uid: 'admin_local_primary',
-        email: 'zozonepal5@gmail.com',
-        displayName: 'DealFinder Admin',
-        role: 'admin',
-        wishlist: []
-      };
-      onSuccess(adminUser);
-      onClose();
-    } else {
-      setErrorMessage('Invalid admin passkey. Default key is "admin".');
-    }
-  };
-
   const handleGuestLogin = async () => {
     setLoading(true);
     try {
@@ -121,7 +102,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             </div>
             <div>
               <h3 className="font-extrabold text-slate-900 text-base leading-none">
-                {tab === 'signin' ? 'Sign In' : tab === 'register' ? 'Create Account' : 'Admin Passkey'}
+                {tab === 'signin' ? 'Sign In' : 'Create Account'}
               </h3>
               <p className="text-[11px] text-slate-400 mt-0.5">DealFinder Nepal Authentication</p>
             </div>
@@ -164,45 +145,13 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
             </div>
           )}
 
-          {tab === 'admin' ? (
-            <form onSubmit={handleAdminKeySubmit} className="space-y-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 mb-1">
-                  Admin Passkey or Registered Email
-                </label>
-                <div className="relative">
-                  <Lock className="w-4 h-4 text-slate-400 absolute left-3 top-1/2 -translate-y-1/2" />
-                  <input
-                    type="password"
-                    required
-                    value={adminKey}
-                    onChange={(e) => setAdminKey(e.target.value)}
-                    placeholder="Enter passkey (e.g. admin)"
-                    className="w-full pl-9 pr-3 py-2.5 rounded-xl border border-slate-200 text-xs outline-none focus:ring-2 focus:ring-orange-500"
-                  />
-                </div>
-                <p className="text-[11px] text-slate-400 mt-1.5">
-                  Default passkey is <code className="bg-slate-100 text-orange-600 px-1.5 py-0.5 rounded font-bold">admin</code>
-                </p>
-              </div>
-
-              <button
-                type="submit"
-                className="w-full bg-slate-900 hover:bg-black text-white font-bold text-xs py-2.5 rounded-xl transition flex items-center justify-center gap-2"
-              >
-                <span>Unlock Cloud Admin Panel</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-            </form>
-          ) : (
-            <>
-              {/* Google One-Click Button */}
-              <button
-                type="button"
-                onClick={handleGoogleSignIn}
-                disabled={loading}
-                className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shadow-2xs transition disabled:opacity-50"
-              >
+          {/* Google One-Click Button */}
+          <button
+            type="button"
+            onClick={handleGoogleSignIn}
+            disabled={loading}
+            className="w-full flex items-center justify-center gap-2.5 py-2.5 px-4 bg-white hover:bg-slate-50 border border-slate-200 rounded-xl text-xs font-bold text-slate-700 shadow-2xs transition disabled:opacity-50"
+          >
                 <svg className="w-4 h-4" viewBox="0 0 24 24">
                   <path
                     fill="#4285F4"
@@ -305,8 +254,6 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
                   Continue as Guest Shopper
                 </button>
               </div>
-            </>
-          )}
 
         </div>
 

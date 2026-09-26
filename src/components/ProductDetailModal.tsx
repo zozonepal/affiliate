@@ -38,7 +38,7 @@ export function ProductDetailModal({
 
   const hasVariants = Boolean(product.colorVariants && product.colorVariants.length > 0);
   const activeVariant = hasVariants && product.colorVariants ? product.colorVariants[selectedColorIdx] : null;
-  const heroImage = (activeVariant?.image || product.image);
+  const heroImage = (activeVariant?.image || product.imageUrl || product.image);
 
   const discountPercent =
     product.originalPrice && product.originalPrice > product.price
@@ -89,7 +89,7 @@ export function ProductDetailModal({
               <div className="relative h-64 bg-slate-50 rounded-2xl p-4 flex items-center justify-center border border-slate-100 overflow-hidden">
                 <img
                   src={heroImage}
-                  alt={activeVariant ? `${product.title} (${activeVariant.name})` : product.title}
+                  alt={activeVariant ? `${product.name || product.title} (${activeVariant.name})` : (product.name || product.title)}
                   className="max-h-full max-w-full object-contain transition-all duration-300"
                   onError={(e) => {
                     (e.target as HTMLImageElement).src =
@@ -157,7 +157,7 @@ export function ProductDetailModal({
             {/* Price & Primary Info */}
             <div className="space-y-4">
               <h2 className="text-lg font-bold text-slate-900 leading-snug">
-                {product.title}
+                {product.name || product.title}
               </h2>
 
               <div className="flex items-center gap-2">
