@@ -32,13 +32,14 @@ import { INITIAL_DEALS } from '../data/initialDeals';
 
 // Firebase configuration provided in the project
 export const firebaseConfig = {
-  apiKey: "AIzaSyAs9bjiSfwK_ko1ieu4vPWXScOyWhn-Deo",
-  authDomain: "affiliatedaraz90.firebaseapp.com",
-  projectId: "affiliatedaraz90",
-  storageBucket: "affiliatedaraz90.firebasestorage.app",
-  messagingSenderId: "64358808257",
-  appId: "1:64358808257:web:394eece6e8d405c6573240",
-  measurementId: "G-6QVDWJ2BWR"
+  apiKey: "AIzaSyCuJBkQtpopn2azuv3YUjOYAZ3Hnv8DYu8",
+  authDomain: "tech-store-e4449.firebaseapp.com",
+  databaseURL: "https://tech-store-e4449-default-rtdb.firebaseio.com",
+  projectId: "tech-store-e4449",
+  storageBucket: "tech-store-e4449.firebasestorage.app",
+  messagingSenderId: "337071303877",
+  appId: "1:337071303877:web:3a29ef5f22643f234dd4ac",
+  measurementId: "G-FXM6PH044Q"
 };
 
 // Initialize Firebase safely (avoid multi-instance collision)

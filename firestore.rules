@@ -2,38 +2,48 @@ rules_version = '2';
 service cloud.firestore {
   match /databases/{database}/documents {
 
+    // Helper Functions: Validate incoming product/deal structure
+    function isValidProduct(data) {
+      return data.keys().hasAll(['title', 'price']) &&
+             data.title is string && data.title.size() > 0 && data.title.size() <= 500 &&
+             data.price is number && data.price >= 0;
+    }
+
     function isValidId(id) {
-      return id is string && id.size() > 0 && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+      return id is string && id.size() > 0 && id.size() <= 128;
     }
 
-    function isValidDeal(data) {
-      return data.title is string && data.title.size() > 0 && data.title.size() <= 500 &&
-             data.price is number && data.price >= 0 &&
-             data.image is string && data.image.size() <= 3000;
-    }
-
-    // Default deny
+    // Default Deny All (Blocks unauthorized access to unhandled collections)
     match /{document=**} {
       allow read, write: if false;
     }
 
-    // Deals collection
+    // 1. PRODUCTS COLLECTION (Main Website & Admin Panel)
+    match /products/{productId} {
+      // Public Read Access for Main Website
+      allow read: if true;
+      
+      // Validated Write Access for Admin Panel
+      allow create, update: if isValidProduct(request.resource.data);
+      allow delete: if true;
+    }
+
+    // 2. DEALS COLLECTION
     match /deals/{dealId} {
       allow read: if true;
-      allow create: if isValidId(dealId) && isValidDeal(request.resource.data);
-      allow update: if isValidId(dealId) && isValidDeal(request.resource.data);
+      allow create, update: if isValidId(dealId) && isValidProduct(request.resource.data);
       allow delete: if isValidId(dealId);
     }
 
-    // Products collection (shared with main website)
-    match /products/{productId} {
+    // 3. SETTINGS & TEST PATHS
+    match /settings/{docId} {
       allow read: if true;
-      allow create, update, delete: if true;
+      allow write: if true;
     }
 
-    // Connection test document
     match /test/{docId} {
-      allow read: if true;
+      allow read, write: if true;
     }
+
   }
 }
