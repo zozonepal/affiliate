@@ -362,34 +362,34 @@ export default function App() {
         </div>
 
         {/* Mobile Active Filter Badge Row */}
-        <div className="md:hidden flex items-center justify-between gap-2 px-1 mb-2.5 text-xs text-slate-500">
-          <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar">
-            <span className="font-black text-slate-800 text-[11px] shrink-0">
+        <div className="md:hidden flex items-center justify-between gap-2 px-1 mb-3 text-xs text-slate-500">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+            <span className="font-extrabold text-slate-900 text-xs shrink-0 tabular-nums">
               {filteredProducts.length} Deals
             </span>
             {priceFilter !== 'all' && (
-              <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full text-[10px] shrink-0">
+              <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-800 font-bold px-2 py-0.5 rounded-lg text-[10px] shrink-0 border border-slate-200">
                 <span>{priceFilter === 'under1k' ? '< Rs. 1k' : priceFilter === '1k-3k' ? '1k-3k' : priceFilter === '3k-5k' ? '3k-5k' : '5k+'}</span>
-                <button onClick={() => setPriceFilter('all')} className="hover:text-orange-950 font-black">×</button>
+                <button onClick={() => setPriceFilter('all')} className="hover:text-orange-600 font-bold ml-0.5">×</button>
               </span>
             )}
             {sortOption !== 'featured' && (
-              <span className="inline-flex items-center gap-1 bg-orange-100 text-orange-800 font-bold px-2 py-0.5 rounded-full text-[10px] shrink-0">
+              <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-800 font-bold px-2 py-0.5 rounded-lg text-[10px] shrink-0 border border-slate-200">
                 <span>{sortOption}</span>
-                <button onClick={() => setSortOption('featured')} className="hover:text-orange-950 font-black">×</button>
+                <button onClick={() => setSortOption('featured')} className="hover:text-orange-600 font-bold ml-0.5">×</button>
               </span>
             )}
             {searchQuery && (
-              <span className="inline-flex items-center gap-1 bg-slate-200 text-slate-800 font-bold px-2 py-0.5 rounded-full text-[10px] shrink-0">
-                <span>"{searchQuery.length > 15 ? searchQuery.slice(0, 15) + '...' : searchQuery}"</span>
-                <button onClick={() => setSearchQuery('')} className="hover:text-slate-950 font-black">×</button>
+              <span className="inline-flex items-center gap-1 bg-slate-100 text-slate-800 font-bold px-2 py-0.5 rounded-lg text-[10px] shrink-0 border border-slate-200">
+                <span>"{searchQuery.length > 12 ? searchQuery.slice(0, 12) + '...' : searchQuery}"</span>
+                <button onClick={() => setSearchQuery('')} className="hover:text-orange-600 font-bold ml-0.5">×</button>
               </span>
             )}
           </div>
           {(priceFilter !== 'all' || sortOption !== 'featured' || searchQuery || selectedCategory !== 'All') && (
             <button
               onClick={resetAllFilters}
-              className="text-[10px] text-orange-600 font-bold shrink-0 hover:underline active:text-orange-700"
+              className="text-[11px] text-orange-600 font-bold shrink-0 hover:underline active:text-orange-700"
             >
               Reset
             </button>
@@ -435,7 +435,7 @@ export default function App() {
             </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-2.5 sm:gap-5">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 xl:grid-cols-6 gap-3 sm:gap-4 md:gap-5">
             {filteredProducts.map((product) => (
               <ProductCard
                 key={product.id}

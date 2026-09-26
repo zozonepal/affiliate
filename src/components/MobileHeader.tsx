@@ -169,26 +169,28 @@ export function MobileHeader({
       {/* Category Pills Horizontal Scroll */}
       <div 
         ref={scrollContainerRef}
-        className="flex items-center gap-1.5 px-3 pb-2 overflow-x-auto no-scrollbar scroll-smooth"
+        className="flex items-center gap-1 px-3 pb-2.5 overflow-x-auto no-scrollbar scroll-smooth"
         style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
       >
-        {categories.map((category) => {
-          const isSelected = selectedCategory.toLowerCase() === category.toLowerCase();
-          return (
-            <button
-              key={category}
-              onClick={() => onSelectCategory(category)}
-              className={`text-[11px] font-bold px-3 py-1.5 rounded-full whitespace-nowrap transition-all duration-150 shrink-0 border flex items-center gap-1 ${
-                isSelected
-                  ? 'bg-orange-600 text-white border-orange-600 shadow-xs shadow-orange-500/30'
-                  : 'bg-white text-slate-600 hover:text-slate-900 border-slate-200 active:bg-slate-100'
-              }`}
-            >
-              {category === 'All' && <Sparkles className="w-3 h-3 text-amber-300" />}
-              <span>{category}</span>
-            </button>
-          );
-        })}
+        <div className="flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl w-max">
+          {categories.map((category) => {
+            const isSelected = selectedCategory.toLowerCase() === category.toLowerCase();
+            return (
+              <button
+                key={category}
+                onClick={() => onSelectCategory(category)}
+                className={`text-[11px] font-bold px-3 py-1 rounded-lg whitespace-nowrap transition-all duration-150 shrink-0 flex items-center gap-1 ${
+                  isSelected
+                    ? 'bg-slate-900 text-white shadow-2xs'
+                    : 'text-slate-600 hover:text-slate-900 active:bg-slate-200/50'
+                }`}
+              >
+                {category === 'All' && <Sparkles className="w-3 h-3 text-amber-300" />}
+                <span>{category}</span>
+              </button>
+            );
+          })}
+        </div>
       </div>
 
     </header>

@@ -14,14 +14,10 @@ export function CategoryFilter({
   productCount
 }: CategoryFilterProps) {
   return (
-    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-2 mb-3 pb-2 border-b border-slate-200">
+    <div className="flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 mb-4 pb-3 border-b border-slate-200/80">
       
-      {/* Category Pills Slider */}
-      <div className="flex items-center gap-1.5 overflow-x-auto w-full sm:w-auto pb-1 sm:pb-0 scrollbar-none touch-pan-x -mx-1 px-1">
-        <div className="flex items-center gap-1 text-xs font-bold text-slate-400 uppercase tracking-wider mr-0.5 shrink-0">
-          <Layers className="w-3.5 h-3.5 text-orange-600" />
-          <span className="hidden sm:inline">Category:</span>
-        </div>
+      {/* Category Segmented Slider */}
+      <div className="flex items-center gap-1 overflow-x-auto w-full sm:w-auto p-1 bg-slate-100/80 rounded-2xl no-scrollbar">
         {categories.map((cat) => {
           const isSelected = selectedCategory.toLowerCase() === cat.toLowerCase();
           return (
@@ -29,10 +25,10 @@ export function CategoryFilter({
               key={cat}
               id={`cat-filter-${cat.toLowerCase().replace(/[^a-z0-9]/g, '-')}`}
               onClick={() => onSelectCategory(cat)}
-              className={`px-3.5 py-1.5 rounded-xl text-xs font-semibold whitespace-nowrap min-h-[38px] flex items-center justify-center transition-all duration-150 active:scale-95 shrink-0 ${
+              className={`px-3.5 py-1.5 rounded-xl text-xs font-bold whitespace-nowrap min-h-[34px] flex items-center justify-center transition-all duration-150 active:scale-95 shrink-0 ${
                 isSelected
-                  ? 'bg-slate-900 text-white shadow-xs scale-102 font-bold'
-                  : 'bg-white border border-slate-200 text-slate-600 hover:border-slate-300 hover:bg-slate-50'
+                  ? 'bg-slate-900 text-white shadow-2xs'
+                  : 'text-slate-600 hover:text-slate-900 hover:bg-slate-200/60'
               }`}
             >
               {cat}
@@ -41,9 +37,9 @@ export function CategoryFilter({
         })}
       </div>
 
-      {/* Result Count Indicator */}
-      <div className="text-xs font-medium text-slate-500 whitespace-nowrap self-end sm:self-center text-[11px] sm:text-xs">
-        Showing <span className="font-bold text-slate-800">{productCount}</span> deals
+      {/* Result Count */}
+      <div className="text-xs font-medium text-slate-500 whitespace-nowrap self-end sm:self-center tabular-nums">
+        <span className="font-extrabold text-slate-900">{productCount}</span> deals available
       </div>
 
     </div>

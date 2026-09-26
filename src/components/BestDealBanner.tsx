@@ -1,14 +1,8 @@
-import { useState, useMemo, type MouseEvent } from 'react';
+import { useState, useMemo } from 'react';
 import { 
   Flame, 
-  Sparkles, 
   ExternalLink, 
-  ShoppingBag, 
-  TrendingUp, 
-  Check, 
-  Tag, 
-  Share2,
-  Percent
+  Share2
 } from 'lucide-react';
 import { ProductDeal } from '../types';
 import { ShareModal } from './ShareModal';
@@ -20,12 +14,29 @@ interface BestDealBannerProps {
   isWishlisted?: boolean;
 }
 
+/** Helper function to automatically shorten category names */
+function getShortCategory(cat: string = ''): string {
+  if (!cat) return 'Tech';
+  const clean = cat.trim();
+  const lower = clean.toLowerCase();
+  if (lower.includes('phone') || lower.includes('mobile')) return 'Phones';
+  if (lower.includes('earbud') || lower.includes('headphone') || lower.includes('audio') || lower.includes('speaker')) return 'Audio';
+  if (lower.includes('laptop') || lower.includes('computer') || lower.includes('pc')) return 'PC';
+  if (lower.includes('watch') || lower.includes('wearable')) return 'Watches';
+  if (lower.includes('game') || lower.includes('console')) return 'Gaming';
+  if (lower.includes('electronic') || lower.includes('gadget') || lower.includes('tech')) return 'Tech';
+  if (lower.includes('home') || lower.includes('kitchen') || lower.includes('appliance')) return 'Home';
+  if (lower.includes('fashion') || lower.includes('clothing')) return 'Fashion';
+  
+  const firstWord = clean.split(/[\s,&/]+/)[0];
+  return firstWord.length > 10 ? firstWord.slice(0, 10) : firstWord;
+}
+
 export function BestDealBanner({
   products,
   onQuickView
 }: BestDealBannerProps) {
   // Intelligent Algorithm: Analyzes all uploaded products and selects strictly ONE single BEST deal
-  // Criteria: percentage discount, monetary savings in NPR, ratings, upvotes, promo codes
   const bestDealItem = useMemo(() => {
     if (!products || products.length === 0) return null;
 
@@ -64,164 +75,116 @@ export function BestDealBanner({
     return best;
   }, [products]);
 
-  const [copied, setCopied] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
 
   if (!bestDealItem) return null;
 
   const deal = bestDealItem.product;
   const discountPercent = bestDealItem.discountPercent;
-  const savings = bestDealItem.savings;
   const origPrice = bestDealItem.orig;
-
-  const handleCopyCode = (e: MouseEvent, code: string) => {
-    e.stopPropagation();
-    navigator.clipboard.writeText(code);
-    setCopied(true);
-    setTimeout(() => setCopied(false), 2000);
-  };
+  const shortCategory = getShortCategory(deal.category);
 
   return (
     <section 
-      aria-label="Best Deal of the App"
-      className="relative mb-4 sm:mb-5 rounded-xl sm:rounded-2xl overflow-hidden shadow-md border border-orange-500/25 bg-gradient-to-r from-slate-950 via-slate-900 to-orange-950 text-white"
+      aria-label="Featured Deal Spotlight"
+      className="relative mb-4 sm:mb-5 rounded-2xl border-2 border-orange-400/80 bg-gradient-to-r from-orange-50/90 via-amber-50/60 to-orange-50/80 shadow-md shadow-orange-500/10 transition-all p-3 sm:p-3.5 overflow-hidden group"
     >
-      {/* Accent strip */}
-      <div className="h-0.5 sm:h-1 w-full bg-gradient-to-r from-amber-400 via-orange-500 to-rose-500" />
+      {/* Top Accent Strip */}
+      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500" />
 
-      <div className="p-2.5 sm:p-3.5 md:p-4">
-        
-        {/* Compact Header Bar */}
-        <div className="flex items-center justify-between gap-2 mb-2 sm:mb-2.5">
-          <div className="flex items-center gap-1.5 min-w-0">
-            <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-[10px] sm:text-xs font-black px-2 py-0.5 rounded-full shadow-xs uppercase tracking-wider shrink-0">
-              <Flame className="w-3 h-3 text-amber-200 fill-amber-300" />
-              <span>Best Deal</span>
-            </span>
-
-            <span className="hidden sm:inline-flex items-center gap-1 text-[10px] text-amber-300/90 font-medium truncate">
-              <Sparkles className="w-2.5 h-2.5 shrink-0" />
-              <span>AI Auto-Selected #1 Pick</span>
-            </span>
-          </div>
-
-          <div className="flex items-center gap-1.5 shrink-0">
-            {/* Quick Share button */}
-            <button
-              type="button"
-              onClick={() => setIsShareOpen(true)}
-              className="p-1 sm:px-2 sm:py-0.5 rounded-md bg-white/10 hover:bg-white/20 text-slate-200 text-[10px] font-bold inline-flex items-center gap-1 transition active:scale-95 border border-white/10"
-              title="Share this deal"
-            >
-              <Share2 className="w-3 h-3 text-orange-400" />
-              <span className="hidden sm:inline">Share</span>
-            </button>
-          </div>
+      {/* Top Header Row */}
+      <div className="flex items-center justify-between gap-2 mb-2 pt-0.5">
+        <div className="flex items-center gap-2 min-w-0">
+          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider shrink-0 whitespace-nowrap">
+            <Flame className="w-3 h-3 text-amber-200 fill-amber-200" />
+            <span>Best Deal Spotlight</span>
+          </span>
+          <span className="text-[11px] text-orange-950/80 font-bold truncate hidden sm:inline">
+            #1 Highest Savings Choice
+          </span>
         </div>
 
-        {/* Compact Mobile-First Layout: Flex on mobile, clean row */}
-        <div className="flex items-center gap-2.5 sm:gap-4">
-          
-          {/* 1. Thumbnail Image with Top-Right Percentage Badge */}
-          <div 
-            onClick={() => onQuickView(deal)}
-            className="relative shrink-0 w-20 h-20 sm:w-24 sm:h-24 md:w-28 md:h-28 bg-white rounded-lg sm:rounded-xl p-1.5 flex items-center justify-center cursor-pointer shadow-sm hover:ring-2 hover:ring-orange-400 transition-all overflow-hidden"
-          >
-            {discountPercent > 0 && (
-              <div className="absolute top-1 right-1 z-10 bg-slate-900/90 text-white text-[9px] sm:text-[10px] font-black px-1.5 py-0.5 rounded shadow-xs flex items-center gap-0.5 leading-none pointer-events-none">
-                <Percent className="w-2 h-2 inline" />
-                <span>{discountPercent}%</span>
-              </div>
-            )}
+        <button
+          type="button"
+          onClick={() => setIsShareOpen(true)}
+          className="px-2.5 py-0.5 rounded-lg bg-white/80 hover:bg-white text-slate-700 border border-orange-200/80 text-[10px] font-bold inline-flex items-center gap-1 transition active:scale-95 shrink-0 shadow-2xs"
+          title="Share deal"
+        >
+          <Share2 className="w-3 h-3 text-orange-600" />
+          <span className="hidden sm:inline">Share</span>
+        </button>
+      </div>
 
-            <img
-              src={deal.image}
-              alt={deal.title}
-              onError={(e) => {
-                (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80';
-              }}
-              className="w-full h-full object-contain"
-              loading="eager"
-            />
+      {/* Main Content Layout */}
+      <div className="flex items-center gap-2.5 sm:gap-3.5">
+        
+        {/* Thumbnail Image */}
+        <div 
+          onClick={() => onQuickView(deal)}
+          className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-white border border-orange-200/80 rounded-xl p-1 flex items-center justify-center cursor-pointer overflow-hidden shadow-2xs group-hover:scale-105 transition-transform"
+        >
+          <img
+            src={deal.image}
+            alt={deal.title}
+            onError={(e) => {
+              (e.target as HTMLImageElement).src = 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80';
+            }}
+            className="w-full h-full object-contain"
+            loading="eager"
+          />
+        </div>
+
+        {/* Details & Price Line */}
+        <div className="flex-1 min-w-0 flex flex-col justify-center">
+          
+          {/* Single-Line Category & Title */}
+          <div className="flex items-center gap-1.5 min-w-0 text-xs font-bold text-slate-900">
+            <span className="text-orange-700 text-[10px] font-extrabold uppercase shrink-0 tracking-wide">
+              {shortCategory}
+            </span>
+            <span className="text-orange-300 shrink-0">•</span>
+            <h3 
+              onClick={() => onQuickView(deal)}
+              className="truncate font-extrabold text-xs sm:text-sm text-slate-950 group-hover:text-orange-600 cursor-pointer transition whitespace-nowrap"
+              title={deal.title}
+            >
+              {deal.title}
+            </h3>
           </div>
 
-          {/* 2. Content & Buy Button in compact flex */}
-          <div className="flex-1 min-w-0 flex flex-col justify-between self-stretch py-0.5">
-            <div>
-              {/* Category & Badge */}
-              <div className="flex items-center gap-1.5 mb-1">
-                <span className="text-[9px] font-extrabold uppercase tracking-wide text-orange-400 truncate">
-                  {deal.category || 'Tech'}
+          {/* Single-Line Price & Buy CTA Row */}
+          <div className="flex items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-orange-200/60">
+            <div className="flex items-baseline gap-1.5 min-w-0 truncate">
+              <span className="text-sm sm:text-base font-black text-slate-950 tracking-tight tabular-nums whitespace-nowrap">
+                Rs. {Number(deal.price).toLocaleString('ne-NP')}
+              </span>
+              {origPrice > deal.price && (
+                <span className="text-[11px] text-slate-400 line-through tabular-nums whitespace-nowrap">
+                  Rs. {Number(origPrice).toLocaleString('ne-NP')}
                 </span>
-                <span className="text-slate-600 text-[10px]">•</span>
-                <span className="text-[9px] text-emerald-400 font-bold inline-flex items-center gap-0.5">
-                  <TrendingUp className="w-2.5 h-2.5" />
-                  <span>Lowest Price</span>
-                </span>
-              </div>
-
-              {/* Title */}
-              <h3 
-                onClick={() => onQuickView(deal)}
-                className="text-xs sm:text-sm font-bold text-white hover:text-orange-300 cursor-pointer transition line-clamp-1 sm:line-clamp-2 leading-snug"
-                title={deal.title}
-              >
-                {deal.title}
-              </h3>
-            </div>
-
-            {/* Price line & Action button in a tight row */}
-            <div className="flex items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-white/10 flex-wrap sm:flex-nowrap">
-              <div className="flex items-baseline gap-1.5 min-w-0">
-                <span className="text-sm sm:text-base font-black text-amber-400 tracking-tight whitespace-nowrap">
-                  Rs. {Number(deal.price).toLocaleString('ne-NP')}
-                </span>
-                {origPrice > deal.price && (
-                  <span className="text-[10px] sm:text-xs text-slate-400 line-through whitespace-nowrap">
-                    Rs. {Number(origPrice).toLocaleString('ne-NP')}
-                  </span>
-                )}
-                {savings > 0 && (
-                  <span className="hidden sm:inline-block text-[10px] font-bold text-emerald-300 bg-emerald-500/20 px-1.5 py-0.2 rounded">
-                    Save Rs. {Number(savings).toLocaleString('ne-NP')}
-                  </span>
-                )}
-              </div>
-
-              {/* Promo code mini chip if available */}
-              {deal.promoCode && (
-                <button
-                  type="button"
-                  onClick={(e) => handleCopyCode(e, deal.promoCode!)}
-                  className="hidden md:inline-flex items-center gap-1 text-[10px] font-mono font-bold bg-amber-500/20 hover:bg-amber-500/30 text-amber-300 border border-amber-400/30 px-1.5 py-0.5 rounded transition"
-                  title="Click to copy voucher code"
-                >
-                  <Tag className="w-2.5 h-2.5" />
-                  <span>{deal.promoCode}</span>
-                  {copied ? <Check className="w-2.5 h-2.5 text-emerald-400" /> : null}
-                </button>
               )}
-
-              {/* Buy on Daraz CTA */}
-              <a
-                href={deal.affiliateUrl || '#'}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="inline-flex items-center justify-center gap-1.5 bg-gradient-to-r from-orange-500 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-slate-950 font-black text-[11px] sm:text-xs py-1.5 px-3 rounded-lg shadow-sm active:scale-95 transition-all ml-auto shrink-0"
-              >
-                <ShoppingBag className="w-3 h-3 fill-slate-950 text-slate-950 shrink-0" />
-                <span>Buy on Daraz</span>
-                <ExternalLink className="w-2.5 h-2.5 shrink-0" />
-              </a>
+              {discountPercent > 0 && (
+                <span className="text-[10px] font-extrabold text-white bg-orange-600 px-1.5 py-0.2 rounded-md shadow-2xs shrink-0 whitespace-nowrap">
+                  -{discountPercent}%
+                </span>
+              )}
             </div>
 
+            <a
+              href={deal.affiliateUrl || '#'}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-extrabold text-xs py-1.5 px-3.5 rounded-xl flex items-center gap-1.5 transition active:scale-95 shrink-0 whitespace-nowrap shadow-xs"
+            >
+              <span>Buy on Daraz</span>
+              <ExternalLink className="w-3 h-3 shrink-0" />
+            </a>
           </div>
 
         </div>
 
       </div>
 
-      {/* Share Modal Dialog */}
       <ShareModal
         isOpen={isShareOpen}
         onClose={() => setIsShareOpen(false)}
