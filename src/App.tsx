@@ -12,6 +12,7 @@ import {
   addSubscriberToNewsletter
 } from './lib/firebase';
 import { ProductDeal, UserAccount, CloudSyncStatus, PriceFilterRange, SortOption } from './types';
+import { extractAllImages } from './utils/productImages';
 import { Navbar } from './components/Navbar';
 import { Hero } from './components/Hero';
 import { CategoryFilter } from './components/CategoryFilter';
@@ -24,7 +25,8 @@ import { MobileBottomNav } from './components/MobileBottomNav';
 import { MobileHeader } from './components/MobileHeader';
 import { MobileFilterModal } from './components/MobileFilterModal';
 import { BestDealBanner } from './components/BestDealBanner';
-import { Loader2, PackageOpen, RotateCcw, Plus, Sparkles, X as XIcon } from 'lucide-react';
+import { LoadingScreen } from './components/LoadingScreen';
+import { PackageOpen, RotateCcw, Plus, Sparkles, X as XIcon } from 'lucide-react';
 
 export default function App() {
   const [products, setProducts] = useState<ProductDeal[]>([]);
@@ -105,7 +107,8 @@ export default function App() {
           const name = data.name || data.title || 'Untitled Deal';
           const price = Number(data.price) || 0;
           const description = data.description || '';
-          const imageUrl = data.imageUrl || data.image || '';
+          const allImages = extractAllImages(data);
+          const primaryImage = allImages[0] || data.imageUrl || data.image || '';
 
           return {
             id: docId,
@@ -114,11 +117,14 @@ export default function App() {
             price: price,
             originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
             description: description,
-            imageUrl: imageUrl,
-            image: imageUrl,
+            imageUrl: primaryImage,
+            image: primaryImage,
+            images: allImages,
+            gallery: Array.isArray(data.gallery) ? data.gallery : allImages,
             category: data.category || 'General',
             badge: data.badge || '',
             promoCode: data.promoCode || undefined,
+            colorImages: Array.isArray(data.colorImages) ? data.colorImages : undefined,
             colorVariants: Array.isArray(data.colorVariants) ? data.colorVariants : undefined,
             affiliateUrl: data.affiliateUrl || 'https://www.daraz.com.np',
             rating: data.rating ? Number(data.rating) : 4.5,
@@ -408,15 +414,7 @@ export default function App() {
 
         {/* Product Grid or Loading / Empty States */}
         {isLoading ? (
-          <div className="py-24 text-center">
-            <Loader2 className="w-10 h-10 animate-spin text-orange-600 mx-auto mb-3" />
-            <h3 className="font-extrabold text-slate-800 text-base">
-              Connecting to Real-time Cloud Firestore...
-            </h3>
-            <p className="text-xs text-slate-500 mt-1">
-              Synchronizing verified Nepal affiliate deals & discounts
-            </p>
-          </div>
+          <LoadingScreen />
         ) : filteredProducts.length === 0 ? (
           <div className="py-20 text-center bg-white rounded-3xl border border-slate-200/80 p-8 max-w-lg mx-auto shadow-xs">
             <PackageOpen className="w-16 h-16 text-slate-300 mx-auto mb-3" />
@@ -464,11 +462,11 @@ export default function App() {
             DealFinder NP is an affiliate curation platform for Daraz Nepal. We earn a small commission through verified affiliate links at zero additional cost to buyers. Product prices and availability are accurate as of posting and are subject to change by Daraz sellers.
           </p>
           <div className="pt-2 flex items-center justify-center gap-4 text-slate-400 text-[11px]">
-            <span>Cloud Sync: Google Firebase Firestore</span>
+            <span>Verified Affiliate Curation</span>
             <span>•</span>
-            <span>Real-time Updates</span>
+            <span>Daily Price Monitoring</span>
             <span>•</span>
-            <span>Auth & Wishlist Persistence</span>
+            <span>Nepal E-Commerce Guides</span>
           </div>
         </div>
       </footer>

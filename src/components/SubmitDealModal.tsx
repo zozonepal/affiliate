@@ -3,6 +3,7 @@ import { X, Send, Sparkles, CheckCircle2, RefreshCw } from 'lucide-react';
 import { addProductToFirestore } from '../lib/firebase';
 import { ProductDeal, UserAccount } from '../types';
 import { extractProductFromUrl } from '../utils/productExtractor';
+import { extractAllImages } from '../utils/productImages';
 
 interface SubmitDealModalProps {
   isOpen: boolean;
@@ -68,12 +69,18 @@ export function SubmitDealModal({
 
     setSubmitting(true);
     try {
+      const allExtractedImages = extractAllImages({ image: image.trim() });
+      const primaryImage = allExtractedImages[0] || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80';
+
       const deal: Omit<ProductDeal, 'id'> = {
         title: title.trim(),
         category: category.trim(),
         price: Number(price),
         promoCode: promoCode.trim() ? promoCode.trim().toUpperCase() : undefined,
-        image: image.trim() || 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=600&auto=format&fit=crop&q=80',
+        image: primaryImage,
+        imageUrl: primaryImage,
+        images: allExtractedImages,
+        gallery: allExtractedImages,
         affiliateUrl: affiliateUrl.trim(),
         description: description.trim(),
         badge: 'Community Submitted',
@@ -233,13 +240,16 @@ export function SubmitDealModal({
             </div>
 
             <div>
-              <label className="block text-xs font-bold text-slate-700 mb-1">Product Image URL</label>
-              <input
-                type="url"
+              <label className="block text-xs font-bold text-slate-700 mb-1 flex items-center justify-between">
+                <span>Product Image URL(s)</span>
+                <span className="text-[10px] text-slate-400 font-normal">Single URL or multiple (comma/line separated)</span>
+              </label>
+              <textarea
+                rows={2}
                 value={image}
                 onChange={(e) => setImage(e.target.value)}
-                placeholder="https://sg-test-11.slatic.net/p/..."
-                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500"
+                placeholder="https://... (paste multiple URLs separated by commas or lines for gallery)"
+                className="w-full px-3 py-2 border rounded-xl text-xs outline-none focus:ring-2 focus:ring-orange-500 resize-none"
               />
             </div>
 

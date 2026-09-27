@@ -32,13 +32,13 @@ export function Navbar({
             <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-md transition-all shrink-0 overflow-hidden">
               <img src="/logo.png" alt="DealFinder Nepal" className="w-full h-full object-contain" />
             </div>
-            <div className="shrink-0">
-              <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-none whitespace-nowrap">
+            <div className="flex flex-col justify-center shrink-0">
+              <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-snug whitespace-nowrap">
                 <span>DealFinder</span>
                 <span className="text-orange-600">NP</span>
               </div>
-              <p className="hidden md:block text-[11px] text-slate-500 font-medium leading-none mt-0.5 truncate">
-                Finder Nepal Deals & Catalog
+              <p className="hidden md:block text-[11px] text-slate-500 font-medium leading-normal mt-0.5 truncate">
+                Nepal Deals & Discount Catalog
               </p>
             </div>
           </a>

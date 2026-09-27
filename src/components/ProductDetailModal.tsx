@@ -1,7 +1,22 @@
-import { useState, useEffect } from 'react';
-import { X, ExternalLink, Heart, ThumbsUp, Star, ShieldCheck, Truck, Check, Share2, Ticket, CheckCircle, Palette } from 'lucide-react';
+import { useState, useEffect, useMemo } from 'react';
+import { 
+  X, 
+  ExternalLink, 
+  Heart, 
+  ThumbsUp, 
+  Star, 
+  ShieldCheck, 
+  Truck, 
+  Check, 
+  Share2, 
+  Ticket, 
+  CheckCircle, 
+  ChevronLeft,
+  ChevronRight
+} from 'lucide-react';
 import { ProductDeal, UserAccount } from '../types';
 import { ShareModal } from './ShareModal';
+import { extractAllImages, getProductVariants } from '../utils/productImages';
 
 interface ProductDetailModalProps {
   product: ProductDeal | null;
@@ -10,6 +25,14 @@ interface ProductDetailModalProps {
   onToggleWishlist: (id: string) => void;
   onUpvote: (id: string) => void;
   onClose: () => void;
+}
+
+function getVariantDisplayName(name: string | undefined, idx: number): string {
+  if (!name) return `Option ${idx + 1}`;
+  if (/^\d{6,}$/.test(name.trim())) {
+    return `Style ${idx + 1}`;
+  }
+  return name;
 }
 
 export function ProductDetailModal({
@@ -23,22 +46,57 @@ export function ProductDetailModal({
   const [copied, setCopied] = useState(false);
   const [promoCopied, setPromoCopied] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
-  const [selectedColorIdx, setSelectedColorIdx] = useState<number>(0);
+  const [activeImgIdx, setActiveImgIdx] = useState<number>(0);
+  const [selectedVariantIdx, setSelectedVariantIdx] = useState<number>(0);
 
-  useEffect(() => {
-    if (product?.colorVariants && product.colorVariants.length > 0) {
-      const idx = product.colorVariants.findIndex((v) => v.image === product.image);
-      setSelectedColorIdx(idx >= 0 ? idx : 0);
-    } else {
-      setSelectedColorIdx(0);
-    }
+  // Extract all uploaded images (primary image, colorImages, colorVariants, images array, gallery, photos)
+  const allImages = useMemo(() => {
+    return extractAllImages(product);
   }, [product]);
+
+  // Extract all normalized variants (from colorVariants or colorImages)
+  const variants = useMemo(() => {
+    return getProductVariants(product);
+  }, [product]);
+
+  // Reset when active product changes
+  useEffect(() => {
+    setActiveImgIdx(0);
+    if (variants.length > 0) {
+      const idx = variants.findIndex((v) => v.image === product?.image);
+      setSelectedVariantIdx(idx >= 0 ? idx : 0);
+    } else {
+      setSelectedVariantIdx(0);
+    }
+  }, [product?.id, variants]);
+
+  // Keyboard navigation for images
+  useEffect(() => {
+    if (!product || allImages.length <= 1) return;
+
+    const handleKeyDown = (e: globalThis.KeyboardEvent) => {
+      if (e.key === 'ArrowLeft') {
+        setActiveImgIdx((prev) => (prev - 1 + allImages.length) % allImages.length);
+      } else if (e.key === 'ArrowRight') {
+        setActiveImgIdx((prev) => (prev + 1) % allImages.length);
+      }
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [product, allImages.length]);
 
   if (!product) return null;
 
-  const hasVariants = Boolean(product.colorVariants && product.colorVariants.length > 0);
-  const activeVariant = hasVariants && product.colorVariants ? product.colorVariants[selectedColorIdx] : null;
-  const heroImage = (activeVariant?.image || product.imageUrl || product.image);
+  const hasVariants = variants.length > 0;
+  
+  // Hero image based on active image selection
+  const heroImage = allImages[activeImgIdx] || product.imageUrl || product.image;
+
+  // Active color variant if the current hero image matches a variant, or fallback to selectedVariantIdx
+  const activeVariant = hasVariants 
+    ? (variants.find(v => v.image === heroImage) || variants[selectedVariantIdx])
+    : null;
 
   const discountPercent =
     product.originalPrice && product.originalPrice > product.price
@@ -49,6 +107,29 @@ export function ProductDetailModal({
 
   const handleShare = () => {
     setIsShareOpen(true);
+  };
+
+  const handleSelectImage = (idx: number) => {
+    setActiveImgIdx(idx);
+    const targetUrl = allImages[idx];
+    if (variants.length > 0) {
+      const matchedIdx = variants.findIndex(v => v.image === targetUrl);
+      if (matchedIdx >= 0) {
+        setSelectedVariantIdx(matchedIdx);
+      }
+    }
+  };
+
+  const handlePrevImage = () => {
+    if (allImages.length <= 1) return;
+    const nextIdx = (activeImgIdx - 1 + allImages.length) % allImages.length;
+    handleSelectImage(nextIdx);
+  };
+
+  const handleNextImage = () => {
+    if (allImages.length <= 1) return;
+    const nextIdx = (activeImgIdx + 1) % allImages.length;
+    handleSelectImage(nextIdx);
   };
 
   return (
@@ -82,11 +163,11 @@ export function ProductDetailModal({
         {/* Content body */}
         <div className="p-5 sm:p-6 space-y-6">
           
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-center">
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-6 items-start">
             
-            {/* Image Preview and Multiple Color Thumbnails */}
-            <div className="flex flex-col gap-2.5">
-              <div className="relative h-64 bg-slate-50 rounded-2xl p-4 flex items-center justify-center border border-slate-100 overflow-hidden">
+            {/* Image Preview and Multi-Image Gallery */}
+            <div className="flex flex-col gap-3">
+              <div className="relative h-64 sm:h-72 bg-slate-50 rounded-2xl p-4 flex items-center justify-center border border-slate-100 overflow-hidden group select-none">
                 <img
                   src={heroImage}
                   alt={activeVariant ? `${product.name || product.title} (${activeVariant.name})` : (product.name || product.title)}
@@ -96,56 +177,117 @@ export function ProductDetailModal({
                       'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80';
                   }}
                 />
+                
                 {discountPercent && (
-                  <div className="absolute bottom-3 left-3 bg-red-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-sm">
+                  <div className="absolute bottom-3 left-3 bg-red-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-sm z-10">
                     SAVE {discountPercent}%
                   </div>
                 )}
+
                 {activeVariant && (
-                  <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-xs flex items-center gap-1.5">
+                  <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-xs flex items-center gap-1.5 z-10">
                     <span
-                      className="w-2.5 h-2.5 rounded-full border border-white/50"
+                      className="w-2.5 h-2.5 rounded-full border border-white/50 shrink-0"
                       style={{ backgroundColor: activeVariant.colorCode || '#ffffff' }}
                     />
-                    <span>{activeVariant.name}</span>
+                    <span>{getVariantDisplayName(activeVariant.name, selectedVariantIdx)}</span>
                   </div>
+                )}
+
+                {/* Multi-Image Counter Pill */}
+                {allImages.length > 1 && (
+                  <div className="absolute top-3 right-3 bg-slate-900/80 backdrop-blur-xs text-white text-[11px] font-bold px-2.5 py-0.5 rounded-full shadow-xs z-10">
+                    {activeImgIdx + 1} / {allImages.length}
+                  </div>
+                )}
+
+                {/* Previous & Next Arrows */}
+                {allImages.length > 1 && (
+                  <>
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handlePrevImage();
+                      }}
+                      className="absolute left-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-md backdrop-blur-xs flex items-center justify-center transition active:scale-90 border border-slate-200/80 cursor-pointer z-10"
+                      aria-label="Previous image"
+                      title="Previous image"
+                    >
+                      <ChevronLeft className="w-5 h-5 text-slate-700" />
+                    </button>
+
+                    <button
+                      type="button"
+                      onClick={(e) => {
+                        e.stopPropagation();
+                        handleNextImage();
+                      }}
+                      className="absolute right-2 top-1/2 -translate-y-1/2 w-8 h-8 rounded-full bg-white/90 hover:bg-white text-slate-800 shadow-md backdrop-blur-xs flex items-center justify-center transition active:scale-90 border border-slate-200/80 cursor-pointer z-10"
+                      aria-label="Next image"
+                      title="Next image"
+                    >
+                      <ChevronRight className="w-5 h-5 text-slate-700" />
+                    </button>
+
+                    {/* Bottom indicator dots */}
+                    <div className="absolute bottom-3 left-1/2 -translate-x-1/2 flex items-center gap-1.5 px-2.5 py-1 rounded-full bg-slate-900/40 backdrop-blur-xs z-10">
+                      {allImages.map((_, i) => (
+                        <button
+                          key={i}
+                          type="button"
+                          onClick={() => handleSelectImage(i)}
+                          className={`h-1.5 rounded-full transition-all cursor-pointer ${
+                            i === activeImgIdx ? 'bg-orange-500 w-3.5' : 'bg-white/70 hover:bg-white w-1.5'
+                          }`}
+                          aria-label={`Go to slide ${i + 1}`}
+                        />
+                      ))}
+                    </div>
+                  </>
                 )}
               </div>
 
-              {/* Color Variant Thumbnail Gallery */}
-              {hasVariants && product.colorVariants && product.colorVariants.length > 1 && (
-                <div className="space-y-1">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-medium px-1">
-                    <span>Color Photos ({product.colorVariants.length}):</span>
-                    <span className="font-bold text-slate-800">{activeVariant?.name}</span>
+              {/* Multi-Image Thumbnail Gallery (All Uploaded Photos) */}
+              {allImages.length > 1 && (
+                <div className="space-y-1.5">
+                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold px-1">
+                    <span>Product Photos ({allImages.length}):</span>
+                    <span className="text-[10px] text-slate-400 font-medium">Click photo to preview</span>
                   </div>
-                  <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                    {product.colorVariants.map((variant, idx) => {
-                      const isActive = selectedColorIdx === idx;
+                  <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5">
+                    {allImages.map((imgUrl, idx) => {
+                      const isActive = activeImgIdx === idx;
+                      const matchedVariant = variants.find(v => v.image === imgUrl);
+
                       return (
                         <button
-                          key={variant.name + idx}
+                          key={imgUrl.slice(0, 32) + idx}
                           type="button"
-                          onClick={() => setSelectedColorIdx(idx)}
-                          className={`relative flex items-center gap-1.5 p-1 rounded-xl border bg-white transition-all shrink-0 ${
+                          onClick={() => handleSelectImage(idx)}
+                          className={`relative flex items-center justify-center p-1 rounded-xl border bg-white transition-all shrink-0 cursor-pointer ${
                             isActive
-                              ? 'border-orange-500 ring-2 ring-orange-500/30 shadow-xs'
-                              : 'border-slate-200 hover:border-slate-300 opacity-80 hover:opacity-100'
+                              ? 'border-orange-500 ring-2 ring-orange-500/40 shadow-xs scale-105'
+                              : 'border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100 hover:scale-[1.02]'
                           }`}
+                          title={matchedVariant ? `Option: ${getVariantDisplayName(matchedVariant.name, idx)}` : `Photo ${idx + 1}`}
                         >
                           <img
-                            src={variant.image}
-                            alt={variant.name}
-                            className="w-10 h-10 object-contain rounded-lg bg-slate-50 border border-slate-100 p-0.5"
+                            src={imgUrl}
+                            alt={`Photo ${idx + 1}`}
+                            className="w-12 h-12 sm:w-14 sm:h-14 object-contain rounded-lg bg-slate-50 border border-slate-100 p-0.5"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src =
                                 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80';
                             }}
                           />
-                          <span
-                            className="w-3 h-3 rounded-full border border-slate-300 shrink-0"
-                            style={{ backgroundColor: variant.colorCode || '#333333' }}
-                          />
+                          {matchedVariant?.colorCode && (
+                            <span
+                              className="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-full border border-white shadow-2xs shrink-0"
+                              style={{ backgroundColor: matchedVariant.colorCode }}
+                              title={matchedVariant.name}
+                            />
+                          )}
                         </button>
                       );
                     })}
@@ -170,45 +312,6 @@ export function ProductDetailModal({
                   {product.reviewsCount || 48} Daraz verified reviews
                 </span>
               </div>
-
-              {/* Color Variant Selector Pills */}
-              {hasVariants && product.colorVariants && (
-                <div className="bg-slate-50/90 p-3 rounded-xl border border-slate-200/80 space-y-2">
-                  <div className="flex items-center justify-between text-xs">
-                    <span className="font-bold text-slate-700 flex items-center gap-1.5">
-                      <Palette className="w-3.5 h-3.5 text-orange-600" />
-                      <span>Available Colors:</span>
-                    </span>
-                    <span className="font-extrabold text-orange-600 bg-orange-100/70 px-2 py-0.5 rounded text-[11px]">
-                      {activeVariant?.name}
-                    </span>
-                  </div>
-
-                  <div className="flex flex-wrap gap-1.5">
-                    {product.colorVariants.map((variant, idx) => {
-                      const isSelected = selectedColorIdx === idx;
-                      return (
-                        <button
-                          key={variant.name + idx}
-                          type="button"
-                          onClick={() => setSelectedColorIdx(idx)}
-                          className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-xs font-semibold border transition-all ${
-                            isSelected
-                              ? 'bg-orange-600 text-white border-orange-600 shadow-2xs'
-                              : 'bg-white text-slate-700 border-slate-200 hover:border-slate-300 hover:bg-slate-50'
-                          }`}
-                        >
-                          <span
-                            className="w-2.5 h-2.5 rounded-full border border-white/60 shrink-0"
-                            style={{ backgroundColor: variant.colorCode || '#333' }}
-                          />
-                          <span>{variant.name}</span>
-                        </button>
-                      );
-                    })}
-                  </div>
-                </div>
-              )}
 
               {/* Price Box */}
               <div className="bg-slate-50 p-4 rounded-xl border border-slate-200/80">

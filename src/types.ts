@@ -1,3 +1,12 @@
+export interface ColorImageItem {
+  id?: string;
+  name?: string;
+  image?: string;
+  imageUrl?: string;
+  url?: string;
+  colorCode?: string;
+}
+
 export interface ColorVariant {
   id?: string;
   name: string; // e.g. "Midnight Black", "Glacier Blue", "Silver", "Rose Pink"
@@ -16,6 +25,9 @@ export interface ProductDeal {
   promoCode?: string;
   image: string;
   imageUrl?: string;
+  images?: string[];
+  gallery?: string[];
+  colorImages?: ColorImageItem[];
   colorVariants?: ColorVariant[];
   affiliateUrl: string;
   description?: string;

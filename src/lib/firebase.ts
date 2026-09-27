@@ -29,6 +29,7 @@ import {
 } from 'firebase/auth';
 import { ProductDeal, UserAccount, CloudSyncStatus } from '../types';
 import { INITIAL_DEALS } from '../data/initialDeals';
+import { extractAllImages } from '../utils/productImages';
 
 // Firebase configuration provided in the project
 export const firebaseConfig = {
@@ -156,7 +157,8 @@ export function subscribeToProducts(
           const data = docSnap.data();
           const docId = docSnap.id;
           const name = data.name || data.title || 'Untitled Deal';
-          const imageUrl = data.imageUrl || data.image || '';
+          const allImages = extractAllImages(data);
+          const primaryImage = allImages[0] || data.imageUrl || data.image || '';
 
           return {
             id: docId,
@@ -167,8 +169,11 @@ export function subscribeToProducts(
             originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
             badge: data.badge || '',
             promoCode: data.promoCode || undefined,
-            image: imageUrl,
-            imageUrl: imageUrl,
+            image: primaryImage,
+            imageUrl: primaryImage,
+            images: allImages,
+            gallery: Array.isArray(data.gallery) ? data.gallery : allImages,
+            colorImages: Array.isArray(data.colorImages) ? data.colorImages : undefined,
             colorVariants: Array.isArray(data.colorVariants) ? data.colorVariants : undefined,
             affiliateUrl: data.affiliateUrl || 'https://www.daraz.com.np',
             description: data.description || '',
@@ -215,6 +220,9 @@ export function subscribeToProducts(
 export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
   const productsRef = collection(db, 'products');
   
+  const allImages = extractAllImages(deal);
+  const primaryImage = allImages[0] || deal.image || '';
+
   const payload: Record<string, any> = {
     title: deal.title || 'Untitled Deal',
     category: deal.category || 'Tech',
@@ -222,7 +230,10 @@ export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
     originalPrice: deal.originalPrice ? Number(deal.originalPrice) : null,
     badge: deal.badge || '',
     promoCode: deal.promoCode || '',
-    image: deal.image || '',
+    image: primaryImage,
+    imageUrl: primaryImage,
+    images: allImages,
+    gallery: allImages,
     colorVariants: Array.isArray(deal.colorVariants) ? deal.colorVariants : [],
     affiliateUrl: deal.affiliateUrl || 'https://www.daraz.com.np',
     description: deal.description || '',
@@ -254,7 +265,10 @@ export async function addProductToFirestore(deal: Omit<ProductDeal, 'id'>) {
       originalPrice: payload.originalPrice || undefined,
       badge: payload.badge || undefined,
       promoCode: payload.promoCode || undefined,
-      image: payload.image,
+      image: primaryImage,
+      imageUrl: primaryImage,
+      images: allImages,
+      gallery: allImages,
       colorVariants: payload.colorVariants,
       affiliateUrl: payload.affiliateUrl,
       description: payload.description,
@@ -307,6 +321,8 @@ export async function updateProductInFirestore(id: string, updates: Partial<Prod
   if (updates.badge !== undefined) payload.badge = updates.badge || '';
   if (updates.promoCode !== undefined) payload.promoCode = updates.promoCode || '';
   if (updates.image !== undefined) payload.image = updates.image || '';
+  if (updates.images !== undefined) payload.images = updates.images;
+  if (updates.gallery !== undefined) payload.gallery = updates.gallery;
   if (updates.colorVariants !== undefined) payload.colorVariants = updates.colorVariants;
   if (updates.affiliateUrl !== undefined) payload.affiliateUrl = updates.affiliateUrl || '';
   if (updates.description !== undefined) payload.description = updates.description || '';
