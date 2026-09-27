@@ -1,4 +1,4 @@
-import { Home, Heart, User, SlidersHorizontal } from 'lucide-react';
+import { Home, Heart, SlidersHorizontal } from 'lucide-react';
 import { UserAccount } from '../types';
 
 interface MobileBottomNavProps {
@@ -74,35 +74,6 @@ export function MobileBottomNav({
           </div>
           <span className="text-[10px] font-bold mt-0.5">Saved</span>
         </button>
-
-        {/* Profile or Sign In */}
-        {user ? (
-          <button
-            onClick={onOpenAuth}
-            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"
-            aria-label="Account Profile"
-          >
-            <div className="w-5 h-5 rounded-full bg-orange-100 text-orange-700 font-black text-[10px] flex items-center justify-center border border-orange-200 overflow-hidden">
-              {user.photoURL ? (
-                <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
-              ) : (
-                user.displayName?.charAt(0).toUpperCase() || 'U'
-              )}
-            </div>
-            <span className="text-[10px] font-bold mt-0.5 truncate max-w-[52px]">
-              {user.displayName?.split(' ')[0] || 'Account'}
-            </span>
-          </button>
-        ) : (
-          <button
-            onClick={onOpenAuth}
-            className="flex flex-col items-center justify-center min-w-[52px] min-h-[44px] py-0.5 text-slate-600 hover:text-orange-600 active:scale-95 transition"
-            aria-label="Sign In"
-          >
-            <User className="w-5 h-5" />
-            <span className="text-[10px] font-bold mt-0.5 whitespace-nowrap">Sign In</span>
-          </button>
-        )}
 
       </div>
     </nav>

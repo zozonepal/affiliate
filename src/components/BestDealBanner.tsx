@@ -176,7 +176,7 @@ export function BestDealBanner({
               rel="noopener noreferrer"
               className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-extrabold text-xs py-1.5 px-3.5 rounded-xl flex items-center gap-1.5 transition active:scale-95 shrink-0 whitespace-nowrap shadow-xs"
             >
-              <span>Buy on Daraz</span>
+              <span>Buy Now</span>
               <ExternalLink className="w-3 h-3 shrink-0" />
             </a>
           </div>

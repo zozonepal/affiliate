@@ -242,8 +242,7 @@ export function SponsoredSpotlight({
               className="bg-gradient-to-r from-orange-500 via-orange-600 to-amber-500 hover:from-orange-400 hover:to-amber-400 text-white font-black text-xs sm:text-sm py-2 sm:py-2.5 px-3 sm:px-4 rounded-xl shadow-md shadow-orange-500/25 flex items-center gap-1.5 active:scale-95 transition whitespace-nowrap"
             >
               <ShoppingBag className="w-3.5 h-3.5 text-white fill-white" />
-              <span className="hidden sm:inline">Claim on Daraz</span>
-              <span className="sm:hidden">Buy</span>
+              <span>Buy Now</span>
               <ExternalLink className="w-3 h-3 text-white/80 shrink-0" />
             </a>
           </div>

@@ -6,7 +6,6 @@ import {
   SlidersHorizontal, 
   Heart, 
   Plus, 
-  User as UserIcon,
   Sparkles
 } from 'lucide-react';
 import { UserAccount, PriceFilterRange, SortOption, ProductDeal } from '../types';
@@ -80,7 +79,7 @@ export function MobileHeader({
             onOpenAuth={onOpenAuth}
           />
 
-          {/* Wishlist - Button 2 */}
+          {/* Wishlist */}
           <button
             onClick={onOpenWishlist}
             className="relative w-8 h-8 rounded-xl text-slate-700 hover:text-orange-600 hover:bg-slate-100 border border-transparent hover:border-slate-200/60 active:scale-90 transition flex items-center justify-center shrink-0"
@@ -94,31 +93,6 @@ export function MobileHeader({
               </span>
             )}
           </button>
-
-          {/* User Account - Button 3 */}
-          {user ? (
-            <button
-              onClick={onOpenAuth}
-              className="w-8 h-8 rounded-xl bg-orange-100 text-orange-700 font-bold text-xs flex items-center justify-center border border-orange-200 overflow-hidden active:scale-95 transition shrink-0 shadow-2xs"
-              title={user.displayName || 'Account'}
-              aria-label="Account"
-            >
-              {user.photoURL ? (
-                <img src={user.photoURL} alt="" className="w-full h-full object-cover" />
-              ) : (
-                user.displayName?.charAt(0).toUpperCase() || 'U'
-              )}
-            </button>
-          ) : (
-            <button
-              onClick={onOpenAuth}
-              className="w-8 h-8 rounded-xl text-slate-700 bg-slate-100 hover:bg-orange-50 hover:text-orange-600 border border-slate-200/80 active:scale-95 transition flex items-center justify-center shrink-0"
-              title="Sign In"
-              aria-label="Sign In"
-            >
-              <UserIcon className="w-4 h-4 text-slate-700 shrink-0" />
-            </button>
-          )}
         </div>
 
       </div>

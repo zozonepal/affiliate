@@ -1,4 +1,4 @@
-import { Heart, User as UserIcon, LogOut } from 'lucide-react';
+import { Heart } from 'lucide-react';
 import { UserAccount, CloudSyncStatus, ProductDeal } from '../types';
 import { NotificationCenter } from './NotificationCenter';
 
@@ -47,7 +47,7 @@ export function Navbar({
         {/* Right Navigation Actions */}
         <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
           
-          {/* Notification Center (Auto Push Deals) */}
+          {/* Notification Center */}
           <NotificationCenter
             user={user}
             deals={deals}
@@ -59,7 +59,7 @@ export function Navbar({
           <button
             id="nav-wishlist-btn"
             onClick={onOpenWishlist}
-            className="relative p-2 text-slate-700 hover:text-orange-600 hover:bg-slate-100 rounded-lg transition shrink-0"
+            className="relative p-2 text-slate-700 hover:text-orange-600 hover:bg-slate-100 rounded-xl transition shrink-0"
             title="Saved Deals"
             aria-label="View Saved Deals"
           >
@@ -70,52 +70,6 @@ export function Navbar({
               </span>
             )}
           </button>
-
-          {/* User Account / Auth Section */}
-          {user ? (
-            <div className="flex items-center gap-1.5 sm:gap-2 shrink-0">
-              <div className="flex items-center gap-1.5 pl-1.5 border-l border-slate-200 shrink-0">
-                <div className="w-7 h-7 sm:w-8 sm:h-8 rounded-full bg-orange-100 text-orange-700 font-bold flex items-center justify-center text-xs border border-orange-200 overflow-hidden shrink-0">
-                  {user.photoURL ? (
-                    <img src={user.photoURL} alt={user.displayName || 'User'} className="w-full h-full object-cover" />
-                  ) : (
-                    user.displayName?.charAt(0).toUpperCase() || 'U'
-                  )}
-                </div>
-                <div className="hidden lg:block text-left">
-                  <p className="text-xs font-bold text-slate-800 leading-tight max-w-[100px] truncate">
-                    {user.displayName}
-                  </p>
-                  <p className="text-[10px] text-slate-400 truncate max-w-[100px]">
-                    {user.email || 'Guest User'}
-                  </p>
-                </div>
-              </div>
-
-              {/* Logout button */}
-              <button
-                id="nav-logout-btn"
-                onClick={onLogout}
-                className="p-1.5 text-slate-400 hover:text-red-600 rounded-lg hover:bg-slate-100 transition shrink-0"
-                title="Sign Out"
-              >
-                <LogOut className="w-4 h-4" />
-              </button>
-            </div>
-          ) : (
-            <div className="flex items-center shrink-0">
-              <button
-                id="nav-signin-btn"
-                onClick={onOpenAuth}
-                className="inline-flex items-center gap-1.5 sm:gap-2 text-xs font-bold text-white bg-gradient-to-r from-orange-600 via-orange-500 to-amber-500 hover:from-orange-500 hover:to-amber-400 px-2.5 sm:px-3.5 py-1.5 rounded-xl transition-all duration-200 shadow-xs hover:shadow-md hover:shadow-orange-500/25 active:scale-95 group cursor-pointer border border-orange-500/20 whitespace-nowrap shrink-0"
-              >
-                <div className="w-4 h-4 rounded-full bg-white/20 flex items-center justify-center group-hover:bg-white/30 transition-colors shrink-0">
-                  <UserIcon className="w-2.5 h-2.5 text-white" />
-                </div>
-                <span className="tracking-tight font-extrabold text-white whitespace-nowrap">Sign In</span>
-              </button>
-            </div>
-          )}
         </div>
 
       </div>

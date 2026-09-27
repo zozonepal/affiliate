@@ -343,7 +343,7 @@ export function ProductDetailModal({
             rel="noopener noreferrer"
             className="w-full sm:w-auto bg-orange-600 hover:bg-orange-700 active:bg-orange-800 text-white font-bold text-sm py-3.5 px-6 rounded-xl flex items-center justify-center gap-2 shadow-md shadow-orange-600/20 transition min-h-[48px] active:scale-[0.98]"
           >
-            <span>Proceed to Buy on Daraz Nepal</span>
+            <span>Buy Now</span>
             <ExternalLink className="w-4 h-4" />
           </a>
         </div>

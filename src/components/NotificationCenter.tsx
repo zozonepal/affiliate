@@ -66,24 +66,9 @@ export function NotificationCenter({
             <div className="flex items-center gap-2">
               <h3 className="font-extrabold text-sm text-slate-900">Notifications</h3>
               <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
-                Gmail Inbox Alerts
+                Live Price Alerts
               </span>
             </div>
-            {user ? (
-              <span className="text-[10px] text-emerald-700 font-bold bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
-                Connected: {user.email?.split('@')[0]}
-              </span>
-            ) : (
-              <button
-                onClick={() => {
-                  setIsOpen(false);
-                  onOpenAuth();
-                }}
-                className="text-[10px] font-bold text-orange-600 hover:underline"
-              >
-                Sign in to customize
-              </button>
-            )}
           </div>
 
           {/* Notifications List */}

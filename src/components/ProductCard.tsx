@@ -153,7 +153,7 @@ export function ProductCard({
             rel="noopener noreferrer"
             className="w-full bg-slate-900 hover:bg-orange-600 text-white font-bold text-xs py-2 px-3 rounded-xl flex items-center justify-center gap-1.5 transition-all shadow-2xs active:scale-[0.97] min-h-[36px] whitespace-nowrap"
           >
-            <span>Buy on Daraz</span>
+            <span>Buy Now</span>
             <ExternalLink className="w-3.5 h-3.5 shrink-0" />
           </a>
         </div>
