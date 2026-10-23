@@ -491,8 +491,8 @@ export default function App() {
       <footer className="bg-white border-t border-slate-200/60 py-6 px-4 text-center text-xs text-slate-500 mt-10 mb-16 md:mb-0">
         <div className="max-w-4xl mx-auto space-y-3">
           <div className="flex items-center justify-center gap-2 font-bold text-slate-800">
-            <img src="/logo.png" alt="DealFinder Nepal Logo" className="w-5 h-5 object-contain" />
-            <span className="text-sm">DealFinder Nepal</span>
+            <img src="/logo.png" alt="Daraz Deals Nepal Logo" className="w-5 h-5 object-contain" />
+            <span className="text-sm">Daraz Deals Nepal</span>
             <span className="text-slate-300">•</span>
             <span className="text-orange-600 font-semibold text-xs">Verified Nepal Curation</span>
           </div>
@@ -515,11 +515,11 @@ export default function App() {
           </div>
 
           <p className="max-w-xl mx-auto text-slate-400 text-[11px] leading-relaxed">
-            DealFinder NP is an independent affiliate curation platform for Daraz Nepal. Product prices and availability remain subject to change by Daraz sellers.
+            Daraz Deals NP is an independent affiliate curation platform for Daraz Nepal. Product prices and availability remain subject to change by Daraz sellers.
           </p>
 
           <p className="text-[10px] text-slate-400 pt-0.5 font-mono">
-            Copyright (c) 2026 DealFinder Nepal. All rights reserved.
+            Copyright (c) 2026 Daraz Deals Nepal. All rights reserved.
           </p>
         </div>
       </footer>

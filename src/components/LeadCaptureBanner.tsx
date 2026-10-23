@@ -59,7 +59,7 @@ export function LeadCaptureBanner({
         dealPrice: 2499,
         originalPrice: 4999,
         dealUrl: 'https://www.daraz.com.np',
-        messageText: 'This automatic notification was dispatched directly to your Gmail inbox from DealFinder Nepal.'
+        messageText: 'This automatic notification was dispatched directly to your Gmail inbox from Daraz Deals Nepal.'
       });
       setTestAlertSent(true);
       setTimeout(() => setTestAlertSent(false), 5000);

@@ -26,7 +26,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
                 Terms and Conditions
               </h2>
               <p className="text-xs text-slate-500">
-                Last Updated: October 10, 2026 | DealFinder Nepal (dealfinder.com.np)
+                Last Updated: October 10, 2026 | Daraz Deals Nepal (dealfinder.com.np)
               </p>
             </div>
           </div>
@@ -48,7 +48,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
               1. Agreement to Terms
             </h3>
             <p>
-              By accessing and using DealFinder Nepal (available at <strong>dealfinder.com.np</strong>), you agree to be bound by these Terms and Conditions. If you disagree with any part of these terms, please discontinue using this website.
+              By accessing and using Daraz Deals Nepal (available at <strong>dealfinder.com.np</strong>), you agree to be bound by these Terms and Conditions. If you disagree with any part of these terms, please discontinue using this website.
             </p>
           </section>
 
@@ -58,7 +58,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
               2. Nature of Service and Affiliate Relationship
             </h3>
             <p>
-              DealFinder Nepal is an independent deal curation and product discovery service. We do not sell, stock, pack, or ship any merchandise directly. All products listed on this site link to third-party merchant platforms, primarily <strong>Daraz Nepal (daraz.com.np)</strong>.
+              Daraz Deals Nepal is an independent deal curation and product discovery service. We do not sell, stock, pack, or ship any merchandise directly. All products listed on this site link to third-party merchant platforms, primarily <strong>Daraz Nepal (daraz.com.np)</strong>.
             </p>
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-1.5 text-xs text-slate-600">
               <p>• We participate in the Daraz Affiliate Program and earn a commission on qualifying purchases.</p>
@@ -73,7 +73,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
               3. Pricing, Availability, and Voucher Accuracy
             </h3>
             <p>
-              While we continuously verify deal accuracy, prices and stock on Daraz Nepal fluctuate dynamically due to seller flash sales and stock exhaustion. DealFinder Nepal makes no guarantee that any listed deal, coupon code, or promo offer will remain available when you visit the merchant website. Always verify final checkout pricing on Daraz before completing any transaction.
+              While we continuously verify deal accuracy, prices and stock on Daraz Nepal fluctuate dynamically due to seller flash sales and stock exhaustion. Daraz Deals Nepal makes no guarantee that any listed deal, coupon code, or promo offer will remain available when you visit the merchant website. Always verify final checkout pricing on Daraz before completing any transaction.
             </p>
           </section>
 
@@ -83,7 +83,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
               4. Orders, Fulfillment, and Warranties
             </h3>
             <p>
-              All purchases made via external links are transactions solely between you and the respective Daraz seller or Daraz Mall merchant. DealFinder Nepal is not responsible for:
+              All purchases made via external links are transactions solely between you and the respective Daraz seller or Daraz Mall merchant. Daraz Deals Nepal is not responsible for:
             </p>
             <ul className="list-disc pl-5 space-y-1 text-slate-600">
               <li>Order dispatch, courier transit delays, or delivery issues across Nepal.</li>
@@ -101,7 +101,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
               5. Intellectual Property
             </h3>
             <p>
-              The DealFinder Nepal name, logo, custom user interface design, and curated content are the property of DealFinder Nepal. Product names, trademarks, logos, and product imagery displayed belong to their respective brand owners and sellers on Daraz Nepal.
+              The Daraz Deals Nepal name, logo, custom user interface design, and curated content are the property of Daraz Deals Nepal. Product names, trademarks, logos, and product imagery displayed belong to their respective brand owners and sellers on Daraz Nepal.
             </p>
           </section>
 
@@ -125,7 +125,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
             </p>
             <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 text-xs font-mono text-slate-800">
               Email: legal@dealfinder.com.np<br />
-              Entity: DealFinder Nepal Digital Media, Kathmandu, Nepal
+              Entity: Daraz Deals Nepal Digital Media, Kathmandu, Nepal
             </div>
           </section>
         </div>

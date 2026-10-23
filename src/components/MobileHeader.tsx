@@ -61,11 +61,11 @@ export function MobileHeader({
         {/* Brand */}
         <div className="flex items-center gap-1.5 sm:gap-2 shrink min-w-0">
           <div className="w-8 h-8 rounded-xl bg-white border border-slate-200/90 p-0.5 flex items-center justify-center shadow-2xs overflow-hidden shrink-0">
-            <img src="/logo.png" alt="DealFinder Nepal Logo" className="w-full h-full object-contain" />
+            <img src="/logo.png" alt="Daraz Deals Nepal Logo" className="w-full h-full object-contain" />
           </div>
           <div className="flex items-center gap-1 min-w-0">
             <span className="font-black text-sm sm:text-base tracking-tight text-slate-900 leading-none truncate">
-              DealFinder<span className="text-orange-600">NP</span>
+              Daraz Deals<span className="text-orange-600">NP</span>
             </span>
           </div>
         </div>

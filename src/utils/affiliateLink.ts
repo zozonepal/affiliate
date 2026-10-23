@@ -42,26 +42,26 @@ export function extractDarazPath(url: string): string {
 /**
  * Builds optimized affiliate URL with tracking parameters and mobile deep link fallback.
  */
-export function buildAffiliateUrl(originalUrl: string, campaignName: string = 'dealfinder_np'): string {
+export function buildAffiliateUrl(originalUrl: string, campaignName: string = 'darazdeals_np'): string {
   if (!originalUrl || originalUrl === '#') return 'https://www.daraz.com.np';
 
   try {
     const urlObj = new URL(originalUrl);
     // Add CRO UTM & sub-id tracking parameters
     if (!urlObj.searchParams.has('utm_source')) {
-      urlObj.searchParams.set('utm_source', 'dealfinder_np');
+      urlObj.searchParams.set('utm_source', 'darazdeals_np');
     }
     if (!urlObj.searchParams.set) {
       return originalUrl;
     }
     urlObj.searchParams.set('utm_medium', 'affiliate');
     urlObj.searchParams.set('utm_campaign', campaignName);
-    urlObj.searchParams.set('ex_from', 'dealfinder_nepal');
+    urlObj.searchParams.set('ex_from', 'darazdeals_nepal');
     return urlObj.toString();
   } catch {
     // If not a full URL
     if (originalUrl.startsWith('/')) {
-      return `https://www.daraz.com.np${originalUrl}?utm_source=dealfinder_np&utm_medium=affiliate`;
+      return `https://www.daraz.com.np${originalUrl}?utm_source=darazdeals_np&utm_medium=affiliate`;
     }
     return originalUrl;
   }

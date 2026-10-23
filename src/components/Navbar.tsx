@@ -31,11 +31,11 @@ export function Navbar({
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
           <a href="#" className="flex items-center gap-2.5 group shrink-0">
             <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white border border-slate-200/80 p-1 flex items-center justify-center shrink-0 overflow-hidden">
-              <img src="/logo.png" alt="DealFinder Nepal" className="w-full h-full object-contain" />
+              <img src="/logo.png" alt="Daraz Deals Nepal" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col justify-center shrink-0">
               <div className="flex items-center gap-1 sm:gap-1.5 font-bold text-sm sm:text-base tracking-tight text-slate-900 leading-snug whitespace-nowrap">
-                <span>DealFinder</span>
+                <span>Daraz Deals</span>
                 <span className="text-orange-600">NP</span>
               </div>
               <p className="hidden md:block text-[11px] text-slate-500 font-medium leading-normal mt-0.5 truncate">

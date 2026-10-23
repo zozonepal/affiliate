@@ -32,7 +32,7 @@ export function PushNotificationToast({
       if (typeof window !== 'undefined' && 'Notification' in window) {
         if (Notification.permission === 'granted') {
           try {
-            new Notification('DealFinder Nepal: Price Drop Alert', {
+            new Notification('Daraz Deals Nepal: Price Drop Alert', {
               body: `${latestDeal.title} dropped to Rs. ${latestDeal.price.toLocaleString('ne-NP')}!`,
               icon: latestDeal.image
             });
@@ -44,7 +44,7 @@ export function PushNotificationToast({
           try {
             Notification.requestPermission().then((perm) => {
               if (perm === 'granted') {
-                new Notification('DealFinder Nepal Alert', {
+                new Notification('Daraz Deals Nepal Alert', {
                   body: `Auto-alerts enabled for ${user.email}. Top Nepal deals will be pushed here.`,
                 });
               }

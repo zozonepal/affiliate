@@ -26,7 +26,7 @@ export function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps)
                 Privacy Policy
               </h2>
               <p className="text-xs text-slate-500">
-                Effective Date: October 10, 2026 | DealFinder Nepal (dealfinder.com.np)
+                Effective Date: October 10, 2026 | Daraz Deals Nepal (dealfinder.com.np)
               </p>
             </div>
           </div>
@@ -48,7 +48,7 @@ export function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps)
               1. Overview and Scope
             </h3>
             <p>
-              DealFinder Nepal ("we", "our", or "us"), accessible at <strong>dealfinder.com.np</strong>, operates as an independent price discovery, deal comparison, and product catalog platform in Nepal. We respect your privacy and are committed to protecting any personal information collected when you access our website.
+              Daraz Deals Nepal ("we", "our", or "us"), accessible at <strong>dealfinder.com.np</strong>, operates as an independent price discovery, deal comparison, and product catalog platform in Nepal. We respect your privacy and are committed to protecting any personal information collected when you access our website.
             </p>
           </section>
 
@@ -80,7 +80,7 @@ export function PrivacyPolicyModal({ isOpen, onClose }: PrivacyPolicyModalProps)
               3. Affiliate Tracking and Cookie Usage
             </h3>
             <p>
-              DealFinder Nepal participates in the Daraz Nepal Affiliate Program. When you click outward links directing to Daraz (daraz.com.np or the Daraz Mobile App):
+              Daraz Deals Nepal participates in the Daraz Nepal Affiliate Program. When you click outward links directing to Daraz (daraz.com.np or the Daraz Mobile App):
             </p>
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-1.5 text-xs text-slate-600">
               <p>• A standard referral cookie is placed by Daraz to credit qualifying orders to our affiliate account.</p>

@@ -10,7 +10,7 @@ export function LoadingScreen() {
         <div className="relative w-16 h-16 sm:w-20 sm:h-20 rounded-2xl bg-white border border-slate-200/90 shadow-md p-2.5 flex items-center justify-center z-10">
           <img
             src="/logo.png"
-            alt="DealFinder NP Logo"
+            alt="Daraz Deals NP Logo"
             className="w-full h-full object-contain animate-pulse"
           />
         </div>
@@ -21,7 +21,7 @@ export function LoadingScreen() {
 
       {/* Primary Loading Text matching website theme */}
       <div className="flex items-center justify-center gap-1.5 text-xl sm:text-2xl font-black text-slate-900 tracking-tight">
-        <span>Loading DealFinder</span>
+        <span>Loading Daraz Deals</span>
         <span className="text-orange-600">NP</span>
         <span className="inline-flex gap-1 ml-1 items-center">
           <span className="w-1.5 h-1.5 rounded-xs bg-orange-600 animate-bounce" style={{ animationDelay: '0ms' }} />
