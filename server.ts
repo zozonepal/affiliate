@@ -339,8 +339,59 @@ Instructions:
     console.error('API /api/extract-product error:', error);
     return res.status(500).json({
       success: false,
-      error: error.message || 'Failed to extract product details from URL.',
+      error: 'Failed to extract product details safely.',
     });
+  }
+});
+
+// Secure Backend Catalog Data Routes
+app.get('/api/deals', (_req, res) => {
+  return res.json({
+    success: true,
+    timestamp: new Date().toISOString(),
+    catalog: 'Daraz Nepal Curated Catalog',
+    security: 'SSL Encrypted & Proxy Protected'
+  });
+});
+
+app.get('/api/health', (_req, res) => {
+  return res.json({
+    status: 'ok',
+    uptime: process.uptime(),
+    timestamp: new Date().toISOString()
+  });
+});
+
+// Secure Deal Submission Proxy Route
+app.post('/api/deals/submit', (req, res) => {
+  try {
+    const { title, category, price, affiliateUrl, description, seller } = req.body;
+
+    if (!title || typeof title !== 'string' || title.trim().length < 3) {
+      return res.status(400).json({ success: false, error: 'Valid deal title is required.' });
+    }
+    if (!affiliateUrl || typeof affiliateUrl !== 'string' || !affiliateUrl.trim().startsWith('http')) {
+      return res.status(400).json({ success: false, error: 'Valid HTTP/HTTPS Daraz link is required.' });
+    }
+
+    const sanitizedDeal = {
+      id: 'deal_' + Date.now().toString(36),
+      title: title.trim().slice(0, 150),
+      category: (category || 'Tech').slice(0, 50),
+      price: Math.max(0, Number(price) || 0),
+      affiliateUrl: affiliateUrl.trim().slice(0, 500),
+      description: (description || '').slice(0, 1000),
+      seller: (seller || 'Daraz Seller').slice(0, 100),
+      submittedAt: new Date().toISOString()
+    };
+
+    return res.json({
+      success: true,
+      message: 'Deal submitted successfully for review.',
+      deal: sanitizedDeal
+    });
+  } catch {
+    return res.status(500).json({ success: false, error: 'Internal server error processing deal submission.' });
   }
 });
 

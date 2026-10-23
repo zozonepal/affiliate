@@ -51,7 +51,7 @@ export function SubmitDealModal({
       setPromoCode(data.promoCode || '');
       setImage(data.image || '');
       setDescription(data.description || '');
-      setExtractMsg('⚡ Product details automatically loaded!');
+      setExtractMsg('Product details successfully loaded.');
     } catch (err: any) {
       alert('Auto extraction notice: ' + (err.message || 'Could not fetch product details'));
       setExtractMsg('');
@@ -117,7 +117,7 @@ export function SubmitDealModal({
       <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-lg w-full max-h-[92vh] overflow-y-auto shadow-2xl border border-slate-100 p-5 sm:p-6 flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200">
         
         {/* Mobile drag handle */}
-        <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mb-2 sm:hidden" />
+        <div className="w-12 h-1 bg-slate-300 rounded-sm mx-auto mb-2 sm:hidden" />
 
         <div className="flex items-center justify-between pb-3 border-b border-slate-100 mb-4 sticky top-0 bg-white/95 backdrop-blur-md z-10">
           <div className="flex items-center gap-2.5">
@@ -133,7 +133,7 @@ export function SubmitDealModal({
           </div>
           <button
             onClick={onClose}
-            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition"
             aria-label="Close modal"
           >
             <X className="w-5 h-5" />

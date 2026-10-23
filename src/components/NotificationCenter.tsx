@@ -1,5 +1,5 @@
 import { useState, useRef, useEffect } from 'react';
-import { Bell, Flame, Tag, Check, ExternalLink, Sparkles, X, ChevronRight } from 'lucide-react';
+import { Bell, Flame, Tag, Check, ExternalLink, Sparkles, X, ChevronRight, Mail } from 'lucide-react';
 import { ProductDeal, UserAccount } from '../types';
 
 interface NotificationCenterProps {
@@ -51,7 +51,7 @@ export function NotificationCenter({
       >
         <Bell className="w-4 h-4 shrink-0" />
         {unreadCount > 0 && (
-          <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center animate-pulse shadow-xs">
+          <span className="absolute -top-0.5 -right-0.5 bg-red-600 text-white text-[9px] font-black w-4 h-4 rounded-md flex items-center justify-center shadow-xs">
             {unreadCount}
           </span>
         )}
@@ -65,7 +65,7 @@ export function NotificationCenter({
           <div className="p-3.5 border-b border-slate-100 flex items-center justify-between bg-slate-50/80">
             <div className="flex items-center gap-2">
               <h3 className="font-extrabold text-sm text-slate-900">Notifications</h3>
-              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-full">
+              <span className="bg-emerald-100 text-emerald-800 text-[10px] font-black px-2 py-0.5 rounded-md">
                 Live Price Alerts
               </span>
             </div>
@@ -123,8 +123,9 @@ export function NotificationCenter({
 
           {/* Footer */}
           <div className="p-2.5 bg-slate-50 border-t border-slate-100 text-center">
-            <span className="text-[10px] text-slate-600 font-medium">
-              📩 Notifications sent directly to Gmail ({user?.email || 'zozonepal5@gmail.com'})
+            <span className="text-[10px] text-slate-600 font-medium inline-flex items-center justify-center gap-1">
+              <Mail className="w-3 h-3 text-slate-500" />
+              <span>Notifications sent to Gmail ({user?.email || 'zozonepal5@gmail.com'})</span>
             </span>
           </div>
 

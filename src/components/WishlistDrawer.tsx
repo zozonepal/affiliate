@@ -1,5 +1,6 @@
-import { X, Trash2, ExternalLink, Heart, ShoppingBag } from 'lucide-react';
+import { X, Trash2, ExternalLink, Heart, ShoppingBag, Smartphone } from 'lucide-react';
 import { ProductDeal } from '../types';
+import { openDarazDeal, buildAffiliateUrl } from '../utils/affiliateLink';
 
 interface WishlistDrawerProps {
   isOpen: boolean;
@@ -44,7 +45,7 @@ export function WishlistDrawer({
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
           >
             <X className="w-5 h-5" />
           </button>
@@ -96,15 +97,18 @@ export function WishlistDrawer({
                   </div>
                 </div>
 
-                <div className="flex items-center gap-1">
+                <div className="flex items-center gap-1.5">
                   <a
-                    href={product.affiliateUrl}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="p-2 bg-slate-900 hover:bg-orange-600 text-white rounded-xl transition"
-                    title="Buy on Daraz"
+                    href={buildAffiliateUrl(product.affiliateUrl)}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      openDarazDeal(product.affiliateUrl);
+                    }}
+                    className="py-1.5 px-2.5 bg-orange-600 hover:bg-orange-700 text-white rounded-xl text-xs font-bold transition flex items-center gap-1 shadow-2xs"
+                    title="Open deal on Daraz App"
                   >
-                    <ExternalLink className="w-3.5 h-3.5" />
+                    <Smartphone className="w-3.5 h-3.5" />
+                    <span className="hidden sm:inline">App Deal</span>
                   </a>
 
                   <button

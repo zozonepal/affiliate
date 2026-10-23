@@ -54,7 +54,7 @@ export function LeadCaptureBanner({
       await sendGmailNotification({
         accessToken,
         toEmail: targetEmail,
-        subject: `🔥 Special Deal Alert: ${bestDealTitle || 'Top Daraz Nepal Discount'}`,
+        subject: `Deal Alert: ${bestDealTitle || 'Top Daraz Nepal Discount'}`,
         dealTitle: bestDealTitle || 'Baseus Encok TWS Earbuds - 50% OFF',
         dealPrice: 2499,
         originalPrice: 4999,
@@ -78,7 +78,7 @@ export function LeadCaptureBanner({
       <div className="bg-gradient-to-r from-emerald-50 via-teal-50 to-orange-50/70 rounded-2xl border border-emerald-200/80 p-3.5 sm:p-5 mb-4 sm:mb-6 shadow-xs relative overflow-hidden transition-all">
         
         {/* Subtle background glow */}
-        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-full blur-2xl pointer-events-none" />
+        <div className="absolute top-0 right-0 w-64 h-64 bg-emerald-400/10 rounded-3xl blur-2xl pointer-events-none" />
 
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-3.5 sm:gap-4 relative z-10">
           
@@ -90,8 +90,8 @@ export function LeadCaptureBanner({
 
             <div className="space-y-1">
               <div className="flex items-center gap-2 flex-wrap">
-                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-full bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
-                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-ping inline-block" />
+                <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-md bg-emerald-100 text-emerald-800 text-[10px] font-black uppercase tracking-wider">
+                  <span className="w-2 h-2 rounded-xs bg-emerald-500 animate-ping inline-block" />
                   <span>Auto-Alerts Active</span>
                 </span>
 
@@ -174,7 +174,7 @@ export function LeadCaptureBanner({
     <div className="bg-gradient-to-r from-orange-50 via-amber-50 to-orange-100/70 rounded-2xl border border-orange-200/80 p-3.5 sm:p-5 mb-4 sm:mb-6 shadow-xs relative overflow-hidden">
       
       {/* Background radial accent */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-orange-400/10 rounded-full blur-2xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-orange-400/10 rounded-3xl blur-2xl pointer-events-none" />
 
       <div className="flex flex-col md:flex-row md:items-center justify-between gap-4 relative z-10">
         
@@ -186,7 +186,7 @@ export function LeadCaptureBanner({
 
           <div className="space-y-1">
             <div className="flex items-center gap-2">
-              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-full bg-orange-600 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
+              <span className="inline-flex items-center gap-1 px-2.5 py-0.5 rounded-md bg-orange-600 text-white text-[9px] sm:text-[10px] font-black uppercase tracking-wider">
                 <Sparkles className="w-2.5 h-2.5" />
                 <span>Automatic Notification System</span>
               </span>

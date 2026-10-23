@@ -46,7 +46,7 @@ export async function sendGmailNotification({
   const htmlBody = `
     <div style="font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; border: 1px solid #e2e8f0; border-radius: 12px; background-color: #ffffff;">
       <div style="background: linear-gradient(135deg, #ea580c, #f97316); padding: 20px; text-align: center; border-radius: 10px 10px 0 0;">
-        <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 800; tracking-tight: -0.025em;">🔥 DealFinder Nepal Alert</h1>
+        <h1 style="color: #ffffff; margin: 0; font-size: 22px; font-weight: 800; tracking-tight: -0.025em;">DealFinder Nepal Alert</h1>
         <p style="color: #ffedd5; margin: 4px 0 0 0; font-size: 13px;">Automated Daraz Nepal Price Drop Notification</p>
       </div>
 

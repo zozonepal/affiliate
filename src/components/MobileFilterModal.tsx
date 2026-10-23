@@ -32,12 +32,12 @@ export function MobileFilterModal({
     { id: 'over5k', label: 'Above Rs. 5,000', desc: 'Premium electronics' }
   ];
 
-  const sortOptions: { id: SortOption; label: string; icon: string }[] = [
-    { id: 'featured', label: 'Featured Deals', icon: '✨' },
-    { id: 'popular', label: 'Most Upvoted 🔥', icon: '👍' },
-    { id: 'price-asc', label: 'Price: Low to High', icon: '↗️' },
-    { id: 'price-desc', label: 'Price: High to Low', icon: '↘️' },
-    { id: 'newest', label: 'Newly Discovered', icon: '⚡' }
+  const sortOptions: { id: SortOption; label: string }[] = [
+    { id: 'featured', label: 'Featured Deals' },
+    { id: 'popular', label: 'Most Upvoted' },
+    { id: 'price-asc', label: 'Price: Low to High' },
+    { id: 'price-desc', label: 'Price: High to Low' },
+    { id: 'newest', label: 'Newly Discovered' }
   ];
 
   const isFiltered = priceFilter !== 'all' || sortOption !== 'featured';
@@ -53,7 +53,7 @@ export function MobileFilterModal({
         
         {/* Handle Bar */}
         <div className="pt-3 pb-1 flex justify-center">
-          <div className="w-12 h-1.5 bg-slate-300 rounded-full" />
+          <div className="w-12 h-1.5 bg-slate-300 rounded-sm" />
         </div>
 
         {/* Header */}
@@ -74,7 +74,7 @@ export function MobileFilterModal({
             )}
             <button
               onClick={onClose}
-              className="p-1.5 text-slate-400 hover:text-slate-600 rounded-full active:bg-slate-100 transition min-w-[36px] min-h-[36px] flex items-center justify-center"
+              className="p-1.5 text-slate-400 hover:text-slate-600 rounded-lg active:bg-slate-100 transition min-w-[36px] min-h-[36px] flex items-center justify-center"
               aria-label="Close filter"
             >
               <X className="w-5 h-5" />

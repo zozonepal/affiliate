@@ -105,8 +105,8 @@ export function SponsoredSpotlight({
       style={{ maxHeight: '180px' }}
     >
       {/* Background radial accent */}
-      <div className="absolute top-0 right-0 w-64 h-64 bg-orange-600/10 rounded-full blur-2xl pointer-events-none" />
-      <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-amber-500/10 rounded-full blur-xl pointer-events-none" />
+      <div className="absolute top-0 right-0 w-64 h-64 bg-orange-600/10 rounded-3xl blur-2xl pointer-events-none" />
+      <div className="absolute -bottom-10 -left-10 w-48 h-48 bg-amber-500/10 rounded-3xl blur-xl pointer-events-none" />
 
       {/* Main compact single-level flex layout (50% shorter in length/height) */}
       <div className="flex items-center gap-2.5 sm:gap-4 relative z-10">
@@ -141,7 +141,7 @@ export function SponsoredSpotlight({
           
           {/* Top Ticker Row */}
           <div className="flex items-center gap-2 flex-wrap text-[10px] sm:text-[11px]">
-            <span className="inline-flex items-center gap-1 bg-orange-600/90 text-white font-black px-2 py-0.5 rounded-full uppercase tracking-wider text-[9px]">
+            <span className="inline-flex items-center gap-1 bg-orange-600/90 text-white font-black px-2 py-0.5 rounded-md uppercase tracking-wider text-[9px]">
               <Flame className="w-2.5 h-2.5 text-amber-200 fill-amber-200 animate-pulse" />
               <span>Top Best Deal</span>
             </span>
@@ -166,7 +166,7 @@ export function SponsoredSpotlight({
                   <button
                     key={i}
                     onClick={() => setCurrentIndex(i)}
-                    className={`w-1.5 h-1.5 rounded-full transition-all ${
+                    className={`w-1.5 h-1.5 rounded-xs transition-all ${
                       i === currentIndex ? 'bg-orange-500 w-3.5' : 'bg-white/30 hover:bg-white/60'
                     }`}
                     aria-label={`Go to deal ${i + 1}`}

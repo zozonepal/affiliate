@@ -2,10 +2,12 @@ import { useState, useMemo } from 'react';
 import { 
   Flame, 
   ExternalLink, 
-  Share2
+  Share2,
+  Smartphone
 } from 'lucide-react';
 import { ProductDeal } from '../types';
 import { ShareModal } from './ShareModal';
+import { openDarazDeal, buildAffiliateUrl } from '../utils/affiliateLink';
 
 interface BestDealBannerProps {
   products: ProductDeal[];
@@ -87,15 +89,13 @@ export function BestDealBanner({
   return (
     <section 
       aria-label="Featured Deal Spotlight"
-      className="relative mb-4 sm:mb-5 rounded-2xl border-2 border-orange-400/80 bg-gradient-to-r from-orange-50/90 via-amber-50/60 to-orange-50/80 shadow-md shadow-orange-500/10 transition-all p-3 sm:p-3.5 overflow-hidden group"
+      className="relative mb-4 sm:mb-5 rounded-2xl border border-orange-200/90 bg-orange-50/50 shadow-2xs p-3 sm:p-3.5 overflow-hidden group"
     >
-      {/* Top Accent Strip */}
-      <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-orange-500 via-amber-500 to-rose-500" />
 
       {/* Top Header Row */}
       <div className="flex items-center justify-between gap-2 mb-2 pt-0.5">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-full shadow-xs uppercase tracking-wider shrink-0 whitespace-nowrap">
+          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-md shadow-xs uppercase tracking-wider shrink-0 whitespace-nowrap">
             <Flame className="w-3 h-3 text-amber-200 fill-amber-200" />
             <span>Best Deal Spotlight</span>
           </span>
@@ -153,31 +153,35 @@ export function BestDealBanner({
           </div>
 
           {/* Single-Line Price & Buy CTA Row */}
-          <div className="flex items-center justify-between gap-2 mt-1.5 pt-1.5 border-t border-orange-200/60">
-            <div className="flex items-baseline gap-1.5 min-w-0 truncate">
-              <span className="text-sm sm:text-base font-black text-slate-950 tracking-tight tabular-nums whitespace-nowrap">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 mt-1.5 pt-1.5 border-t border-orange-200/60 min-w-0">
+            <div className="flex items-baseline gap-1 sm:gap-1.5 min-w-0 truncate">
+              <span className="text-xs sm:text-base font-black text-slate-950 tracking-tight tabular-nums whitespace-nowrap">
                 Rs. {Number(deal.price).toLocaleString('ne-NP')}
               </span>
               {origPrice > deal.price && (
-                <span className="text-[11px] text-slate-400 line-through tabular-nums whitespace-nowrap">
+                <span className="text-[10px] sm:text-[11px] text-slate-400 line-through tabular-nums whitespace-nowrap hidden sm:inline">
                   Rs. {Number(origPrice).toLocaleString('ne-NP')}
                 </span>
               )}
               {discountPercent > 0 && (
-                <span className="text-[10px] font-extrabold text-white bg-orange-600 px-1.5 py-0.2 rounded-md shadow-2xs shrink-0 whitespace-nowrap">
+                <span className="text-[9px] sm:text-[10px] font-extrabold text-white bg-orange-600 px-1.5 py-0.5 rounded-md shadow-2xs shrink-0 whitespace-nowrap">
                   -{discountPercent}%
                 </span>
               )}
             </div>
 
             <a
-              href={deal.affiliateUrl || '#'}
-              target="_blank"
-              rel="noopener noreferrer"
-              className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-extrabold text-xs py-1.5 px-3.5 rounded-xl flex items-center gap-1.5 transition active:scale-95 shrink-0 whitespace-nowrap shadow-xs"
+              href={buildAffiliateUrl(deal.affiliateUrl)}
+              onClick={(e) => {
+                e.preventDefault();
+                openDarazDeal(deal.affiliateUrl);
+              }}
+              className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-extrabold text-[11px] sm:text-xs py-1.5 px-2.5 sm:px-3.5 rounded-xl flex items-center gap-1 sm:gap-1.5 transition active:scale-95 shrink-0 shadow-xs cursor-pointer min-w-0"
             >
-              <span>Buy Now</span>
-              <ExternalLink className="w-3 h-3 shrink-0" />
+              <Smartphone className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
+              <span className="sm:hidden whitespace-nowrap">Grab Deal</span>
+              <span className="hidden sm:inline whitespace-nowrap">Grab Deal on App</span>
+              <ExternalLink className="w-3 h-3 shrink-0 opacity-80 hidden sm:inline" />
             </a>
           </div>
 

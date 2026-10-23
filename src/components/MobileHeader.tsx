@@ -10,6 +10,7 @@ import {
 } from 'lucide-react';
 import { UserAccount, PriceFilterRange, SortOption, ProductDeal } from '../types';
 import { NotificationCenter } from './NotificationCenter';
+import { getCategoryIcon } from './CategoryFilter';
 
 interface MobileHeaderProps {
   user: UserAccount | null;
@@ -88,7 +89,7 @@ export function MobileHeader({
           >
             <Heart className="w-4 h-4 shrink-0" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-0.5 -right-0.5 bg-orange-600 text-white text-[9px] font-black w-4 h-4 rounded-full flex items-center justify-center shadow-xs">
+              <span className="absolute -top-0.5 -right-0.5 bg-orange-600 text-white text-[9px] font-black w-4 h-4 rounded-md flex items-center justify-center shadow-xs">
                 {wishlistCount > 9 ? '9+' : wishlistCount}
               </span>
             )}
@@ -134,37 +135,10 @@ export function MobileHeader({
           <SlidersHorizontal className="w-3.5 h-3.5" />
           <span>Filters</span>
           {isFilterActive && (
-            <span className="w-2 h-2 rounded-full bg-white animate-pulse" />
+            <span className="w-2 h-2 rounded-xs bg-white animate-pulse" />
           )}
         </button>
 
-      </div>
-
-      {/* Category Pills Horizontal Scroll */}
-      <div 
-        ref={scrollContainerRef}
-        className="flex items-center gap-1 px-3 pb-2.5 overflow-x-auto no-scrollbar scroll-smooth"
-        style={{ WebkitOverflowScrolling: 'touch', scrollbarWidth: 'none' }}
-      >
-        <div className="flex items-center gap-1 p-1 bg-slate-100/90 rounded-xl w-max">
-          {categories.map((category) => {
-            const isSelected = selectedCategory.toLowerCase() === category.toLowerCase();
-            return (
-              <button
-                key={category}
-                onClick={() => onSelectCategory(category)}
-                className={`text-[11px] font-bold px-3 py-1 rounded-lg whitespace-nowrap transition-all duration-150 shrink-0 flex items-center gap-1 ${
-                  isSelected
-                    ? 'bg-slate-900 text-white shadow-2xs'
-                    : 'text-slate-600 hover:text-slate-900 active:bg-slate-200/50'
-                }`}
-              >
-                {category === 'All' && <Sparkles className="w-3 h-3 text-amber-300" />}
-                <span>{category}</span>
-              </button>
-            );
-          })}
-        </div>
       </div>
 
     </header>

@@ -92,7 +92,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
       <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden max-h-[92vh] flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200">
         
         {/* Mobile drag handle */}
-        <div className="w-12 h-1 bg-slate-300 rounded-full mx-auto mt-2.5 sm:hidden" />
+        <div className="w-12 h-1 bg-slate-300 rounded-sm mx-auto mt-2.5 sm:hidden" />
 
         {/* Header Bar */}
         <div className="flex items-center justify-between p-4 sm:p-5 border-b border-slate-100">
@@ -109,7 +109,7 @@ export function AuthModal({ isOpen, onClose, onSuccess }: AuthModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition"
             aria-label="Close authentication modal"
           >
             <X className="w-5 h-5" />

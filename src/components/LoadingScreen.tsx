@@ -24,20 +24,20 @@ export function LoadingScreen() {
         <span>Loading DealFinder</span>
         <span className="text-orange-600">NP</span>
         <span className="inline-flex gap-1 ml-1 items-center">
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-bounce" style={{ animationDelay: '0ms' }} />
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-bounce" style={{ animationDelay: '150ms' }} />
-          <span className="w-1.5 h-1.5 rounded-full bg-orange-600 animate-bounce" style={{ animationDelay: '300ms' }} />
+          <span className="w-1.5 h-1.5 rounded-xs bg-orange-600 animate-bounce" style={{ animationDelay: '0ms' }} />
+          <span className="w-1.5 h-1.5 rounded-xs bg-orange-600 animate-bounce" style={{ animationDelay: '150ms' }} />
+          <span className="w-1.5 h-1.5 rounded-xs bg-orange-600 animate-bounce" style={{ animationDelay: '300ms' }} />
         </span>
       </div>
 
       {/* Supporting subtitle */}
       <p className="text-xs sm:text-sm font-medium text-slate-500 mt-2 max-w-sm">
-        Curating verified tech deals & exclusive Daraz discounts
+        Curating verified tech deals and exclusive Daraz discounts
       </p>
 
       {/* Animated theme gradient loader bar */}
-      <div className="w-48 sm:w-64 h-1.5 bg-slate-200/80 rounded-full overflow-hidden mt-5 relative">
-        <div className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 rounded-full w-1/2 animate-[pulse_1s_ease-in-out_infinite]" />
+      <div className="w-48 sm:w-64 h-1.5 bg-slate-200/80 rounded-sm overflow-hidden mt-5 relative">
+        <div className="absolute top-0 bottom-0 left-0 bg-gradient-to-r from-orange-500 via-amber-500 to-orange-600 rounded-sm w-1/2 animate-[pulse_1s_ease-in-out_infinite]" />
       </div>
 
       {/* Grid of Skeleton Placeholders matching ProductCard style */}

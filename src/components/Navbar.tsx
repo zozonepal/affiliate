@@ -1,4 +1,4 @@
-import { Heart } from 'lucide-react';
+import { Heart, Globe } from 'lucide-react';
 import { UserAccount, CloudSyncStatus, ProductDeal } from '../types';
 import { NotificationCenter } from './NotificationCenter';
 
@@ -11,6 +11,7 @@ interface NavbarProps {
   onOpenAuth: () => void;
   onOpenWishlist: () => void;
   onLogout: () => void;
+  onOpenDomainModal?: () => void;
 }
 
 export function Navbar({
@@ -20,7 +21,7 @@ export function Navbar({
   onQuickView = () => {},
   onOpenAuth,
   onOpenWishlist,
-  onLogout
+  onOpenDomainModal
 }: NavbarProps) {
   return (
     <header className="sticky top-0 z-40 bg-white/95 backdrop-blur-md border-b border-slate-200/80 shadow-xs w-full">
@@ -29,11 +30,11 @@ export function Navbar({
         {/* Brand Logo */}
         <div className="flex items-center gap-2 sm:gap-3 shrink-0 min-w-0">
           <a href="#" className="flex items-center gap-2.5 group shrink-0">
-            <div className="w-10 h-10 sm:w-11 sm:h-11 rounded-2xl bg-white border border-slate-200/90 p-1 flex items-center justify-center shadow-xs group-hover:scale-105 group-hover:shadow-md transition-all shrink-0 overflow-hidden">
+            <div className="w-9 h-9 sm:w-10 sm:h-10 rounded-lg bg-white border border-slate-200/80 p-1 flex items-center justify-center shrink-0 overflow-hidden">
               <img src="/logo.png" alt="DealFinder Nepal" className="w-full h-full object-contain" />
             </div>
             <div className="flex flex-col justify-center shrink-0">
-              <div className="flex items-center gap-1 sm:gap-1.5 font-black text-sm sm:text-lg tracking-tight text-slate-900 leading-snug whitespace-nowrap">
+              <div className="flex items-center gap-1 sm:gap-1.5 font-bold text-sm sm:text-base tracking-tight text-slate-900 leading-snug whitespace-nowrap">
                 <span>DealFinder</span>
                 <span className="text-orange-600">NP</span>
               </div>
@@ -45,8 +46,8 @@ export function Navbar({
         </div>
 
         {/* Right Navigation Actions */}
-        <div className="flex items-center gap-1 sm:gap-2.5 shrink-0">
-          
+        <div className="flex items-center gap-1 sm:gap-2 shrink-0">
+
           {/* Notification Center */}
           <NotificationCenter
             user={user}
@@ -65,7 +66,7 @@ export function Navbar({
           >
             <Heart className="w-5 h-5" />
             {wishlistCount > 0 && (
-              <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] font-bold w-4 h-4 rounded-full flex items-center justify-center">
+              <span className="absolute -top-1 -right-1 bg-orange-600 text-white text-[10px] font-bold w-4 h-4 rounded-md flex items-center justify-center">
                 {wishlistCount}
               </span>
             )}

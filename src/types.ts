@@ -37,9 +37,14 @@ export interface ProductDeal {
   upvotedBy?: string[];
   inStock?: boolean;
   seller?: string;
+  darazMall?: boolean;
+  specs?: Record<string, string>;
+  pros?: string[];
   createdAt?: any;
   updatedAt?: any;
 }
+
+export type ActiveViewMode = 'grid' | 'best-of' | 'megadeals';
 
 export interface UserAccount {
   uid: string;

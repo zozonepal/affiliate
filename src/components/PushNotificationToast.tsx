@@ -32,7 +32,7 @@ export function PushNotificationToast({
       if (typeof window !== 'undefined' && 'Notification' in window) {
         if (Notification.permission === 'granted') {
           try {
-            new Notification('🔥 DealFinder Nepal: New Price Drop!', {
+            new Notification('DealFinder Nepal: Price Drop Alert', {
               body: `${latestDeal.title} dropped to Rs. ${latestDeal.price.toLocaleString('ne-NP')}!`,
               icon: latestDeal.image
             });
@@ -85,7 +85,7 @@ export function PushNotificationToast({
         {/* Header ticker row */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-1.5">
-            <span className="w-2 h-2 rounded-full bg-orange-500 animate-ping" />
+            <span className="w-2 h-2 rounded-xs bg-orange-500 animate-ping" />
             <div className="w-5 h-5 rounded-md bg-orange-600 flex items-center justify-center text-white">
               <Bell className="w-3 h-3 text-white fill-white" />
             </div>

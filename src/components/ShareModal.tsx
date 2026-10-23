@@ -35,8 +35,8 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
   const shareUrl = `${currentOrigin}${currentPath}?deal=${product.id}`;
 
   // Pre-filled message text crafted for high conversion and context
-  const shareMessage = `🔥 Deal Alert! ${product.title} is now Rs. ${Number(product.price).toLocaleString('ne-NP')}${
-    discountPercent > 0 ? ` (${discountPercent}% OFF!)` : ''
+  const shareMessage = `Deal Alert: ${product.title} is now Rs. ${Number(product.price).toLocaleString('ne-NP')}${
+    discountPercent > 0 ? ` (${discountPercent}% OFF)` : ''
   } on Daraz Nepal.${product.promoCode ? ` Use promo code: ${product.promoCode}` : ''} Check deal: ${shareUrl}`;
 
   // Pre-filled WhatsApp link
@@ -62,7 +62,7 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
       try {
         await navigator.share({
           title: product.title,
-          text: `🔥 ${product.title} is now Rs. ${Number(product.price).toLocaleString('ne-NP')}!`,
+          text: `${product.title} is now Rs. ${Number(product.price).toLocaleString('ne-NP')}!`,
           url: shareUrl,
         });
         onClose();
@@ -94,7 +94,7 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-full text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
             aria-label="Close share dialog"
           >
             <X className="w-5 h-5" />
