@@ -9,31 +9,31 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto font-['Hanken_Grotesk']">
       <div 
-        className="bg-white rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150 relative overflow-hidden"
+        className="bg-[#0B132B] text-[#dae2fd] rounded-2xl max-w-2xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-150 relative overflow-hidden"
         role="dialog"
         aria-labelledby="terms-conditions-title"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#131b2e] shrink-0 font-['Outfit']">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-orange-100 text-orange-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-lg bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center">
               <FileText className="w-4 h-4" />
             </div>
             <div>
-              <h2 id="terms-conditions-title" className="text-base sm:text-lg font-bold text-slate-900">
+              <h2 id="terms-conditions-title" className="text-base sm:text-lg font-bold text-white">
                 Terms and Conditions
               </h2>
-              <p className="text-xs text-slate-500">
-                Last Updated: October 10, 2026 | Daraz Deals Nepal (dealfinder.com.np)
+              <p className="text-xs text-slate-400">
+                Last Updated: 2026 | Daraz Deals Nepal (darazdeals.np)
               </p>
             </div>
           </div>
 
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-200 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
             aria-label="Close"
           >
             <X className="w-5 h-5" />
@@ -41,7 +41,7 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
         </div>
 
         {/* Scrollable Content */}
-        <div className="p-5 sm:p-7 overflow-y-auto space-y-6 text-xs sm:text-sm text-slate-700 leading-relaxed">
+        <div className="p-5 sm:p-7 overflow-y-auto space-y-6 text-xs sm:text-sm text-slate-300 leading-relaxed">
           <section className="space-y-2">
             <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
               <Globe className="w-4 h-4 text-orange-600" />
@@ -63,17 +63,17 @@ export function TermsAndConditionsModal({ isOpen, onClose }: TermsAndConditionsM
             <div className="bg-slate-50 p-3.5 rounded-xl border border-slate-200/80 space-y-1.5 text-xs text-slate-600">
               <p>• We participate in the Daraz Affiliate Program and earn a commission on qualifying purchases.</p>
               <p>• Our editorial curation is independent; products are indexed based on discount depth, seller reputation, and value for consumers in Nepal.</p>
-              <p>• Prices and voucher codes displayed on DealFinder reflect available rates at the time of catalog update and are subject to immediate merchant change.</p>
+              <p>• Prices and discounts displayed reflect available rates at the time of catalog update and are subject to merchant change.</p>
             </div>
           </section>
 
           <section className="space-y-2">
             <h3 className="text-sm sm:text-base font-bold text-slate-900 flex items-center gap-2">
               <AlertTriangle className="w-4 h-4 text-orange-600" />
-              3. Pricing, Availability, and Voucher Accuracy
+              3. Pricing & Availability Accuracy
             </h3>
             <p>
-              While we continuously verify deal accuracy, prices and stock on Daraz Nepal fluctuate dynamically due to seller flash sales and stock exhaustion. Daraz Deals Nepal makes no guarantee that any listed deal, coupon code, or promo offer will remain available when you visit the merchant website. Always verify final checkout pricing on Daraz before completing any transaction.
+              While we continuously verify deal accuracy, prices and stock on Daraz Nepal fluctuate dynamically due to seller price updates and stock exhaustion. Daraz Deals Nepal makes no guarantee that any listed deal will remain at the indicated price when you visit the merchant website. Always verify final checkout pricing on Daraz before completing any transaction.
             </p>
           </section>
 

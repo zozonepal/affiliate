@@ -37,7 +37,7 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
   // Pre-filled message text crafted for high conversion and context
   const shareMessage = `Deal Alert: ${product.title} is now Rs. ${Number(product.price).toLocaleString('ne-NP')}${
     discountPercent > 0 ? ` (${discountPercent}% OFF)` : ''
-  } on Daraz Nepal.${product.promoCode ? ` Use promo code: ${product.promoCode}` : ''} Check deal: ${shareUrl}`;
+  } on Daraz Nepal. Check deal: ${shareUrl}`;
 
   // Pre-filled WhatsApp link
   const whatsappUrl = `https://api.whatsapp.com/send?text=${encodeURIComponent(shareMessage)}`;
@@ -74,27 +74,27 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
 
   return (
     <div 
-      className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200"
+      className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 animate-in fade-in duration-200 font-['Hanken_Grotesk']"
       onClick={onClose}
     >
       <div 
         onClick={(e) => e.stopPropagation()}
-        className="bg-white rounded-t-3xl sm:rounded-3xl max-w-md w-full shadow-2xl border border-slate-100 overflow-hidden flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200"
+        className="bg-[#0B132B] text-[#dae2fd] rounded-t-3xl sm:rounded-3xl max-w-md w-full shadow-2xl border border-white/10 overflow-hidden flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-100 flex items-center justify-between bg-slate-50/50">
+        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#131b2e] font-['Outfit']">
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-xl bg-orange-100 text-orange-600 flex items-center justify-center">
+            <div className="w-8 h-8 rounded-xl bg-orange-500/15 border border-orange-500/30 text-orange-400 flex items-center justify-center">
               <Share2 className="w-4 h-4" />
             </div>
             <div>
-              <h3 className="font-extrabold text-sm sm:text-base text-slate-900">Share This Deal</h3>
-              <p className="text-[11px] text-slate-500">Send pre-filled link to your friends</p>
+              <h3 className="font-extrabold text-sm sm:text-base text-white">Share This Deal</h3>
+              <p className="text-[11px] text-slate-400">Send pre-filled link to your friends</p>
             </div>
           </div>
           <button
             onClick={onClose}
-            className="p-1.5 rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 transition"
+            className="p-1.5 rounded-lg text-slate-400 hover:text-white hover:bg-white/10 transition cursor-pointer"
             aria-label="Close share dialog"
           >
             <X className="w-5 h-5" />
@@ -102,9 +102,9 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
         </div>
 
         {/* Product mini banner */}
-        <div className="p-4 sm:p-5 pb-0">
-          <div className="flex items-center gap-3 p-2.5 bg-slate-50 rounded-2xl border border-slate-100">
-            <div className="w-14 h-14 bg-white rounded-xl p-1 shrink-0 flex items-center justify-center border border-slate-200/60">
+        <div className="p-4 sm:p-5 pb-0 font-['Outfit']">
+          <div className="flex items-center gap-3 p-2.5 bg-[#131b2e] rounded-2xl border border-white/10">
+            <div className="w-14 h-14 bg-[#0B132B] rounded-xl p-1 shrink-0 flex items-center justify-center border border-white/5">
               <img
                 src={product.image}
                 alt={product.title}
@@ -115,16 +115,16 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
               />
             </div>
             <div className="flex-1 min-w-0">
-              <span className="text-[10px] font-bold text-orange-600 uppercase tracking-wider">
+              <span className="text-[10px] font-bold text-orange-400 uppercase tracking-wider">
                 {product.category}
               </span>
-              <h4 className="text-xs font-bold text-slate-900 truncate">{product.title}</h4>
+              <h4 className="text-xs font-bold text-white truncate">{product.title}</h4>
               <div className="flex items-baseline gap-1 mt-0.5">
-                <span className="text-xs font-black text-slate-900">
+                <span className="text-xs font-black text-white">
                   Rs. {Number(product.price).toLocaleString('ne-NP')}
                 </span>
                 {discountPercent > 0 && (
-                  <span className="text-[10px] font-bold text-emerald-600 bg-emerald-50 px-1 rounded">
+                  <span className="text-[10px] font-bold text-slate-950 bg-gradient-to-r from-orange-400 to-amber-300 px-1 rounded">
                     {discountPercent}% OFF
                   </span>
                 )}
@@ -134,7 +134,7 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
         </div>
 
         {/* Share Action Buttons */}
-        <div className="p-4 sm:p-5 space-y-3">
+        <div className="p-4 sm:p-5 space-y-3 font-['Outfit']">
           
           <div className="grid grid-cols-2 gap-2.5">
             {/* WhatsApp Pre-filled Button */}
@@ -143,7 +143,7 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={onClose}
-              className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm py-3 px-3 rounded-xl shadow-xs transition active:scale-95 text-center"
+              className="flex items-center justify-center gap-2 bg-[#25D366] hover:bg-[#20ba59] text-white font-bold text-xs sm:text-sm py-3 px-3 rounded-xl shadow-xs transition active:scale-95 text-center cursor-pointer"
             >
               <MessageCircle className="w-4 h-4 fill-white" />
               <span>WhatsApp</span>
@@ -155,7 +155,7 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
               target="_blank"
               rel="noopener noreferrer"
               onClick={onClose}
-              className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold text-xs sm:text-sm py-3 px-3 rounded-xl shadow-xs transition active:scale-95 text-center"
+              className="flex items-center justify-center gap-2 bg-[#1877F2] hover:bg-[#166fe5] text-white font-bold text-xs sm:text-sm py-3 px-3 rounded-xl shadow-xs transition active:scale-95 text-center cursor-pointer"
             >
               <Facebook className="w-4 h-4 fill-white" />
               <span>Facebook</span>
@@ -166,31 +166,31 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
           {typeof navigator !== 'undefined' && 'share' in navigator && (
             <button
               onClick={handleNativeShare}
-              className="w-full flex items-center justify-center gap-2 bg-slate-900 hover:bg-slate-800 text-white font-bold text-xs py-2.5 px-4 rounded-xl shadow-xs transition active:scale-98"
+              className="w-full flex items-center justify-center gap-2 bg-[#131b2e] hover:bg-[#1a233b] text-white border border-white/10 font-bold text-xs py-2.5 px-4 rounded-xl shadow-xs transition active:scale-98 cursor-pointer"
             >
-              <Share2 className="w-3.5 h-3.5" />
-              <span>More Share Options (Apps, SMS, Messenger)</span>
+              <Share2 className="w-3.5 h-3.5 text-orange-400" />
+              <span>More Share Options</span>
             </button>
           )}
 
           {/* Copyable Link Input */}
           <div className="pt-2">
-            <label className="block text-[11px] font-bold text-slate-500 mb-1">
+            <label className="block text-[11px] font-bold text-slate-400 mb-1">
               Direct Link:
             </label>
-            <div className="flex items-center gap-1.5 bg-slate-50 border border-slate-200 rounded-xl p-1.5 pl-3">
+            <div className="flex items-center gap-1.5 bg-[#131b2e] border border-white/10 rounded-xl p-1.5 pl-3">
               <input
                 type="text"
                 readOnly
                 value={shareUrl}
-                className="bg-transparent text-xs text-slate-700 w-full outline-none truncate font-mono"
+                className="bg-transparent text-xs text-slate-300 w-full outline-none truncate font-mono"
               />
               <button
                 onClick={handleCopyLink}
-                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1 shrink-0 ${
+                className={`text-xs font-bold px-3 py-1.5 rounded-lg transition flex items-center gap-1 shrink-0 cursor-pointer ${
                   copied 
-                    ? 'bg-emerald-600 text-white' 
-                    : 'bg-orange-600 hover:bg-orange-500 text-white active:scale-95'
+                    ? 'bg-emerald-500 text-slate-950 font-black' 
+                    : 'bg-gradient-to-r from-orange-500 to-amber-400 text-slate-950 hover:brightness-105 active:scale-95'
                 }`}
               >
                 {copied ? (
@@ -209,20 +209,20 @@ export function ShareModal({ isOpen, onClose, product }: ShareModalProps) {
           </div>
 
           {/* Pre-filled Message Preview with Copy text */}
-          <div className="bg-orange-50/60 border border-orange-100 rounded-xl p-2.5">
+          <div className="bg-[#131b2e] border border-white/10 rounded-xl p-2.5">
             <div className="flex items-center justify-between mb-1">
-              <span className="text-[10px] font-bold text-orange-800 uppercase tracking-wide">
+              <span className="text-[10px] font-bold text-orange-400 uppercase tracking-wide">
                 Pre-filled Message Text:
               </span>
               <button
                 onClick={handleCopyFullMessage}
-                className="text-[10px] text-orange-600 font-bold hover:underline flex items-center gap-0.5"
+                className="text-[10px] text-orange-300 font-bold hover:underline flex items-center gap-0.5 cursor-pointer"
               >
-                {copiedText ? <Check className="w-3 h-3 text-emerald-600" /> : <Copy className="w-3 h-3" />}
+                {copiedText ? <Check className="w-3 h-3 text-emerald-400" /> : <Copy className="w-3 h-3" />}
                 <span>{copiedText ? 'Copied' : 'Copy Text'}</span>
               </button>
             </div>
-            <p className="text-[11px] text-slate-600 italic leading-relaxed line-clamp-2">
+            <p className="text-[11px] text-slate-400 italic leading-relaxed line-clamp-2">
               "{shareMessage}"
             </p>
           </div>

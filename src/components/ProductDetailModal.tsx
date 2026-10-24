@@ -9,7 +9,6 @@ import {
   Truck, 
   Check, 
   Share2, 
-  Ticket, 
   CheckCircle, 
   ChevronLeft,
   ChevronRight,
@@ -48,7 +47,6 @@ export function ProductDetailModal({
   onClose
 }: ProductDetailModalProps) {
   const [copied, setCopied] = useState(false);
-  const [promoCopied, setPromoCopied] = useState(false);
   const [isShareOpen, setIsShareOpen] = useState(false);
   const [activeImgIdx, setActiveImgIdx] = useState<number>(0);
   const [selectedVariantIdx, setSelectedVariantIdx] = useState<number>(0);
@@ -137,27 +135,27 @@ export function ProductDetailModal({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-xs z-50 flex items-end sm:items-center justify-center p-0 sm:p-4">
-      <div className="bg-white rounded-t-3xl sm:rounded-3xl max-w-2xl w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl border border-slate-100 flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200">
+    <div className="fixed inset-0 bg-slate-950/80 backdrop-blur-md z-50 flex items-end sm:items-center justify-center p-0 sm:p-4 font-['Hanken_Grotesk']">
+      <div className="bg-[#0B132B] text-[#dae2fd] rounded-t-3xl sm:rounded-3xl max-w-2xl w-full max-h-[92vh] sm:max-h-[90vh] overflow-y-auto shadow-2xl border border-white/10 flex flex-col animate-in slide-in-from-bottom sm:slide-in-from-none duration-200">
         
         {/* Mobile drag handle bar */}
-        <div className="w-12 h-1 bg-slate-300 rounded-sm mx-auto mt-2.5 sm:hidden" />
+        <div className="w-12 h-1 bg-white/20 rounded-sm mx-auto mt-2.5 sm:hidden" />
 
         {/* Header bar */}
-        <div className="flex items-center justify-between p-3.5 sm:p-5 border-b border-slate-100 sticky top-0 bg-white/95 backdrop-blur-md z-20">
+        <div className="flex items-center justify-between p-3.5 sm:p-5 border-b border-white/10 sticky top-0 bg-[#0B132B]/95 backdrop-blur-md z-20">
           <div className="flex items-center gap-2">
-            <span className="text-xs font-bold uppercase tracking-wider bg-orange-100 text-orange-700 px-2.5 py-1 rounded-md">
+            <span className="text-xs font-['Outfit'] font-bold uppercase tracking-wider bg-orange-500/15 text-orange-400 border border-orange-500/30 px-2.5 py-1 rounded-md">
               {product.category}
             </span>
             {product.badge && (
-              <span className="text-xs font-bold uppercase tracking-wider bg-slate-900 text-white px-2.5 py-1 rounded-md">
+              <span className="text-xs font-['Outfit'] font-black uppercase tracking-wider bg-gradient-to-r from-orange-500 to-amber-400 text-slate-950 px-2.5 py-1 rounded-md shadow-xs">
                 {product.badge}
               </span>
             )}
           </div>
           <button
             onClick={onClose}
-            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-slate-400 hover:text-slate-700 hover:bg-slate-100 active:bg-slate-200 transition"
+            className="p-2 min-w-[36px] min-h-[36px] flex items-center justify-center rounded-lg text-slate-400 hover:text-white hover:bg-white/10 active:bg-white/15 transition cursor-pointer"
             aria-label="Close detail modal"
           >
             <X className="w-5 h-5" />
@@ -171,7 +169,7 @@ export function ProductDetailModal({
             
             {/* Image Preview and Multi-Image Gallery */}
             <div className="flex flex-col gap-3">
-              <div className="relative h-64 sm:h-72 bg-slate-50 rounded-2xl p-4 flex items-center justify-center border border-slate-100 overflow-hidden group select-none">
+              <div className="relative h-64 sm:h-72 bg-[#131b2e] rounded-2xl p-4 flex items-center justify-center border border-white/10 overflow-hidden group select-none">
                 <img
                   src={heroImage}
                   alt={activeVariant ? `${product.name || product.title} (${activeVariant.name})` : (product.name || product.title)}
@@ -183,13 +181,13 @@ export function ProductDetailModal({
                 />
                 
                 {discountPercent && (
-                  <div className="absolute bottom-3 left-3 bg-red-600 text-white text-xs font-black px-2.5 py-1 rounded-lg shadow-sm z-10">
+                  <div className="absolute bottom-3 left-3 bg-gradient-to-r from-orange-500 to-amber-400 text-slate-950 text-xs font-['Outfit'] font-black px-2.5 py-1 rounded-lg shadow-md z-10">
                     SAVE {discountPercent}%
                   </div>
                 )}
 
                 {activeVariant && (
-                  <div className="absolute top-3 left-3 bg-slate-900/80 backdrop-blur-xs text-white text-xs font-bold px-2.5 py-1 rounded-lg shadow-xs flex items-center gap-1.5 z-10">
+                  <div className="absolute top-3 left-3 bg-[#0B132B]/90 backdrop-blur-xs text-white text-xs font-bold px-2.5 py-1 rounded-lg border border-white/10 shadow-xs flex items-center gap-1.5 z-10">
                     <span
                       className="w-2.5 h-2.5 rounded-sm border border-white/50 shrink-0"
                       style={{ backgroundColor: activeVariant.colorCode || '#ffffff' }}
@@ -255,9 +253,9 @@ export function ProductDetailModal({
               {/* Multi-Image Thumbnail Gallery (All Uploaded Photos) */}
               {allImages.length > 1 && (
                 <div className="space-y-1.5">
-                  <div className="flex items-center justify-between text-[11px] text-slate-500 font-semibold px-1">
+                  <div className="flex items-center justify-between text-[11px] text-slate-400 font-semibold px-1">
                     <span>Product Photos ({allImages.length}):</span>
-                    <span className="text-[10px] text-slate-400 font-medium">Click photo to preview</span>
+                    <span className="text-[10px] text-slate-500 font-medium">Click photo to preview</span>
                   </div>
                   <div className="flex items-center gap-2 overflow-x-auto pb-1 pt-0.5">
                     {allImages.map((imgUrl, idx) => {
@@ -269,17 +267,17 @@ export function ProductDetailModal({
                           key={imgUrl.slice(0, 32) + idx}
                           type="button"
                           onClick={() => handleSelectImage(idx)}
-                          className={`relative flex items-center justify-center p-1 rounded-xl border bg-white transition-all shrink-0 cursor-pointer ${
+                          className={`relative flex items-center justify-center p-1 rounded-xl border bg-[#131b2e] transition-all shrink-0 cursor-pointer ${
                             isActive
                               ? 'border-orange-500 ring-2 ring-orange-500/40 shadow-xs scale-105'
-                              : 'border-slate-200 hover:border-slate-300 opacity-75 hover:opacity-100 hover:scale-[1.02]'
+                              : 'border-white/10 hover:border-white/20 opacity-75 hover:opacity-100 hover:scale-[1.02]'
                           }`}
                           title={matchedVariant ? `Option: ${getVariantDisplayName(matchedVariant.name, idx)}` : `Photo ${idx + 1}`}
                         >
                           <img
                             src={imgUrl}
                             alt={`Photo ${idx + 1}`}
-                            className="w-12 h-12 sm:w-14 sm:h-14 object-contain rounded-lg bg-slate-50 border border-slate-100 p-0.5"
+                            className="w-12 h-12 sm:w-14 sm:h-14 object-contain rounded-lg bg-[#0B132B] border border-white/5 p-0.5"
                             onError={(e) => {
                               (e.target as HTMLImageElement).src =
                                 'https://images.unsplash.com/photo-1526170375885-4d8ecf77b99f?w=500&auto=format&fit=crop&q=80';
@@ -287,7 +285,7 @@ export function ProductDetailModal({
                           />
                           {matchedVariant?.colorCode && (
                             <span
-                              className="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-sm border border-white shadow-2xs shrink-0"
+                              className="absolute bottom-1 right-1 w-2.5 h-2.5 rounded-sm border border-white/50 shadow-2xs shrink-0"
                               style={{ backgroundColor: matchedVariant.colorCode }}
                               title={matchedVariant.name}
                             />
@@ -302,36 +300,36 @@ export function ProductDetailModal({
 
             {/* Price & Primary Info */}
             <div className="space-y-4">
-              <h2 className="text-lg font-bold text-slate-900 leading-snug">
+              <h2 className="text-lg font-['Outfit'] font-bold text-white leading-snug">
                 {product.name || product.title}
               </h2>
 
-              <div className="flex items-center gap-2">
-                <div className="flex items-center text-amber-500 font-bold text-sm">
+              <div className="flex items-center gap-2 font-['Outfit']">
+                <div className="flex items-center text-amber-400 font-bold text-sm">
                   <Star className="w-4 h-4 fill-amber-400 text-amber-400 mr-1" />
                   <span>{product.rating ? product.rating.toFixed(1) : '4.6'}</span>
                 </div>
-                <span className="text-slate-300">|</span>
-                <span className="text-xs text-slate-500">
+                <span className="text-white/20">|</span>
+                <span className="text-xs text-slate-400">
                   {product.reviewsCount || 48} Daraz verified reviews
                 </span>
               </div>
 
               {/* Price Box */}
-              <div className="bg-slate-50 p-4 rounded-2xl border border-slate-200/80">
+              <div className="bg-[#131b2e] p-4 rounded-2xl border border-white/10 font-['Outfit']">
                 <div className="flex items-center justify-between mb-1">
                   <span className="text-xs font-bold text-slate-400 block">Current Deal Price:</span>
                   {discountPercent && (
-                    <span className="inline-flex items-center gap-1 bg-rose-600 text-white font-black text-[11px] px-2 py-0.5 rounded-md shadow-2xs">
-                      <Flame className="w-3 h-3 fill-white" />
+                    <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-500 to-amber-400 text-slate-950 font-black text-[11px] px-2 py-0.5 rounded-md shadow-xs">
+                      <Flame className="w-3 h-3 fill-slate-950 text-slate-950" />
                       <span>{discountPercent}% OFF</span>
                     </span>
                   )}
                 </div>
 
                 <div className="flex items-baseline gap-2">
-                  <span className="text-sm font-bold text-orange-600">Rs.</span>
-                  <span className="text-3xl font-black text-slate-900 tracking-tight">
+                  <span className="text-sm font-bold text-orange-400">Rs.</span>
+                  <span className="text-3xl font-black text-white tracking-tight">
                     {Number(product.price).toLocaleString('ne-NP')}
                   </span>
                   {product.originalPrice && product.originalPrice > product.price && (
@@ -343,81 +341,52 @@ export function ProductDetailModal({
 
                 {/* Net Savings & Urgency Callout */}
                 {product.originalPrice && product.originalPrice > product.price && (
-                  <div className="mt-2 text-xs font-bold text-emerald-700 bg-emerald-50 px-2.5 py-1 rounded-lg border border-emerald-200/80 flex items-center gap-1.5">
-                    <Sparkles className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <div className="mt-2 text-xs font-bold text-emerald-400 bg-emerald-500/15 px-2.5 py-1 rounded-lg border border-emerald-500/30 flex items-center gap-1.5">
+                    <Sparkles className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                     <span>Instant Savings: Rs. {Number(product.originalPrice - product.price).toLocaleString('ne-NP')}</span>
                     <span className="text-slate-400 font-normal hidden sm:inline">• Daraz App Verified</span>
                   </div>
                 )}
 
                 {product.seller && (
-                  <p className="text-xs text-slate-500 mt-2 font-medium">
-                    Sold by: <span className="font-bold text-slate-700">{product.seller}</span>
+                  <p className="text-xs text-slate-400 mt-2 font-medium">
+                    Sold by: <span className="font-bold text-slate-200">{product.seller}</span>
                   </p>
-                )}
-
-                {product.promoCode && (
-                  <div className="mt-3 pt-3 border-t border-slate-200/80 flex items-center justify-between bg-orange-50/70 -mx-4 -mb-4 p-3 rounded-b-xl">
-                    <div className="flex items-center gap-2">
-                      <Ticket className="w-4 h-4 text-orange-600" />
-                      <div>
-                        <span className="text-[10px] text-slate-500 block uppercase font-bold tracking-wider">Daraz Promo Code</span>
-                        <span className="font-mono font-black text-orange-700 text-sm tracking-wider">{product.promoCode}</span>
-                      </div>
-                    </div>
-                    <button
-                      onClick={() => {
-                        navigator.clipboard.writeText(product.promoCode || '');
-                        setPromoCopied(true);
-                        setTimeout(() => setPromoCopied(false), 2000);
-                      }}
-                      className="text-xs font-bold bg-white text-orange-700 hover:text-orange-900 border border-orange-200 px-3 py-1.5 rounded-lg shadow-2xs flex items-center gap-1.5 transition"
-                    >
-                      {promoCopied ? (
-                        <>
-                          <CheckCircle className="w-3.5 h-3.5 text-emerald-600" />
-                          <span className="text-emerald-700">Code Copied!</span>
-                        </>
-                      ) : (
-                        <span>Copy Code</span>
-                      )}
-                    </button>
-                  </div>
                 )}
               </div>
 
               {/* Interactive buttons */}
-              <div className="flex items-center gap-1.5 sm:gap-2">
+              <div className="flex items-center gap-1.5 sm:gap-2 font-['Outfit']">
                 <button
                   onClick={() => onUpvote(product.id)}
-                  className={`flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold border transition min-w-0 ${
+                  className={`flex-1 flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-2 sm:px-3 rounded-xl text-[11px] sm:text-xs font-bold border transition min-w-0 cursor-pointer ${
                     hasUpvoted
-                      ? 'bg-orange-50 border-orange-200 text-orange-700'
-                      : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-orange-500/20 border-orange-500/50 text-orange-400'
+                      : 'border-white/10 text-slate-200 hover:bg-white/5'
                   }`}
                 >
-                  <ThumbsUp className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${hasUpvoted ? 'fill-orange-600 text-orange-600' : ''}`} />
+                  <ThumbsUp className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${hasUpvoted ? 'fill-orange-400 text-orange-400' : ''}`} />
                   <span className="truncate">Upvote ({product.upvotes || 0})</span>
                 </button>
 
                 <button
                   onClick={() => onToggleWishlist(product.id)}
-                  className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-[11px] sm:text-xs font-bold border transition shrink-0 ${
+                  className={`flex items-center justify-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-2.5 sm:px-4 rounded-xl text-[11px] sm:text-xs font-bold border transition shrink-0 cursor-pointer ${
                     isWishlisted
-                      ? 'bg-red-50 border-red-200 text-red-600'
-                      : 'border-slate-200 text-slate-700 hover:bg-slate-50'
+                      ? 'bg-red-500/20 border-red-500/50 text-red-400'
+                      : 'border-white/10 text-slate-200 hover:bg-white/5'
                   }`}
                 >
-                  <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isWishlisted ? 'fill-red-600 text-red-600' : ''}`} />
+                  <Heart className={`w-3.5 h-3.5 sm:w-4 sm:h-4 shrink-0 ${isWishlisted ? 'fill-red-400 text-red-400' : ''}`} />
                   <span>{isWishlisted ? 'Saved' : 'Save'}</span>
                 </button>
 
                 <button
                   onClick={handleShare}
-                  className="flex items-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border border-slate-200 text-slate-700 hover:bg-slate-50 transition text-[11px] sm:text-xs font-bold shrink-0"
+                  className="flex items-center gap-1 sm:gap-1.5 py-2 sm:py-2.5 px-2.5 sm:px-3 rounded-xl border border-white/10 text-slate-200 hover:bg-white/5 transition text-[11px] sm:text-xs font-bold shrink-0 cursor-pointer"
                   title="Share deal on WhatsApp & Facebook"
                 >
-                  <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-600 shrink-0" />
+                  <Share2 className="w-3.5 h-3.5 sm:w-4 sm:h-4 text-orange-400 shrink-0" />
                   <span>Share</span>
                 </button>
               </div>
@@ -429,10 +398,10 @@ export function ProductDetailModal({
           {/* Description & Key Specs */}
           {product.description && (
             <div className="space-y-2">
-              <h4 className="text-xs font-bold text-slate-900 uppercase tracking-wider">
+              <h4 className="text-xs font-['Outfit'] font-bold text-white uppercase tracking-wider">
                 Deal Overview & Highlights
               </h4>
-              <p className="text-sm text-slate-600 leading-relaxed bg-slate-50/70 p-3.5 rounded-xl border border-slate-100">
+              <p className="text-sm text-slate-300 leading-relaxed bg-[#131b2e] p-3.5 rounded-xl border border-white/10">
                 {product.description}
               </p>
             </div>
@@ -440,17 +409,17 @@ export function ProductDetailModal({
 
           {/* Daraz Shopping Tips */}
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2">
-            <div className="p-3 bg-amber-50/60 rounded-xl border border-amber-200/50 flex items-start gap-2.5">
-              <ShieldCheck className="w-4 h-4 text-amber-700 shrink-0 mt-0.5" />
-              <div className="text-xs text-amber-900">
-                <span className="font-bold block">Buyer Protection</span>
+            <div className="p-3 bg-[#131b2e] rounded-xl border border-white/10 flex items-start gap-2.5">
+              <ShieldCheck className="w-4 h-4 text-orange-400 shrink-0 mt-0.5" />
+              <div className="text-xs text-slate-300">
+                <span className="font-bold text-white block">Buyer Protection</span>
                 Check seller rating and Daraz Mall badge for genuine warranty.
               </div>
             </div>
-            <div className="p-3 bg-emerald-50/60 rounded-xl border border-emerald-200/50 flex items-start gap-2.5">
-              <Truck className="w-4 h-4 text-emerald-700 shrink-0 mt-0.5" />
-              <div className="text-xs text-emerald-900">
-                <span className="font-bold block">Delivery Nepal</span>
+            <div className="p-3 bg-[#131b2e] rounded-xl border border-white/10 flex items-start gap-2.5">
+              <Truck className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+              <div className="text-xs text-slate-300">
+                <span className="font-bold text-white block">Delivery Nepal</span>
                 Available across Kathmandu valley and all major districts.
               </div>
             </div>
@@ -459,18 +428,18 @@ export function ProductDetailModal({
         </div>
 
         {/* Footer Action - Sticky on mobile */}
-        <div className="p-3 sm:p-5 bg-white border-t border-slate-200/80 sticky bottom-0 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-5 shadow-lg">
-          <div className="text-[11px] text-slate-500 text-center sm:text-left hidden sm:block">
-            <span className="font-bold text-slate-700 block">Daraz Nepal Affiliate Partner</span>
+        <div className="p-3 sm:p-5 bg-[#070d1a] border-t border-white/10 sticky bottom-0 z-20 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 pb-[calc(1rem+env(safe-area-inset-bottom))] sm:pb-5 shadow-2xl">
+          <div className="text-[11px] text-slate-400 text-center sm:text-left hidden sm:block">
+            <span className="font-['Outfit'] font-bold text-slate-200 block">Daraz Nepal Verified Affiliate Link</span>
             <span>Zero extra markup. Cash on Delivery (COD) & 7-day return available.</span>
           </div>
 
-          <div className="flex items-center gap-2 w-full sm:w-auto">
+          <div className="flex items-center gap-2 w-full sm:w-auto font-['Outfit']">
             <a
               href={buildAffiliateUrl(product.affiliateUrl)}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border border-slate-300 hover:border-slate-400 bg-white text-slate-700 font-bold text-xs transition min-h-[44px] shrink-0"
+              className="inline-flex items-center justify-center gap-1 sm:gap-1.5 px-3 sm:px-4 py-2.5 sm:py-3 rounded-xl sm:rounded-2xl border border-white/15 hover:border-white/30 bg-[#131b2e] text-slate-200 hover:text-white font-bold text-xs transition min-h-[44px] shrink-0"
               title="Open product on Daraz website"
             >
               <span className="hidden sm:inline">Open on Web</span>
@@ -480,7 +449,7 @@ export function ProductDetailModal({
             <button
               type="button"
               onClick={() => openDarazDeal(product.affiliateUrl)}
-              className="flex-1 sm:flex-initial bg-gradient-to-r from-orange-600 via-orange-500 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-extrabold text-xs sm:text-sm py-3 sm:py-3.5 px-3 sm:px-6 rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg shadow-orange-600/30 transition min-h-[44px] sm:min-h-[48px] active:scale-[0.98] cursor-pointer min-w-0"
+              className="flex-1 sm:flex-initial bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 hover:brightness-105 text-slate-950 font-extrabold text-xs sm:text-sm py-3 sm:py-3.5 px-3 sm:px-6 rounded-xl sm:rounded-2xl flex items-center justify-center gap-1.5 sm:gap-2 shadow-lg shadow-orange-500/25 transition min-h-[44px] sm:min-h-[48px] active:scale-[0.98] cursor-pointer min-w-0"
             >
               <Smartphone className="w-4 h-4 shrink-0" />
               <span className="truncate">Open Deal on Daraz App</span>

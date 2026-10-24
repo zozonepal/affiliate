@@ -60,7 +60,6 @@ export function BestDealBanner({
         (Math.min(savings, 10000) / 100) * 1.5 + 
         (p.upvotes || 0) * 4.0 + 
         ((p.rating || 4.5) * 4.0) + 
-        (p.promoCode ? 25 : 0) + 
         (p.badge ? 15 : 0);
 
       if (!best || score > best.score) {
@@ -89,17 +88,17 @@ export function BestDealBanner({
   return (
     <section 
       aria-label="Featured Deal Spotlight"
-      className="relative mb-4 sm:mb-5 rounded-2xl border border-orange-200/90 bg-orange-50/50 shadow-2xs p-3 sm:p-3.5 overflow-hidden group"
+      className="relative mb-4 sm:mb-5 rounded-2xl border border-orange-500/30 bg-gradient-to-r from-orange-500/15 via-[#0B132B] to-[#131b2e] shadow-lg p-3 sm:p-3.5 overflow-hidden group font-['Outfit']"
     >
 
       {/* Top Header Row */}
       <div className="flex items-center justify-between gap-2 mb-2 pt-0.5">
         <div className="flex items-center gap-2 min-w-0">
-          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-600 to-amber-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-md shadow-xs uppercase tracking-wider shrink-0 whitespace-nowrap">
-            <Flame className="w-3 h-3 text-amber-200 fill-amber-200" />
+          <span className="inline-flex items-center gap-1 bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 text-slate-950 text-[10px] font-extrabold px-2.5 py-0.5 rounded-md shadow-xs uppercase tracking-wider shrink-0 whitespace-nowrap">
+            <Flame className="w-3 h-3 text-slate-950 fill-slate-950" />
             <span>Best Deal Spotlight</span>
           </span>
-          <span className="text-[11px] text-orange-950/80 font-bold truncate hidden sm:inline">
+          <span className="text-[11px] text-orange-200/90 font-bold truncate hidden sm:inline">
             #1 Highest Savings Choice
           </span>
         </div>
@@ -107,10 +106,10 @@ export function BestDealBanner({
         <button
           type="button"
           onClick={() => setIsShareOpen(true)}
-          className="px-2.5 py-0.5 rounded-lg bg-white/80 hover:bg-white text-slate-700 border border-orange-200/80 text-[10px] font-bold inline-flex items-center gap-1 transition active:scale-95 shrink-0 shadow-2xs"
+          className="px-2.5 py-0.5 rounded-lg bg-[#131b2e] hover:bg-[#1E293B] text-slate-200 border border-white/10 text-[10px] font-bold inline-flex items-center gap-1 transition active:scale-95 shrink-0 cursor-pointer"
           title="Share deal"
         >
-          <Share2 className="w-3 h-3 text-orange-600" />
+          <Share2 className="w-3 h-3 text-orange-400" />
           <span className="hidden sm:inline">Share</span>
         </button>
       </div>
@@ -121,7 +120,7 @@ export function BestDealBanner({
         {/* Thumbnail Image */}
         <div 
           onClick={() => onQuickView(deal)}
-          className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-white border border-orange-200/80 rounded-xl p-1 flex items-center justify-center cursor-pointer overflow-hidden shadow-2xs group-hover:scale-105 transition-transform"
+          className="relative shrink-0 w-16 h-16 sm:w-20 sm:h-20 bg-[#0B132B] border border-white/10 rounded-xl p-1 flex items-center justify-center cursor-pointer overflow-hidden group-hover:scale-105 transition-transform"
         >
           <img
             src={deal.image}
@@ -138,14 +137,14 @@ export function BestDealBanner({
         <div className="flex-1 min-w-0 flex flex-col justify-center">
           
           {/* Single-Line Category & Title */}
-          <div className="flex items-center gap-1.5 min-w-0 text-xs font-bold text-slate-900">
-            <span className="text-orange-700 text-[10px] font-extrabold uppercase shrink-0 tracking-wide">
+          <div className="flex items-center gap-1.5 min-w-0 text-xs font-bold text-white">
+            <span className="text-orange-400 text-[10px] font-extrabold uppercase shrink-0 tracking-wide">
               {shortCategory}
             </span>
-            <span className="text-orange-300 shrink-0">•</span>
+            <span className="text-slate-600 shrink-0">•</span>
             <h3 
               onClick={() => onQuickView(deal)}
-              className="truncate font-extrabold text-xs sm:text-sm text-slate-950 group-hover:text-orange-600 cursor-pointer transition whitespace-nowrap"
+              className="truncate font-extrabold text-xs sm:text-sm text-white group-hover:text-orange-400 cursor-pointer transition whitespace-nowrap"
               title={deal.title}
             >
               {deal.title}
@@ -153,9 +152,9 @@ export function BestDealBanner({
           </div>
 
           {/* Single-Line Price & Buy CTA Row */}
-          <div className="flex items-center justify-between gap-1.5 sm:gap-2 mt-1.5 pt-1.5 border-t border-orange-200/60 min-w-0">
+          <div className="flex items-center justify-between gap-1.5 sm:gap-2 mt-1.5 pt-1.5 border-t border-white/10 min-w-0">
             <div className="flex items-baseline gap-1 sm:gap-1.5 min-w-0 truncate">
-              <span className="text-xs sm:text-base font-black text-slate-950 tracking-tight tabular-nums whitespace-nowrap">
+              <span className="text-xs sm:text-base font-black text-white tracking-tight tabular-nums whitespace-nowrap">
                 Rs. {Number(deal.price).toLocaleString('ne-NP')}
               </span>
               {origPrice > deal.price && (
@@ -164,7 +163,7 @@ export function BestDealBanner({
                 </span>
               )}
               {discountPercent > 0 && (
-                <span className="text-[9px] sm:text-[10px] font-extrabold text-white bg-orange-600 px-1.5 py-0.5 rounded-md shadow-2xs shrink-0 whitespace-nowrap">
+                <span className="text-[9px] sm:text-[10px] font-extrabold text-slate-950 bg-gradient-to-r from-orange-400 to-amber-300 px-1.5 py-0.5 rounded-md shrink-0 whitespace-nowrap">
                   -{discountPercent}%
                 </span>
               )}
@@ -176,7 +175,7 @@ export function BestDealBanner({
                 e.preventDefault();
                 openDarazDeal(deal.affiliateUrl);
               }}
-              className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 text-white font-extrabold text-[11px] sm:text-xs py-1.5 px-2.5 sm:px-3.5 rounded-xl flex items-center gap-1 sm:gap-1.5 transition active:scale-95 shrink-0 shadow-xs cursor-pointer min-w-0"
+              className="bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 hover:brightness-105 text-slate-950 font-extrabold text-[11px] sm:text-xs py-1.5 px-2.5 sm:px-3.5 rounded-xl flex items-center gap-1 sm:gap-1.5 transition active:scale-95 shrink-0 shadow-md shadow-orange-500/20 cursor-pointer min-w-0"
             >
               <Smartphone className="w-3 h-3 sm:w-3.5 sm:h-3.5 shrink-0" />
               <span className="sm:hidden whitespace-nowrap">Grab Deal</span>

@@ -86,7 +86,7 @@ export function TrustDisclosureBanner() {
               <div className="bg-slate-50 p-3 rounded-xl border border-slate-200/80 space-y-2">
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
-                  <span><strong>Zero Price Markup:</strong> You pay the exact same price (or lower with our vouchers). You are never charged extra.</span>
+                  <span><strong>Zero Price Markup:</strong> You pay the exact same price as on Daraz. You are never charged extra.</span>
                 </div>
                 <div className="flex items-start gap-2">
                   <CheckCircle2 className="w-4 h-4 text-emerald-600 shrink-0 mt-0.5" />
@@ -99,7 +99,7 @@ export function TrustDisclosureBanner() {
               </div>
 
               <p className="text-[11px] text-slate-500">
-                Product availability, flash vouchers, and discounts are synchronized daily but remain subject to change on the seller's storefront.
+                Product availability and discounts are synchronized daily but remain subject to change on the seller's storefront.
               </p>
             </div>
 

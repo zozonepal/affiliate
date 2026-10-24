@@ -43,27 +43,40 @@ export function extractDarazPath(url: string): string {
  * Builds optimized affiliate URL with tracking parameters and mobile deep link fallback.
  */
 export function buildAffiliateUrl(originalUrl: string, campaignName: string = 'darazdeals_np'): string {
-  if (!originalUrl || originalUrl === '#') return 'https://www.daraz.com.np';
+  const safeFallback = 'https://www.daraz.com.np';
+  if (!originalUrl || originalUrl === '#' || typeof originalUrl !== 'string') return safeFallback;
+
+  const trimmed = originalUrl.trim();
+  // Block any dangerous scheme injection
+  if (/^(javascript|data|vbscript):/i.test(trimmed)) {
+    return safeFallback;
+  }
 
   try {
-    const urlObj = new URL(originalUrl);
-    // Add CRO UTM & sub-id tracking parameters
+    const urlObj = new URL(trimmed.startsWith('/') ? `https://www.daraz.com.np${trimmed}` : trimmed);
+    
+    // Strict protocol check
+    if (urlObj.protocol !== 'https:' && urlObj.protocol !== 'http:') {
+      return safeFallback;
+    }
+
+    // Restrict to Daraz domains or fallback
+    const hostname = urlObj.hostname.toLowerCase();
+    const isDaraz = hostname.endsWith('daraz.com.np') || hostname.endsWith('daraz.np') || hostname.endsWith('daraz.com');
+    if (!isDaraz) {
+      return safeFallback;
+    }
+
+    // Add CRO UTM & sub-id tracking parameters safely
     if (!urlObj.searchParams.has('utm_source')) {
       urlObj.searchParams.set('utm_source', 'darazdeals_np');
-    }
-    if (!urlObj.searchParams.set) {
-      return originalUrl;
     }
     urlObj.searchParams.set('utm_medium', 'affiliate');
     urlObj.searchParams.set('utm_campaign', campaignName);
     urlObj.searchParams.set('ex_from', 'darazdeals_nepal');
     return urlObj.toString();
   } catch {
-    // If not a full URL
-    if (originalUrl.startsWith('/')) {
-      return `https://www.daraz.com.np${originalUrl}?utm_source=darazdeals_np&utm_medium=affiliate`;
-    }
-    return originalUrl;
+    return safeFallback;
   }
 }
 
@@ -157,17 +170,9 @@ export function getHighIntentCtaText(product: Partial<ProductDeal> | null | unde
     };
   }
 
-  if (product.promoCode) {
-    return {
-      primaryText: 'Apply Voucher on App',
-      subText: `Code: ${product.promoCode}`,
-      badgeText: 'Voucher Deal'
-    };
-  }
-
   return {
     primaryText: 'Grab Deal on Daraz App',
-    subText: 'Instant Delivery in Nepal',
+    subText: 'Direct Seller Link',
     badgeText: 'Verified Deal'
   };
 }

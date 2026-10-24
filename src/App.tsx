@@ -27,12 +27,11 @@ import { MobileFilterModal } from './components/MobileFilterModal';
 import { BestDealBanner } from './components/BestDealBanner';
 import { LoadingScreen } from './components/LoadingScreen';
 import { TrustDisclosureBanner } from './components/TrustDisclosureBanner';
-import { ViewSwitcherTabs } from './components/ViewSwitcherTabs';
 import { BestOfListicleView } from './components/BestOfListicleView';
-import { CampaignMegadealsHub } from './components/CampaignMegadealsHub';
 import { PrivacyPolicyModal } from './components/PrivacyPolicyModal';
 import { TermsAndConditionsModal } from './components/TermsAndConditionsModal';
 import { CustomDomainModal } from './components/CustomDomainModal';
+import { CategorySelectionGateway } from './components/CategorySelectionGateway';
 import { PackageOpen, RotateCcw, Plus, Sparkles, X as XIcon, ShieldCheck, Globe, FileText, Lock } from 'lucide-react';
 
 export default function App() {
@@ -61,7 +60,24 @@ export default function App() {
   const [isDomainOpen, setIsDomainOpen] = useState(false);
   const [activeQuickViewProduct, setActiveQuickViewProduct] = useState<ProductDeal | null>(null);
 
-  // 1. Subscribe to Firebase Auth state & restore local persistent session
+  // Category Selection Gateway First Page State
+  const [isGatewayOpen, setIsGatewayOpen] = useState<boolean>(() => {
+    try {
+      return localStorage.getItem('darazdeals_gateway_completed') !== 'true';
+    } catch {
+      return true;
+    }
+  });
+
+  const [userPreferredCategories, setUserPreferredCategories] = useState<string[]>(() => {
+    try {
+      const saved = localStorage.getItem('darazdeals_user_categories');
+      return saved ? JSON.parse(saved) : [];
+    } catch {
+      return [];
+    }
+  });
+
   useEffect(() => {
     // Restore saved session immediately so refreshing on Vercel never loses authentication
     const savedUserSession = localStorage.getItem('dealfinder_user_session');
@@ -107,56 +123,16 @@ export default function App() {
     return () => unsubscribeAuth();
   }, []);
 
-  // 2. Connect to shared Firebase Firestore database using collection named "products"
+  // 2. Connect to shared catalog & live Firestore database via robust subscriber
   useEffect(() => {
-    const productsCollectionRef = collection(db, 'products');
-
-    const unsubscribe = onSnapshot(
-      productsCollectionRef,
-      (snapshot) => {
-        const liveProducts: ProductDeal[] = snapshot.docs.map((docSnap) => {
-          const data = docSnap.data();
-          const docId = docSnap.id;
-          const name = data.name || data.title || 'Untitled Deal';
-          const price = Number(data.price) || 0;
-          const description = data.description || '';
-          const allImages = extractAllImages(data);
-          const primaryImage = allImages[0] || data.imageUrl || data.image || '';
-
-          return {
-            id: docId,
-            name: name,
-            title: name,
-            price: price,
-            originalPrice: data.originalPrice ? Number(data.originalPrice) : undefined,
-            description: description,
-            imageUrl: primaryImage,
-            image: primaryImage,
-            images: allImages,
-            gallery: Array.isArray(data.gallery) ? data.gallery : allImages,
-            category: data.category || 'General',
-            badge: data.badge || '',
-            promoCode: data.promoCode || undefined,
-            colorImages: Array.isArray(data.colorImages) ? data.colorImages : undefined,
-            colorVariants: Array.isArray(data.colorVariants) ? data.colorVariants : undefined,
-            affiliateUrl: data.affiliateUrl || 'https://www.daraz.com.np',
-            rating: data.rating ? Number(data.rating) : 4.5,
-            reviewsCount: data.reviewsCount ? Number(data.reviewsCount) : 10,
-            upvotes: Number(data.upvotes) || 0,
-            upvotedBy: Array.isArray(data.upvotedBy) ? data.upvotedBy : [],
-            inStock: data.inStock !== false,
-            seller: data.seller || 'Daraz Seller',
-            createdAt: data.createdAt,
-            updatedAt: data.updatedAt
-          };
-        });
-
+    const unsubscribe = subscribeToProducts(
+      (liveProducts, status) => {
         setProducts(liveProducts);
-        setSyncStatus('connected');
+        setSyncStatus(status);
         setIsLoading(false);
       },
       (error) => {
-        console.warn('Live Firestore "products" listener notice:', error);
+        console.warn('Live products subscriber notice:', error);
         setSyncStatus('error');
         setIsLoading(false);
       }
@@ -252,16 +228,38 @@ export default function App() {
   // Filter categories dynamically
   const categories = useMemo(() => {
     const unique = Array.from(new Set(products.map((p) => p.category).filter(Boolean)));
+    if (userPreferredCategories.length > 0) {
+      return ['All', 'Personalized', ...unique.filter((c) => c !== 'Personalized')];
+    }
     return ['All', ...unique];
-  }, [products]);
+  }, [products, userPreferredCategories]);
 
   // Filter and sort products
   const filteredProducts = useMemo(() => {
     return products.filter((p) => {
       // Category match
-      const matchesCat =
-        selectedCategory === 'All' ||
-        (p.category && p.category.toLowerCase() === selectedCategory.toLowerCase());
+      let matchesCat = false;
+      if (selectedCategory === 'All') {
+        matchesCat = true;
+      } else if (selectedCategory === 'Personalized') {
+        if (userPreferredCategories.length === 0) {
+          matchesCat = true;
+        } else {
+          matchesCat = userPreferredCategories.some((pref) => {
+            const pCat = (p.category || '').toLowerCase().trim();
+            const prefCat = pref.toLowerCase().trim();
+            return (
+              pCat === prefCat ||
+              pCat.includes(prefCat) ||
+              prefCat.includes(pCat)
+            );
+          });
+        }
+      } else {
+        const pCat = (p.category || '').toLowerCase().trim();
+        const selCat = selectedCategory.toLowerCase().trim();
+        matchesCat = pCat === selCat || pCat.includes(selCat) || selCat.includes(pCat);
+      }
 
       // Search match
       const q = searchQuery.toLowerCase().trim();
@@ -287,7 +285,7 @@ export default function App() {
       if (sortOption === 'newest') return (b.createdAt?.seconds || 0) - (a.createdAt?.seconds || 0);
       return 0; // Default featured
     });
-  }, [products, searchQuery, selectedCategory, priceFilter, sortOption]);
+  }, [products, searchQuery, selectedCategory, userPreferredCategories, priceFilter, sortOption]);
 
   // Automatically score and insert the BEST deals without any manual interference
   const bestDeals = useMemo(() => {
@@ -304,7 +302,6 @@ export default function App() {
           discountPercent * 2.5 + 
           (p.upvotes || 0) * 3 + 
           ((p.rating || 4.5) * 3) + 
-          (p.promoCode ? 15 : 0) + 
           (p.badge ? 10 : 0);
           
         return { product: p, dealScore };
@@ -320,8 +317,58 @@ export default function App() {
     setSortOption('featured');
   };
 
+  const handleGatewayComplete = (chosenCategories: string[]) => {
+    try {
+      localStorage.setItem('darazdeals_gateway_completed', 'true');
+      localStorage.setItem('darazdeals_user_categories', JSON.stringify(chosenCategories));
+    } catch {}
+
+    setUserPreferredCategories(chosenCategories);
+    if (chosenCategories.length === 1) {
+      setSelectedCategory(chosenCategories[0]);
+    } else if (chosenCategories.length > 1) {
+      setSelectedCategory('Personalized');
+    } else {
+      setSelectedCategory('All');
+    }
+    setIsGatewayOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  const handleGatewaySkip = () => {
+    try {
+      localStorage.setItem('darazdeals_gateway_completed', 'true');
+    } catch {}
+    setSelectedCategory('All');
+    setIsGatewayOpen(false);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  };
+
+  // If Category Selection Gateway is active, present it as the dedicated first page
+  if (isGatewayOpen && !isLoading) {
+    return (
+      <CategorySelectionGateway
+        user={user}
+        deals={products}
+        onComplete={handleGatewayComplete}
+        onSkip={handleGatewaySkip}
+        initialSelected={['earbuds', 'headphones', 'smartwatch']}
+      />
+    );
+  }
+
   return (
-    <div className="min-h-screen bg-slate-50/50 text-slate-800 flex flex-col font-sans selection:bg-orange-500 selection:text-white">
+    <div className="min-h-screen bg-[#0b1326] text-[#dae2fd] flex flex-col font-['Hanken_Grotesk'] antialiased selection:bg-orange-500 selection:text-white relative overflow-x-hidden">
+
+      {/* Dynamic Ambient Glow Backdrops matching Gateway */}
+      <div 
+        aria-hidden="true" 
+        className="fixed top-20 right-0 -mr-24 w-80 h-80 rounded-full bg-orange-500/10 blur-[100px] pointer-events-none -z-10" 
+      />
+      <div 
+        aria-hidden="true" 
+        className="fixed top-96 left-0 -ml-28 w-72 h-72 rounded-full bg-sky-500/10 blur-[100px] pointer-events-none -z-10" 
+      />
 
       {/* Desktop Header & Hero (Loaded for desktop screens) */}
       <div className="hidden md:block">
@@ -335,6 +382,7 @@ export default function App() {
           onOpenWishlist={() => setIsWishlistOpen(true)}
           onLogout={handleLogout}
           onOpenDomainModal={() => setIsDomainOpen(true)}
+          onOpenGateway={() => setIsGatewayOpen(true)}
         />
 
         <Hero
@@ -366,6 +414,7 @@ export default function App() {
         onOpenAuth={() => setIsAuthOpen(true)}
         onOpenSubmitDeal={() => setIsSubmitDealOpen(true)}
         totalDeals={filteredProducts.length}
+        onOpenGateway={() => setIsGatewayOpen(true)}
       />
 
       {/* Main Content Area (With bottom padding compensation for mobile nav) */}
@@ -381,17 +430,7 @@ export default function App() {
           />
         )}
 
-        {/* 3. CAMPAIGN & FLASH MEGADEALS HUB */}
-        {activeView === 'megadeals' && (
-          <CampaignMegadealsHub
-            products={products}
-            onQuickView={setActiveQuickViewProduct}
-            onToggleWishlist={handleToggleWishlist}
-            wishlist={wishlist}
-          />
-        )}
-
-        {/* 4. MAIN DEALS GRID VIEW */}
+        {/* MAIN DEALS GRID VIEW */}
         {activeView === 'grid' && (
           <>
             {/* Category Filter Pills (Enhanced for both mobile & desktop) */}
@@ -402,28 +441,69 @@ export default function App() {
               productCount={filteredProducts.length}
             />
 
-            {/* Mobile Active Filter Badge Row - High Contrast & Crisp Labels */}
-            <div className="md:hidden flex items-center justify-between gap-2 px-1 mb-3 text-xs">
+            {/* Personalized Feed Banner when filtered by custom gateway selection */}
+            {selectedCategory === 'Personalized' && (
+              <div className="mb-3.5 p-3 sm:p-4 rounded-2xl bg-gradient-to-r from-orange-500/20 via-[#0B132B] to-[#131b2e] border border-orange-500/40 flex flex-col sm:flex-row items-start sm:items-center justify-between gap-3 shadow-md font-['Outfit']">
+                <div className="flex items-center gap-2.5 min-w-0">
+                  <div className="w-8 h-8 rounded-xl bg-gradient-to-br from-orange-500 to-amber-400 text-slate-950 flex items-center justify-center font-black shadow-xs shrink-0">
+                    <Sparkles className="w-4 h-4 fill-slate-950" />
+                  </div>
+                  <div className="min-w-0">
+                    <div className="flex items-center gap-2">
+                      <h4 className="text-xs sm:text-sm font-bold text-white tracking-tight">
+                        Personalized Feed Active
+                      </h4>
+                      <span className="text-[10px] font-extrabold uppercase px-2 py-0.5 rounded-md bg-orange-500/20 text-orange-400 border border-orange-500/30">
+                        {userPreferredCategories.length} Categories
+                      </span>
+                    </div>
+                    <p className="text-[11px] text-slate-400 truncate mt-0.5">
+                      Showing deals tailored to: <span className="text-orange-300 font-semibold">{userPreferredCategories.join(', ')}</span>
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-2 w-full sm:w-auto shrink-0">
+                  <button
+                    type="button"
+                    onClick={() => setIsGatewayOpen(true)}
+                    className="flex-1 sm:flex-initial text-xs font-bold text-white bg-white/10 hover:bg-white/15 px-3 py-1.5 rounded-xl border border-white/10 transition cursor-pointer"
+                  >
+                    Edit Categories
+                  </button>
+                  <button
+                    type="button"
+                    onClick={() => setSelectedCategory('All')}
+                    className="flex-1 sm:flex-initial text-xs font-bold text-slate-950 bg-gradient-to-r from-orange-500 to-amber-400 hover:brightness-105 px-3.5 py-1.5 rounded-xl transition cursor-pointer shadow-xs"
+                  >
+                    View All Deals
+                  </button>
+                </div>
+              </div>
+            )}
+
+            {/* Mobile Active Filter Badge Row - High Contrast Midnight Theme */}
+            <div className="md:hidden flex items-center justify-between gap-2 px-1 mb-3 text-xs font-['Outfit']">
               <div className="flex items-center gap-1.5 overflow-x-auto no-scrollbar py-0.5">
-                <span className="font-black text-slate-950 text-xs shrink-0 tabular-nums bg-slate-200/80 px-2 py-0.5 rounded-lg border border-slate-300">
+                <span className="font-black text-slate-200 text-xs shrink-0 tabular-nums bg-[#131b2e] px-2 py-0.5 rounded-lg border border-white/10">
                   {filteredProducts.length} Deals
                 </span>
                 {priceFilter !== 'all' && (
-                  <span className="inline-flex items-center gap-1 bg-white text-slate-950 font-black px-2 py-0.5 rounded-lg text-xs shrink-0 border border-slate-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1 bg-[#131b2e] text-orange-400 font-bold px-2 py-0.5 rounded-lg text-xs shrink-0 border border-white/10 shadow-2xs">
                     <span>{priceFilter === 'under1k' ? '< Rs. 1k' : priceFilter === '1k-3k' ? '1k-3k' : priceFilter === '3k-5k' ? '3k-5k' : '5k+'}</span>
-                    <button onClick={() => setPriceFilter('all')} className="hover:text-orange-600 text-slate-700 font-black ml-0.5 cursor-pointer">×</button>
+                    <button onClick={() => setPriceFilter('all')} className="hover:text-white text-slate-400 font-black ml-0.5 cursor-pointer">×</button>
                   </span>
                 )}
                 {sortOption !== 'featured' && (
-                  <span className="inline-flex items-center gap-1 bg-white text-slate-950 font-black px-2 py-0.5 rounded-lg text-xs shrink-0 border border-slate-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1 bg-[#131b2e] text-orange-400 font-bold px-2 py-0.5 rounded-lg text-xs shrink-0 border border-white/10 shadow-2xs">
                     <span>{sortOption}</span>
-                    <button onClick={() => setSortOption('featured')} className="hover:text-orange-600 text-slate-700 font-black ml-0.5 cursor-pointer">×</button>
+                    <button onClick={() => setSortOption('featured')} className="hover:text-white text-slate-400 font-black ml-0.5 cursor-pointer">×</button>
                   </span>
                 )}
                 {searchQuery && (
-                  <span className="inline-flex items-center gap-1 bg-white text-slate-950 font-black px-2 py-0.5 rounded-lg text-xs shrink-0 border border-slate-300 shadow-2xs">
+                  <span className="inline-flex items-center gap-1 bg-[#131b2e] text-white font-bold px-2 py-0.5 rounded-lg text-xs shrink-0 border border-white/10 shadow-2xs">
                     <span>"{searchQuery.length > 12 ? searchQuery.slice(0, 12) + '...' : searchQuery}"</span>
-                    <button onClick={() => setSearchQuery('')} className="hover:text-orange-600 text-slate-700 font-black ml-0.5 cursor-pointer">×</button>
+                    <button onClick={() => setSearchQuery('')} className="hover:text-orange-400 text-slate-400 font-black ml-0.5 cursor-pointer">×</button>
                   </span>
                 )}
               </div>
@@ -431,7 +511,7 @@ export default function App() {
                 <button
                   type="button"
                   onClick={resetAllFilters}
-                  className="text-xs text-orange-600 font-black shrink-0 hover:text-orange-700 bg-orange-50 hover:bg-orange-100 border border-orange-200 px-2 py-1 rounded-lg active:scale-95 transition cursor-pointer"
+                  className="text-xs text-orange-400 font-bold shrink-0 hover:text-orange-300 bg-orange-500/15 hover:bg-orange-500/25 border border-orange-500/30 px-2 py-1 rounded-lg active:scale-95 transition cursor-pointer"
                 >
                   Reset
                 </button>
@@ -452,20 +532,29 @@ export default function App() {
             {isLoading ? (
               <LoadingScreen />
             ) : filteredProducts.length === 0 ? (
-              <div className="py-20 text-center bg-white rounded-3xl border border-slate-200/80 p-8 max-w-lg mx-auto shadow-xs">
-                <PackageOpen className="w-16 h-16 text-slate-300 mx-auto mb-3" />
-                <h3 className="font-bold text-slate-800 text-lg">No deals match your criteria</h3>
-                <p className="text-xs text-slate-500 max-w-sm mx-auto mt-1 mb-5">
+              <div className="py-20 text-center bg-[#0B132B] rounded-3xl border border-white/10 p-8 max-w-lg mx-auto shadow-md font-['Outfit']">
+                <PackageOpen className="w-16 h-16 text-slate-500 mx-auto mb-3" />
+                <h3 className="font-bold text-white text-lg">No deals match your criteria</h3>
+                <p className="text-xs text-slate-400 max-w-sm mx-auto mt-1 mb-5">
                   Try adjusting your search query, selecting "All" categories, or resetting the price filters.
                 </p>
                 <div className="flex items-center justify-center gap-3">
                   <button
                     onClick={resetAllFilters}
-                    className="inline-flex items-center gap-2 bg-slate-100 hover:bg-slate-200 text-slate-800 font-bold text-xs px-4 py-2.5 rounded-xl transition"
+                    className="inline-flex items-center gap-2 bg-[#131b2e] hover:bg-[#1a233b] text-white border border-white/10 font-bold text-xs px-4 py-2.5 rounded-xl transition cursor-pointer"
                   >
                     <RotateCcw className="w-3.5 h-3.5" />
                     <span>Reset Filters</span>
                   </button>
+                  {userPreferredCategories.length > 0 && (
+                    <button
+                      onClick={() => setIsGatewayOpen(true)}
+                      className="inline-flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-400 text-slate-950 font-black text-xs px-4 py-2.5 rounded-xl transition cursor-pointer hover:brightness-105"
+                    >
+                      <Sparkles className="w-3.5 h-3.5" />
+                      <span>Edit Categories</span>
+                    </button>
+                  )}
                 </div>
               </div>
             ) : (
@@ -488,37 +577,37 @@ export default function App() {
       </main>
 
       {/* Footer */}
-      <footer className="bg-white border-t border-slate-200/60 py-6 px-4 text-center text-xs text-slate-500 mt-10 mb-16 md:mb-0">
+      <footer className="bg-[#070d1a] border-t border-white/10 py-6 px-4 text-center text-xs text-slate-400 mt-10 mb-16 md:mb-0 font-['Outfit']">
         <div className="max-w-4xl mx-auto space-y-3">
-          <div className="flex items-center justify-center gap-2 font-bold text-slate-800">
+          <div className="flex items-center justify-center gap-2 font-bold text-white">
             <img src="/logo.png" alt="Daraz Deals Nepal Logo" className="w-5 h-5 object-contain" />
             <span className="text-sm">Daraz Deals Nepal</span>
-            <span className="text-slate-300">•</span>
-            <span className="text-orange-600 font-semibold text-xs">Verified Nepal Curation</span>
+            <span className="text-slate-600">•</span>
+            <span className="text-orange-400 font-semibold text-xs">Verified Nepal Curation</span>
           </div>
 
           {/* Legal Pages & Navigation Links */}
-          <div className="flex items-center justify-center gap-3 text-xs font-medium text-slate-600 pt-0.5">
+          <div className="flex items-center justify-center gap-3 text-xs font-medium text-slate-400 pt-0.5">
             <button
               onClick={() => setIsPrivacyOpen(true)}
-              className="hover:text-orange-600 transition underline underline-offset-2 cursor-pointer"
+              className="hover:text-orange-400 transition underline underline-offset-2 cursor-pointer"
             >
               Privacy Policy
             </button>
-            <span className="text-slate-300">•</span>
+            <span className="text-slate-600">•</span>
             <button
               onClick={() => setIsTermsOpen(true)}
-              className="hover:text-orange-600 transition underline underline-offset-2 cursor-pointer"
+              className="hover:text-orange-400 transition underline underline-offset-2 cursor-pointer"
             >
               Terms and Conditions
             </button>
           </div>
 
-          <p className="max-w-xl mx-auto text-slate-400 text-[11px] leading-relaxed">
-            Daraz Deals NP is an independent affiliate curation platform for Daraz Nepal. Product prices and availability remain subject to change by Daraz sellers.
+          <p className="max-w-xl mx-auto text-slate-500 text-[11px] leading-relaxed font-['Hanken_Grotesk']">
+            Daraz Deals Nepal is an independent affiliate curation platform for Daraz Nepal. Product prices and availability remain subject to change by Daraz sellers.
           </p>
 
-          <p className="text-[10px] text-slate-400 pt-0.5 font-mono">
+          <p className="text-[10px] text-slate-600 pt-0.5 font-mono">
             Copyright (c) 2026 Daraz Deals Nepal. All rights reserved.
           </p>
         </div>

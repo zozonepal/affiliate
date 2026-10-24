@@ -130,6 +130,8 @@ function broadcastProducts() {
 }
 
 function computeEffectiveProducts(items: ProductDeal[]): ProductDeal[] {
+  // Return strictly the user's authentic products from Firestore.
+  // Never merge or append unwanted static sample deals.
   return items;
 }
 

@@ -44,7 +44,7 @@ export interface ProductDeal {
   updatedAt?: any;
 }
 
-export type ActiveViewMode = 'grid' | 'best-of' | 'megadeals';
+export type ActiveViewMode = 'grid' | 'best-of';
 
 export interface UserAccount {
   uid: string;

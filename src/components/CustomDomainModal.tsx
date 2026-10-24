@@ -37,28 +37,28 @@ export function CustomDomainModal({ isOpen, onClose }: CustomDomainModalProps) {
   };
 
   return (
-    <div className="fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-center justify-center p-3 sm:p-4 overflow-y-auto">
+    <div className="fixed inset-0 z-50 bg-slate-950/80 backdrop-blur-md flex items-center justify-center p-3 sm:p-4 overflow-y-auto font-['Hanken_Grotesk']">
       <div 
-        className="bg-white rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-slate-200 animate-in fade-in zoom-in-95 duration-150 relative overflow-hidden"
+        className="bg-[#0B132B] text-[#dae2fd] rounded-2xl max-w-xl w-full max-h-[90vh] flex flex-col shadow-2xl border border-white/10 animate-in fade-in zoom-in-95 duration-150 relative overflow-hidden"
         role="dialog"
         aria-labelledby="custom-domain-title"
       >
         {/* Header */}
-        <div className="p-4 sm:p-5 border-b border-slate-200 flex items-center justify-between bg-slate-50 shrink-0">
+        <div className="p-4 sm:p-5 border-b border-white/10 flex items-center justify-between bg-[#131b2e] shrink-0 font-['Outfit']">
           <div className="flex items-center gap-2.5">
-            <div className="w-8 h-8 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center font-bold">
+            <div className="w-8 h-8 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-400 flex items-center justify-center font-bold">
               <Globe className="w-4 h-4" />
             </div>
             <div>
               <div className="flex items-center gap-2">
-                <h2 id="custom-domain-title" className="text-base sm:text-lg font-bold text-slate-900">
-                  Custom Domain Management
+                <h2 id="custom-domain-title" className="text-base sm:text-lg font-bold text-white">
+                  Domain Management
                 </h2>
-                <span className="bg-emerald-100 text-emerald-800 text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-300">
+                <span className="bg-emerald-500/15 text-emerald-400 text-[10px] font-bold px-2 py-0.5 rounded-md border border-emerald-500/30">
                   Live & Connected
                 </span>
               </div>
-              <p className="text-xs text-slate-500">
+              <p className="text-xs text-slate-400">
                 Primary Host: {domainInput}
               </p>
             </div>

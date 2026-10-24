@@ -154,14 +154,14 @@ export function BestOfListicleView({
           return (
             <article
               key={product.id}
-              className={`bg-white rounded-3xl border transition-all duration-300 overflow-hidden shadow-xs hover:shadow-xl ${
+              className={`bg-[#0B132B] rounded-3xl border transition-all duration-300 overflow-hidden shadow-md font-['Outfit'] ${
                 idx === 0 
-                  ? 'border-2 border-orange-500/70 ring-4 ring-orange-500/10' 
-                  : 'border-slate-200/80 hover:border-slate-300'
+                  ? 'border-2 border-orange-500/80 shadow-[0_0_30px_rgba(251,146,60,0.15)]' 
+                  : 'border-white/10 hover:border-white/20'
               }`}
             >
               {/* Ranking Header Bar */}
-              <div className="px-3 sm:px-6 py-2 sm:py-2.5 bg-slate-50 border-b border-slate-200/80 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
+              <div className="px-3 sm:px-6 py-2 sm:py-2.5 bg-[#131b2e] border-b border-white/10 flex flex-wrap items-center justify-between gap-1.5 sm:gap-2">
                 <div className="flex items-center gap-1.5 sm:gap-2 min-w-0">
                   <span className={`inline-flex items-center gap-1 sm:gap-1.5 px-2.5 sm:px-3 py-1 rounded-md text-[11px] sm:text-xs font-black shadow-xs bg-gradient-to-r ${badge.color}`}>
                     <Icon className="w-3 h-3 sm:w-3.5 sm:h-3.5" />
@@ -173,8 +173,8 @@ export function BestOfListicleView({
                 </div>
 
                 <div className="flex items-center gap-1.5 sm:gap-2 text-xs">
-                  <div className="flex items-center gap-1 font-bold text-amber-600 bg-amber-50 px-2 sm:px-2.5 py-0.5 rounded-lg border border-amber-200 text-[11px] sm:text-xs">
-                    <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-500 text-amber-500" />
+                  <div className="flex items-center gap-1 font-bold text-amber-400 bg-amber-500/15 px-2 sm:px-2.5 py-0.5 rounded-lg border border-amber-500/30 text-[11px] sm:text-xs">
+                    <Star className="w-3 h-3 sm:w-3.5 sm:h-3.5 fill-amber-400 text-amber-400" />
                     <span>{product.rating ? product.rating.toFixed(1) : '4.6'}</span>
                     <span className="text-slate-400 font-normal hidden sm:inline">({product.reviewsCount || 50}+)</span>
                   </div>
@@ -188,7 +188,7 @@ export function BestOfListicleView({
                 <div className="md:col-span-4 flex flex-col items-center">
                   <div 
                     onClick={() => onQuickView(product)}
-                    className="relative w-full max-w-[240px] aspect-square bg-[#F8F9FA] rounded-2xl p-3 flex items-center justify-center cursor-pointer group overflow-hidden border border-slate-100"
+                    className="relative w-full max-w-[240px] aspect-square bg-[#131b2e] rounded-2xl p-3 flex items-center justify-center cursor-pointer group overflow-hidden border border-white/10"
                   >
                     <img
                       src={product.imageUrl || product.image}
@@ -198,8 +198,8 @@ export function BestOfListicleView({
                     />
 
                     {discount > 0 && (
-                      <span className="absolute top-2.5 right-2.5 bg-rose-600 text-white font-black text-xs px-2.5 py-1 rounded-md shadow-sm flex items-center gap-1">
-                        <Flame className="w-3 h-3 fill-white" />
+                      <span className="absolute top-2.5 right-2.5 bg-gradient-to-r from-orange-500 to-amber-400 text-slate-950 font-black text-xs px-2.5 py-1 rounded-md shadow-xs flex items-center gap-1">
+                        <Flame className="w-3 h-3 fill-slate-950" />
                         <span>-{discount}%</span>
                       </span>
                     )}
@@ -209,16 +209,16 @@ export function BestOfListicleView({
                         e.stopPropagation();
                         onToggleWishlist(product.id);
                       }}
-                      className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-white/95 backdrop-blur-xs shadow-xs flex items-center justify-center text-slate-400 hover:text-rose-500 transition border border-slate-200/60"
+                      className="absolute top-2.5 left-2.5 w-8 h-8 rounded-lg bg-[#0B132B]/90 backdrop-blur-xs shadow-xs flex items-center justify-center text-slate-400 hover:text-red-400 transition border border-white/10 cursor-pointer"
                       title="Save"
                     >
-                      <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-rose-500 text-rose-500' : ''}`} />
+                      <Heart className={`w-4 h-4 ${isWishlisted ? 'fill-red-400 text-red-400' : ''}`} />
                     </button>
                   </div>
 
                   <button
                     onClick={() => onQuickView(product)}
-                    className="text-xs font-bold text-slate-500 hover:text-orange-600 mt-2.5 transition"
+                    className="text-xs font-bold text-slate-400 hover:text-orange-400 mt-2.5 transition cursor-pointer"
                   >
                     View Full Gallery & Specs
                   </button>
@@ -229,14 +229,14 @@ export function BestOfListicleView({
                   <div>
                     <h3 
                       onClick={() => onQuickView(product)}
-                      className="text-base sm:text-xl font-extrabold text-slate-900 hover:text-orange-600 cursor-pointer transition leading-snug"
+                      className="text-base sm:text-xl font-extrabold text-white hover:text-orange-400 cursor-pointer transition leading-snug"
                     >
                       {product.name || product.title}
                     </h3>
 
                     {/* Price Snapshot */}
                     <div className="flex items-baseline gap-2.5 mt-2">
-                      <span className="text-lg sm:text-2xl font-black text-slate-900 tracking-tight">
+                      <span className="text-lg sm:text-2xl font-black text-white tracking-tight">
                         Rs. {Number(product.price).toLocaleString('ne-NP')}
                       </span>
                       {product.originalPrice && product.originalPrice > product.price && (
@@ -244,19 +244,19 @@ export function BestOfListicleView({
                           Rs. {Number(product.originalPrice).toLocaleString('ne-NP')}
                         </span>
                       )}
-                      <span className="text-xs font-extrabold text-emerald-700 bg-emerald-50 px-2 py-0.5 rounded-md border border-emerald-200">
+                      <span className="text-xs font-extrabold text-emerald-400 bg-emerald-500/15 px-2 py-0.5 rounded-md border border-emerald-500/30">
                         Save Rs. {Number((product.originalPrice || Math.round(product.price * 1.3)) - product.price).toLocaleString('ne-NP')}
                       </span>
                     </div>
 
                     {/* Quick Editorial Pros List */}
-                    <div className="mt-3.5 space-y-2 bg-slate-50/80 rounded-2xl p-3.5 border border-slate-100">
-                      <span className="text-[11px] font-extrabold text-slate-700 uppercase tracking-wider block">
+                    <div className="mt-3.5 space-y-2 bg-[#131b2e] rounded-2xl p-3.5 border border-white/10 font-['Hanken_Grotesk']">
+                      <span className="text-[11px] font-['Outfit'] font-extrabold text-slate-300 uppercase tracking-wider block">
                         Why It's Ranked in the Top Picks:
                       </span>
                       {pros.map((pro, pIdx) => (
-                        <div key={pIdx} className="flex items-start gap-2 text-xs text-slate-600">
-                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-600 shrink-0 mt-0.5" />
+                        <div key={pIdx} className="flex items-start gap-2 text-xs text-slate-300">
+                          <CheckCircle2 className="w-3.5 h-3.5 text-emerald-400 shrink-0 mt-0.5" />
                           <span>{pro}</span>
                         </div>
                       ))}
@@ -264,9 +264,9 @@ export function BestOfListicleView({
                   </div>
 
                   {/* High Intent CTA Action Row */}
-                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 border-t border-slate-100 min-w-0">
-                    <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-500 min-w-0 truncate">
-                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
+                  <div className="pt-2 flex flex-col sm:flex-row items-stretch sm:items-center justify-between gap-2.5 sm:gap-3 border-t border-white/10 min-w-0">
+                    <div className="flex items-center gap-1.5 text-[11px] sm:text-xs text-slate-400 min-w-0 truncate">
+                      <ShieldCheck className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
                       <span className="truncate">7-Day Return • COD Verified in Nepal</span>
                     </div>
 
@@ -276,7 +276,7 @@ export function BestOfListicleView({
                         e.preventDefault();
                         openDarazDeal(product.affiliateUrl);
                       }}
-                      className="bg-gradient-to-r from-orange-600 to-amber-600 hover:from-orange-500 hover:to-amber-500 active:from-orange-700 text-white font-extrabold text-xs sm:text-sm py-2.5 sm:py-3 px-4 sm:px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md shadow-orange-600/20 active:scale-[0.98] transition cursor-pointer min-h-[44px] min-w-0"
+                      className="bg-gradient-to-r from-orange-500 via-orange-400 to-amber-400 hover:brightness-105 text-slate-950 font-extrabold text-xs sm:text-sm py-2.5 sm:py-3 px-4 sm:px-6 rounded-2xl flex items-center justify-center gap-2 shadow-md shadow-orange-500/20 active:scale-[0.98] transition cursor-pointer min-h-[44px] min-w-0"
                     >
                       <Smartphone className="w-4 h-4 shrink-0" />
                       <span className="truncate">Check Discount on Daraz App</span>

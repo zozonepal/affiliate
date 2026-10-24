@@ -75,7 +75,6 @@ export function extractClientFallback(url: string): ExtractedProductData {
     price,
     originalPrice,
     badge: 'Verified Deal',
-    promoCode: 'DARAZ10',
     image,
     affiliateUrl: cleanUrl,
     description: `${derivedTitle} available on Daraz Nepal with fast nationwide delivery and brand warranty.`,
